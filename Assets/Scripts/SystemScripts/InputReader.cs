@@ -23,8 +23,6 @@ public class InputReader : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-
             InitInputReader();
         }
         else
