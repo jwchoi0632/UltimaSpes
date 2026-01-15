@@ -11,7 +11,8 @@ public enum CharacterState
 }
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
-//[RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
+[RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
+[RequireComponent(typeof(MovementComponent2D))]
 public abstract class CharacterBase : MonoBehaviour
 {
     [Header("Data Asset")]
@@ -21,6 +22,7 @@ public abstract class CharacterBase : MonoBehaviour
     protected CapsuleCollider2D mainCollider;
     protected SpriteRenderer mainRenderer;
     protected Animator animator;
+    protected MovementComponent2D movement;
 
     protected CharacterState currentState;
     protected float currentHp;
@@ -51,6 +53,8 @@ public abstract class CharacterBase : MonoBehaviour
         mainCollider = GetComponent<CapsuleCollider2D>();
         mainRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        movement = GetComponent<MovementComponent2D>();
+        movement.Init(mainCollider, rigidBody, stats);
     }
 
     protected virtual void OnAwake() { }
@@ -60,38 +64,6 @@ public abstract class CharacterBase : MonoBehaviour
     {
         if (currentState == newState) return;
         currentState = newState;
-    }
-
-    protected virtual void Move(Vector2 direction)
-    {
-        rigidBody.velocity = new Vector2(direction.x * stats.moveSpeed, rigidBody.velocity.y);
-    }
-
-    protected virtual void StartJump()
-    {
-        if (CheckGrounded() || 
-            (!CheckGrounded() && currentJumpCount < maxJumpCount))
-        {
-            rigidBody.velocity = new Vector2(rigidBody.velocity.x, stats.jumpForce);
-            currentJumpCount++;
-        }
-    }
-
-    protected virtual void ContinuingJump(float deltaTime)
-    {
-        if (rigidBody.velocity.y > 0)
-        {
-            rigidBody.velocity += Vector2.up * (stats.jumpForce * 0.5f * deltaTime);
-        }
-    }
-
-    protected bool CheckGrounded()
-    {
-        bool result = true;
-
-        // TODO : 지면 체크
-
-        return result;
     }
 
     protected abstract void Die();
