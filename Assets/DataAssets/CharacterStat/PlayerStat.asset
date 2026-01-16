@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: PlayerStat
   m_EditorClassIdentifier: 
   maxHp: 100
-  moveSpeed: 5
-  jumpForce: 10
-  maxJumpTime: 0.5
   strength: 10
+  moveMaxSpeed: 5
+  acceleration_sec: 0.3
+  deceleration_sec: 0.2
+  acceleration_air_sec: 2
+  deceleration_air_sec: 2
+  jumpForce: 5
+  fallMultiplier: 4
+  lowJumpMultiplier: 1
