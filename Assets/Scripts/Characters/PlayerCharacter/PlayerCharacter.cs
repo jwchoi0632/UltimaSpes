@@ -18,30 +18,22 @@ public class PlayerCharacter : CharacterBase
 
         InputReader.Instance.BindAction(actions.Move,
             performed: () => movement.SetMoveInput(actions.Move.ReadValue<Vector2>()),
-            canceled : () => movement.SetMoveInput(actions.Move.ReadValue<Vector2>()));
+            canceled : () => movement.SetMoveInput(Vector2.zero));
 
         InputReader.Instance.BindAction(actions.Jump,
-            started: () => CheckJumpable(),
-            canceled: () => movement.SetJumpInput(false));
+            started: () => CheckJumpType(),
+            canceled: () => movement.EndJump());
     }
 
     void Update()
     {
-        if (currentState == CharacterState.Jumping &&
-            movement.IsJumping)
-        {
-            movement.DoJump();
-        }
+
     }
 
-    private void CheckJumpable()
+    private void CheckJumpType()
     {
-        if (movement.IsGrounded ||
-            (!movement.IsGrounded && currentJumpCount < maxJumpCount))
-        {
-            movement.SetJumpInput(true);
-            ChangeState(CharacterState.Jumping);
-        }
+        if (movement.ActionDropDown()) currentState = CharacterState.Falling;
+        else if (movement.DoJump()) currentState = CharacterState.Jumping;
     }
 
     protected override void Die()

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   strength: 10
-  moveMaxSpeed: 20
+  moveMaxSpeed: 5
   acceleration_sec: 0.3
   deceleration_sec: 0.2
   acceleration_air_sec: 2

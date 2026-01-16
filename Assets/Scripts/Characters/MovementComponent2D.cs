@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class MovementComponent2D : MonoBehaviour
@@ -13,10 +15,17 @@ public class MovementComponent2D : MonoBehaviour
     [SerializeField] private LayerMask thinPlatformLayer;
     [SerializeField] private float groundCheckDistance;
 
+    [Header("Jump Settings")]
+    [SerializeField] private int jumpMaxCount;
+    [SerializeField] private float JumpHoldTime;
+
     private Vector2 _moveInput;
     private bool _isGrounded;
     private bool _isJumpPressed;
+    private bool _isDropping;
     private float _defaultGravityScale;
+    private int _currentJumpCount;
+    private float _currentJumpTime;
     private RaycastHit2D _groundHit;
 
     public bool IsGrounded => _isGrounded;
@@ -55,27 +64,53 @@ public class MovementComponent2D : MonoBehaviour
         return (thinPlatformLayer.value & (1 << _groundHit.collider.gameObject.layer)) != 0;
     }
 
-    public void DoJump()
+    public bool DoJump()
     {
-        if (rb == null && stats == null) return;
+        if (rb == null && stats == null) return false;
 
-        rb.velocity = new Vector2(rb.velocity.x, stats.jumpForce);
+        if (_currentJumpCount >= jumpMaxCount) return false;
+
+        if (_isGrounded ||
+            (!_isGrounded && _currentJumpCount < jumpMaxCount))
+        {
+            rb.velocity = new Vector2(rb.velocity.x, stats.jumpForce);
+            SetJumpInput(true);
+            ++_currentJumpCount;
+            _currentJumpTime = JumpHoldTime;
+
+            return true;
+        }
+
+        return false;
     }
 
-    public void ActionDropDown()
+    public void EndJump()
     {
-        if (IsOnThinPlatform())
+        SetJumpInput(false);
+    }
+
+    public bool ActionDropDown()
+    {
+        bool result = IsOnThinPlatform() && _moveInput.y < 0;
+
+        if (result)
         {
             StartCoroutine(DisableCollisionRoutine(_groundHit.collider));
         }
+
+        return result;
     }
 
     private IEnumerator DisableCollisionRoutine(Collider2D platformCollider)
     {
+        _isGrounded = false;
+        _isDropping = true;
+        _currentJumpCount = jumpMaxCount;
         Physics2D.IgnoreCollision(mainCollider, platformCollider, true);
 
         yield return new WaitForSeconds(0.4f);
 
+        _isDropping = false;
         Physics2D.IgnoreCollision(mainCollider, platformCollider, false);
     }
 
@@ -101,6 +136,12 @@ public class MovementComponent2D : MonoBehaviour
     {
         if (rb == null && stats == null) return;
 
+        if (_isJumpPressed && _currentJumpTime > 0)
+        {
+            rb.velocity += Vector2.up * stats.jumpForce * Time.fixedDeltaTime;
+            _currentJumpTime -= Time.fixedDeltaTime;
+        }
+
         if (rb.velocity.y < 0)
         {
             rb.gravityScale = _defaultGravityScale * stats.fallMultiplier;
@@ -117,6 +158,12 @@ public class MovementComponent2D : MonoBehaviour
 
     private void CheckGround()
     {
+        if (_isDropping)
+        {
+            _isGrounded = false;
+            return;
+        }
+
          _groundHit = Physics2D.BoxCast(
             mainCollider.bounds.center,
             new Vector2(mainCollider.bounds.size.x * 0.9f, 0.1f),
@@ -126,5 +173,7 @@ public class MovementComponent2D : MonoBehaviour
             groundLayer);
 
         _isGrounded = _groundHit.collider != null;
+
+        if (_isGrounded && !_isJumpPressed) _currentJumpCount = 0;
     }
 }
