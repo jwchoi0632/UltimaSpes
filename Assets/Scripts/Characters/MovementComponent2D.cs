@@ -2,178 +2,233 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public class MovementComponent2D : MonoBehaviour
 {
-    private Rigidbody2D rb;
-    private CharacterStats stats;
-    private CapsuleCollider2D mainCollider;
+    public Rigidbody2D _rb { get; private set; }
+    public CharacterStats _stats { get; private set; }
+    public CapsuleCollider2D _mainCollider { get; private set; }
+    public GameObject _spriteObject { get; private set; }
 
     [Header("Detection Settings")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask thinPlatformLayer;
+    [SerializeField] private LayerMask wallLayer;
     [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float wallCheckDistance;
+    [SerializeField] private bool isDefaultFacingRight;
 
     [Header("Jump Settings")]
     [SerializeField] private int jumpMaxCount;
-    [SerializeField] private float JumpHoldTime;
+    [SerializeField] private float jumpHoldTime;
 
-    private Vector2 _moveInput;
-    private bool _isGrounded;
-    private bool _isJumpPressed;
-    private bool _isDropping;
-    private float _defaultGravityScale;
-    private int _currentJumpCount;
-    private float _currentJumpTime;
-    private RaycastHit2D _groundHit;
 
-    public bool IsGrounded => _isGrounded;
-    public bool IsJumping => _isJumpPressed;
+    public bool _isJumpPressed { get; private set; }
+    public bool _canFlip { get; private set; }
+    public bool _isFacingRight { get; private set; }
 
-    public void Init(CapsuleCollider2D newCollider, Rigidbody2D newRb, CharacterStats newStats)
+
+    public Vector2 _moveInput { get; private set; }
+    public RaycastHit2D _groundHit { get; private set; }
+    public RaycastHit2D _wallHit { get; private set; }
+
+    public int _currentJumpCount { get; private set; }
+    public float _defaultGravityScale { get; private set; }
+    public int JumpMaxCount => jumpMaxCount;
+    public float JumpHoldTime => jumpHoldTime;
+    
+
+    public GroundedState _groundedState { get; private set; }
+    public JumppingState _jumpingState { get; private set; }
+    public FallingState _fallingState { get; private set; }
+    public DroppingState _droppingState { get; private set; }
+    public WallGrabState _wallGrabState { get; private set; }
+    public ClimbingState _climbingState { get; private set; }
+
+    private MovementStateBase _currentState;
+
+    private IMoveable _moveable;
+    private IJumpable _jumpable;
+    private IGravityEffect _gravityEffect;
+
+    private void Start()
     {
-        rb = newRb;
-        stats = newStats;
-        mainCollider = newCollider;
+        CharacterBase character = GetComponent<CharacterBase>();
 
-        _defaultGravityScale = rb.gravityScale;
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        _rb = character.rigidBody;
+        _mainCollider = character.mainCollider;
+        _stats = character.Stats;
+        _spriteObject = character.Sprite;
 
-        _isJumpPressed = false;
-        _moveInput = Vector2.zero;
+        InitDefaultValue();
+        InitStateClass();
+
+        ChangeMoveState(_groundedState);
     }
 
     private void FixedUpdate()
     {
-        ApplyHorizontalMovement();
-        ApplyGravityModifiers();
+        _moveable?.Move(_moveInput);
+        _gravityEffect?.ApplyGravity();
+        _currentState?.OnFixedUpdate();
     }
 
     private void Update()
     {
-        CheckGround();
+        _currentState?.OnUpdate();
     }
 
-    public void SetMoveInput(Vector2 moveInput) => _moveInput = moveInput;
+    public void ResetJumpCount() => _currentJumpCount = 0;
+    public void IncreaseJumpCount() => ++_currentJumpCount;
     public void SetJumpInput(bool pressed) => _isJumpPressed = pressed;
+    public void SetCanFlip(bool canFlip) => _canFlip = canFlip;
+
+    public void ChangeMoveState(MovementStateBase newState)
+    {
+        _currentState?.OnExit();
+
+        if (newState == null) return;
+
+        _currentState = newState;
+
+        _moveable = _currentState as IMoveable;
+        _jumpable = _currentState as IJumpable;
+        _gravityEffect = _currentState as IGravityEffect;
+
+        _currentState.OnStart();
+    }
+
+    public void SetMoveInput(Vector2 moveInput)
+    {
+        _moveInput = moveInput;
+
+        if (!_canFlip) return;
+
+        if ((moveInput.x < 0 && _isFacingRight) ||
+            (moveInput.x > 0 && !_isFacingRight)) Flip(); 
+    }
+
     public bool IsOnThinPlatform()
     {
-        if (!_isGrounded) return false;
+        if (_currentState != _groundedState) return false;
 
         return (thinPlatformLayer.value & (1 << _groundHit.collider.gameObject.layer)) != 0;
     }
 
-    public bool DoJump()
+    public void StartJumppressed()
     {
-        if (rb == null && stats == null) return false;
+        if (_rb == null && _stats == null) return;
 
-        if (_currentJumpCount >= jumpMaxCount) return false;
+        _jumpable = _currentState as IJumpable;
 
-        if (_isGrounded ||
-            (!_isGrounded && _currentJumpCount < jumpMaxCount))
-        {
-            rb.velocity = new Vector2(rb.velocity.x, stats.jumpForce);
-            SetJumpInput(true);
-            ++_currentJumpCount;
-            _currentJumpTime = JumpHoldTime;
+        if (_jumpable == null) return;
 
-            return true;
-        }
-
-        return false;
+        SetJumpInput(true);
+        _jumpable.Jump();
     }
 
-    public void EndJump()
+    public void EndJumppressed()
     {
         SetJumpInput(false);
+
+        //if (_moveState == MovementState.jumping) _moveState = MovementState.falling;
     }
 
-    public bool ActionDropDown()
+    public void ApplyMovement(float maxSpeed, bool isHorizontal = true, float timeToReach = 1.0f, float timeToStop = 1.0f)
     {
-        bool result = IsOnThinPlatform() && _moveInput.y < 0;
+        if (_rb == null || _stats == null) return;
 
-        if (result)
-        {
-            StartCoroutine(DisableCollisionRoutine(_groundHit.collider));
-        }
+        float inputValue = isHorizontal ? _moveInput.x : _moveInput.y;
+        float currentValocity = isHorizontal ? _rb.velocity.x : _rb.velocity.y;
+        float targetSpeed = maxSpeed * inputValue;
 
-        return result;
-    }
-
-    private IEnumerator DisableCollisionRoutine(Collider2D platformCollider)
-    {
-        _isGrounded = false;
-        _isDropping = true;
-        _currentJumpCount = jumpMaxCount;
-        Physics2D.IgnoreCollision(mainCollider, platformCollider, true);
-
-        yield return new WaitForSeconds(0.4f);
-
-        _isDropping = false;
-        Physics2D.IgnoreCollision(mainCollider, platformCollider, false);
-    }
-
-    private void ApplyHorizontalMovement()
-    {
-        if (rb == null || stats == null) return;
-
-        float targetSpeed = _moveInput.x * stats.moveMaxSpeed;
-
-        float timeToReach = _isGrounded ? stats.acceleration_sec : stats.acceleration_air_sec;
-        float timeToStop = _isGrounded ? stats.deceleration_sec : stats.deceleration_air_sec;
-
-        float accelUnit = stats.moveMaxSpeed / Mathf.Max(timeToReach, 0.01f);
-        float decelUnit = stats.moveMaxSpeed / Mathf.Max(timeToStop, 0.01f);
+        float accelUnit = maxSpeed / Mathf.Max(timeToReach, 0.01f);
+        float decelUnit = maxSpeed / Mathf.Max(timeToStop, 0.01f);
 
         float currentRate = (Mathf.Abs(targetSpeed) > 0.01f) ? accelUnit : decelUnit;
-        float newX = Mathf.MoveTowards(rb.velocity.x, targetSpeed, currentRate * Time.fixedDeltaTime);
+        float newValue = Mathf.MoveTowards(currentValocity, targetSpeed, currentRate * Time.fixedDeltaTime);
 
-        rb.velocity = new Vector2(newX, rb.velocity.y);
+        Vector2 newVelocity = _rb.velocity;
+
+        if (isHorizontal) newVelocity.x = newValue;
+        else newVelocity.y = newValue;
+
+        _rb.velocity = newVelocity;
     }
 
-    private void ApplyGravityModifiers()
+    public bool CheckGround()
     {
-        if (rb == null && stats == null) return;
-
-        if (_isJumpPressed && _currentJumpTime > 0)
-        {
-            rb.velocity += Vector2.up * stats.jumpForce * Time.fixedDeltaTime;
-            _currentJumpTime -= Time.fixedDeltaTime;
-        }
-
-        if (rb.velocity.y < 0)
-        {
-            rb.gravityScale = _defaultGravityScale * stats.fallMultiplier;
-        }
-        else if (rb.velocity.y > 0 && !_isJumpPressed)
-        {
-            rb.gravityScale = _defaultGravityScale * stats.lowJumpMultiplier;
-        }
-        else
-        {
-            rb.gravityScale = _defaultGravityScale;
-        }
-    }
-
-    private void CheckGround()
-    {
-        if (_isDropping)
-        {
-            _isGrounded = false;
-            return;
-        }
-
          _groundHit = Physics2D.BoxCast(
-            mainCollider.bounds.center,
-            new Vector2(mainCollider.bounds.size.x * 0.9f, 0.1f),
+            _mainCollider.bounds.center,
+            new Vector2(_mainCollider.bounds.size.x * 0.9f, 0.1f),
             0f,
             Vector2.down,
-            mainCollider.bounds.extents.y + groundCheckDistance,
+            _mainCollider.bounds.extents.y + groundCheckDistance,
             groundLayer);
 
-        _isGrounded = _groundHit.collider != null;
+        if (_groundHit.collider == null) return false;
 
-        if (_isGrounded && !_isJumpPressed) _currentJumpCount = 0;
+        return true;
+    }
+
+    public bool CheckWall()
+    {
+        Vector2 direction = _isFacingRight ? Vector2.right : Vector2.left;
+
+        float rayDistance = wallCheckDistance + 0.05f;
+        Vector2 rayStart = (Vector2)_mainCollider.bounds.center + (direction * _mainCollider.bounds.extents.x);
+
+        _wallHit = Physics2D.Raycast(rayStart, direction, rayDistance, wallLayer);
+
+        return _wallHit.collider != null;
+    }
+
+    public bool IsPushing()
+    {
+        bool isPushing = (_isFacingRight && _moveInput.x > 0) || (!_isFacingRight && _moveInput.x < 0);
+
+        return isPushing;
+    }
+
+    public bool IsWallGrabable()
+    {
+        if (!CheckWall()) return false;
+        else if (!IsPushing()) return false;
+
+        return true;
+    }
+    private void Flip()
+    {
+        if (_spriteObject == null) return;
+
+        _isFacingRight = !_isFacingRight;
+
+        Vector3 scale = _spriteObject.transform.localScale;
+        scale.x *= -1;
+        _spriteObject.transform.localScale = scale;
+    }
+
+    private void InitDefaultValue()
+    {
+        _defaultGravityScale = _rb.gravityScale;
+        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+        _isJumpPressed = false;
+        _moveInput = Vector2.zero;
+
+        _canFlip = true;
+        _isFacingRight = isDefaultFacingRight;
+    }
+
+    private void InitStateClass()
+    {
+        _groundedState = new GroundedState(this);
+        _jumpingState = new JumppingState(this);
+        _fallingState = new FallingState(this);
+        _droppingState = new DroppingState(this);
+        _wallGrabState = new WallGrabState(this);
+        _climbingState = new ClimbingState(this);
     }
 }

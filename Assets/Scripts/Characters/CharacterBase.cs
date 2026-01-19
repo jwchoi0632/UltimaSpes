@@ -11,23 +11,26 @@ public enum CharacterState
 }
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
-[RequireComponent(typeof(SpriteRenderer), typeof(Animator))]
 [RequireComponent(typeof(MovementComponent2D))]
 public abstract class CharacterBase : MonoBehaviour
 {
     [Header("Data Asset")]
     [SerializeField] protected CharacterStats stats;
 
-    protected Rigidbody2D rigidBody;
-    protected CapsuleCollider2D mainCollider;
-    protected SpriteRenderer mainRenderer;
-    protected Animator animator;
+    [Header("Children Object")]
+    [SerializeField] protected GameObject spriteObject;
+
+    public Rigidbody2D rigidBody { get; private set; }
+    public CapsuleCollider2D mainCollider { get; private set; }
     protected MovementComponent2D movement;
 
     protected CharacterState currentState;
     protected float currentHp;
     protected int maxJumpCount = 1;
     protected int currentJumpCount = 0;
+
+    public CharacterStats Stats => stats;
+    public GameObject Sprite => spriteObject;
 
     private void Awake()
     {
@@ -49,12 +52,9 @@ public abstract class CharacterBase : MonoBehaviour
 
     private void InitComponents()
     {
+        movement = GetComponent<MovementComponent2D>();
         rigidBody = GetComponent<Rigidbody2D>();
         mainCollider = GetComponent<CapsuleCollider2D>();
-        mainRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
-        movement = GetComponent<MovementComponent2D>();
-        movement.Init(mainCollider, rigidBody, stats);
     }
 
     protected virtual void OnAwake() { }

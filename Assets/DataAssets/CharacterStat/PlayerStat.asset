@@ -17,8 +17,14 @@ MonoBehaviour:
   moveMaxSpeed: 5
   acceleration_sec: 0.3
   deceleration_sec: 0.2
-  acceleration_air_sec: 2
-  deceleration_air_sec: 2
+  moveMaxSpeed_air: 2.5
+  acceleration_air_sec: 0.6
+  deceleration_air_sec: 0.4
+  moveMaxSpeed_grab: 3
+  acceleration_grab_sec: 0.5
+  deceleration_grab_sec: 0.2
   jumpForce: 5
   fallMultiplier: 4
   lowJumpMultiplier: 1
+  dropdownMultiplier: 2
+  grapJumpHorizontal: 0.5

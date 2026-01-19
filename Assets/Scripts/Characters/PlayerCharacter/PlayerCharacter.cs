@@ -21,19 +21,13 @@ public class PlayerCharacter : CharacterBase
             canceled : () => movement.SetMoveInput(Vector2.zero));
 
         InputReader.Instance.BindAction(actions.Jump,
-            started: () => CheckJumpType(),
-            canceled: () => movement.EndJump());
+            started: () => movement.StartJumppressed(),
+            canceled: () => movement.EndJumppressed());
     }
 
     void Update()
     {
 
-    }
-
-    private void CheckJumpType()
-    {
-        if (movement.ActionDropDown()) currentState = CharacterState.Falling;
-        else if (movement.DoJump()) currentState = CharacterState.Jumping;
     }
 
     protected override void Die()
