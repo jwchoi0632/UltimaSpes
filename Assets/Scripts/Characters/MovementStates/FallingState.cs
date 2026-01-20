@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
 {
-    private float _grabBlockTime = 0.1f;
+    private float _grabBlockTime = 0.3f;
     private float _currentblockTime;
     public FallingState(MovementComponent2D context) : base(context) { }
 
@@ -27,7 +27,8 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
         if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
         else if (_context.IsWallGrabable())
         {
-            _context.ChangeMoveState(_context._wallGrabState);
+            if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
+            else _context.ChangeMoveState(_context._wallGrabState);
         }
     }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
 {
     private float _currentJumpTime;
-    private float _grabBlockTime = 0.1f;
+    private float _grabBlockTime = 0.3f;
     private float _currentblockTime;
     public JumppingState(MovementComponent2D context) : base(context) { }
 
@@ -29,7 +29,8 @@ public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEf
         if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
         else if (_context.IsWallGrabable())
         {
-            _context.ChangeMoveState(_context._wallGrabState);
+            if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
+            else _context.ChangeMoveState(_context._wallGrabState);
         }
     }
 
@@ -46,7 +47,8 @@ public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEf
 
         _currentJumpTime = _context.JumpHoldTime;
         _context.IncreaseJumpCount();
-        _rb.velocity = new Vector2(_rb.velocity.x, _stats.jumpForce);
+
+        if (_rb.velocity.y <= 0) _rb.velocity = new Vector2(_rb.velocity.x, _stats.jumpForce);
     }
 
     public void ApplyGravity()

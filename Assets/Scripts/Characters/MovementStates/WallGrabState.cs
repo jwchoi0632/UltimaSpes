@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WallGrabState : MovementStateBase, IMoveable, IGravityEffect, IJumpable
+public class WallGrabState : MovementStateBase, IMoveable, IJumpable
 {
     public WallGrabState(MovementComponent2D context) : base(context) { }
 
@@ -10,7 +10,7 @@ public class WallGrabState : MovementStateBase, IMoveable, IGravityEffect, IJump
     {
         base.OnStart();
 
-        _rb.gravityScale = 0;
+        _rb.gravityScale = _context._defaultGravityScale * _stats.wallGrabGravityMultiplier;
         _rb.velocity = Vector2.zero;
         _context.ResetJumpCount();
 
@@ -21,15 +21,10 @@ public class WallGrabState : MovementStateBase, IMoveable, IGravityEffect, IJump
     {
         base.OnUpdate();
 
-        if (_context.CheckGround())
-        {
-            _context.ChangeMoveState(_context._groundedState);
-        }
+        if (_context.CheckGround()) _context.ChangeMoveState(_context._groundedState);
 
-        if (!_context.IsWallGrabable())
-        {
-            _context.ChangeMoveState(_context._fallingState);
-        }
+        if (!_context.IsWallGrabable()) _context.ChangeMoveState(_context._fallingState);
+        else if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
     }
 
     public override void OnExit()
@@ -53,19 +48,15 @@ public class WallGrabState : MovementStateBase, IMoveable, IGravityEffect, IJump
 
     public void Jump()
     {
-        float jumpDirection = _context._isFacingRight ? -1f : 1f;
+        //float jumpDirection = _context._isFacingRight ? -1f : 1f;
 
-        Vector2 jumpForce = new Vector2(jumpDirection * _stats.grapJumpHorizontal, _rb.velocity.y);
+        //Vector2 jumpForce = new Vector2(jumpDirection * _stats.grapJumpHorizontal, _rb.velocity.y);
 
-        _rb.velocity = jumpForce;
+        //_rb.velocity = jumpForce;
 
-        _context.SetMoveInput(new Vector2(jumpDirection, _rb.velocity.y));
+        //_context.SetMoveInput(new Vector2(jumpDirection, _rb.velocity.y));
+        _rb.velocity = new Vector2(_rb.velocity.x, _stats.jumpForce_wallGrab);
         _context.ChangeMoveState(_context._jumpingState);
-    }
-
-    public void ApplyGravity()
-    {
-        
     }
 
     private void SnapToWall()

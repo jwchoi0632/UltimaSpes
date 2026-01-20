@@ -23,9 +23,16 @@ public class CharacterStats : ScriptableObject
     public float acceleration_grab_sec = 0.8f;
     public float deceleration_grab_sec = 0.5f;
 
+    public float wallGrabGravityMultiplier = 0.5f;
+
     //jump stat
     [Header("Character Jump Stats")]
     public float jumpForce = 10.0f;
+    public float jumpForce_climbing = 5.0f;
+    public float jumpForce_wallGrab = 4.0f;
+    public float jumpForce_wallSticking_vertical = 3.0f;
+    public float jumpForce_wallSticking_horizontal = 6.0f;
+    // 사다리 점프 힘, 매달림 점프 힘 별개 변수 필요
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
     public float dropdownMultiplier = 1.5f;
