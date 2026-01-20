@@ -40,6 +40,7 @@ public class ClimbingState : MovementStateBase, IMoveable, IGravityEffect, IJump
 
     public void Jump()
     {
+        _rb.velocity = new Vector2(_rb.velocity.x, _stats.jumpForce_climbing);
         _context.ChangeMoveState(_context._jumpingState);
     }
 

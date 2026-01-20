@@ -16,6 +16,7 @@ public class MovementComponent2D : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask thinPlatformLayer;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private LayerMask stickingWallLayer;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float wallCheckDistance;
     [SerializeField] private bool isDefaultFacingRight;
@@ -46,6 +47,7 @@ public class MovementComponent2D : MonoBehaviour
     public DroppingState _droppingState { get; private set; }
     public WallGrabState _wallGrabState { get; private set; }
     public ClimbingState _climbingState { get; private set; }
+    public WallStickingState _wallStickingState { get; private set; }
 
     private MovementStateBase _currentState;
 
@@ -199,6 +201,12 @@ public class MovementComponent2D : MonoBehaviour
 
         return true;
     }
+
+    public bool IsStickingWall()
+    {
+        return (stickingWallLayer.value & (1 << _wallHit.collider.gameObject.layer)) != 0;
+    }
+
     private void Flip()
     {
         if (_spriteObject == null) return;
@@ -229,6 +237,7 @@ public class MovementComponent2D : MonoBehaviour
         _fallingState = new FallingState(this);
         _droppingState = new DroppingState(this);
         _wallGrabState = new WallGrabState(this);
+        _wallStickingState = new WallStickingState(this);
         _climbingState = new ClimbingState(this);
     }
 }

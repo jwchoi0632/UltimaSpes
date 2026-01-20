@@ -132,7 +132,10 @@ MonoBehaviour:
     m_Bits: 128
   wallLayer:
     serializedVersion: 2
-    m_Bits: 256
+    m_Bits: 768
+  stickingWallLayer:
+    serializedVersion: 2
+    m_Bits: 512
   groundCheckDistance: 0.2
   wallCheckDistance: 0.05
   isDefaultFacingRight: 1
