@@ -5,7 +5,10 @@ using UnityEngine;
 public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
 {
     private float _grabBlockTime = 0.3f;
+    private float _grabHoldTime = 0.0f;
     private float _currentblockTime;
+    private float _currentHoldTime;
+
     public FallingState(MovementComponent2D context) : base(context) { }
 
     public override void OnStart()
@@ -13,6 +16,7 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
         base.OnStart();
 
         _currentblockTime = _grabBlockTime;
+        _currentHoldTime = _grabHoldTime;
     }
     public override void OnUpdate()
     {
@@ -27,9 +31,14 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
         if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
         else if (_context.IsWallGrabable())
         {
-            if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
-            else _context.ChangeMoveState(_context._wallGrabState);
+            if (_currentHoldTime > 0) _currentHoldTime -= Time.deltaTime;
+            else
+            {
+                if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
+                else _context.ChangeMoveState(_context._wallGrabState);
+            }
         }
+        else _currentHoldTime = _grabHoldTime;
     }
 
     public void Move(Vector2 input)

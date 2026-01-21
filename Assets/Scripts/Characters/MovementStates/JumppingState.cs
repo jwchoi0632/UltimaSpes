@@ -5,8 +5,11 @@ using UnityEngine;
 public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
 {
     private float _currentJumpTime;
+    private float _grabHoldTime = 0.0f;
     private float _grabBlockTime = 0.3f;
     private float _currentblockTime;
+    private float _currentHoldTime;
+
     public JumppingState(MovementComponent2D context) : base(context) { }
 
     public override void OnStart()
@@ -14,6 +17,7 @@ public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEf
         base.OnStart();
 
         _currentblockTime = _grabBlockTime;
+        _currentHoldTime = _grabHoldTime;
         Jump();
     }
 
@@ -29,9 +33,14 @@ public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEf
         if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
         else if (_context.IsWallGrabable())
         {
-            if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
-            else _context.ChangeMoveState(_context._wallGrabState);
+            if (_currentHoldTime > 0) _currentHoldTime -= Time.deltaTime;
+            else
+            {
+                if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
+                else _context.ChangeMoveState(_context._wallGrabState);
+            }
         }
+        else _currentHoldTime = _grabHoldTime;
     }
 
     public void Move(Vector2 input)
