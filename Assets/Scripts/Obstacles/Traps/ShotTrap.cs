@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShotTrap : TrapBase
 {
     [Header("Shot Trap Option")]
+    [SerializeField] ObjectPoolManager poolManager;
     [SerializeField] protected ProjectileBase _projectilePrefab;
     [SerializeField] protected Transform _firePoint;
     [SerializeField] protected Vector2 _launchDirection;
@@ -15,9 +16,8 @@ public class ShotTrap : TrapBase
     {
         if (_projectilePrefab == null) return;
 
-        ProjectileBase projectile = Instantiate(_projectilePrefab, _firePoint.position, _firePoint.rotation);
-
-        projectile.Init(gameObject, _damage, _targetLayer);
-        projectile.Launch(_launchDirection, _launchForce);
+        ProjectileBase projectile = poolManager?.Get<ProjectileBase>(_projectilePrefab);
+        projectile?.Init(gameObject, _damage, _targetLayer);
+        projectile?.Launch(_firePoint.position, _launchDirection, _launchForce);
     }
 }
