@@ -218,6 +218,11 @@ public class MovementComponent2D : MonoBehaviour
         return (stickingWallLayer.value & (1 << _wallHit.collider.gameObject.layer)) != 0;
     }
 
+    public bool CheckCurrentState(MovementStateBase targetState)
+    {
+        return _currentState == targetState;
+    }
+
     private void Flip()
     {
         if (_spriteObject == null) return;

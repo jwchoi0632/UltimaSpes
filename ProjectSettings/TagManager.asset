@@ -14,9 +14,9 @@ TagManager:
   - Ground
   - ThinPlatform
   - Wall
-  - 
-  - 
-  - 
+  - Enemy
+  - Obstacle
+  - Trap
   - 
   - 
   - 
@@ -40,4 +40,19 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 856644043
+    locked: 0
+  - name: TileMap
+    uniqueID: 135202143
+    locked: 0
+  - name: Object
+    uniqueID: 490179981
+    locked: 0
+  - name: Enemy
+    uniqueID: 932807823
+    locked: 0
+  - name: Player
+    uniqueID: 3770668147
     locked: 0

@@ -66,5 +66,29 @@ public abstract class CharacterBase : MonoBehaviour
         currentState = newState;
     }
 
+    public void SetCurrentHp(float hp)
+    {
+        currentHp = Mathf.Clamp(hp, 0, stats.maxHp);
+    }
+
+    public void IncreaseHp(float increaseValue)
+    {
+        currentHp = Mathf.Clamp(currentHp + increaseValue, 0, stats.maxHp);
+        Debug.Log("Increase Hp. Current Hp is " + currentHp);
+    }
+    public void DecreaseHp(float decreaseValue)
+    {
+        currentHp = Mathf.Clamp(currentHp - decreaseValue, 0, stats.maxHp);
+        Debug.Log("Decrease Hp. Current Hp is " + currentHp);
+
+        if (currentHp == 0) Die();
+    }
+
+    public void InstantKill()
+    {
+        SetCurrentHp(0);
+        Die();
+    }
+
     protected abstract void Die();
 }
