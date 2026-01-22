@@ -53,7 +53,7 @@ public class WallStickingState : MovementStateBase, IMoveable, IJumpable
             float direction = _context._isFacingRight ? 1 : -1;
             float targetX = _context._wallHit.point.x - (direction * _context._mainCollider.bounds.extents.x);
 
-            _rb.position = new Vector2(targetX, _rb.position.y);
+            _rb.position = new Vector2(targetX, _rb.position.y);//_context._wallHit.collider.bounds.center.y);//
         }
     }
 }

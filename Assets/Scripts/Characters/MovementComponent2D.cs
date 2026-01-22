@@ -182,9 +182,20 @@ public class MovementComponent2D : MonoBehaviour
         float rayDistance = wallCheckDistance + 0.05f;
         Vector2 rayStart = (Vector2)_mainCollider.bounds.center + (direction * _mainCollider.bounds.extents.x);
 
-        _wallHit = Physics2D.Raycast(rayStart, direction, rayDistance, wallLayer);
+        float xOffset = _mainCollider.bounds.extents.x;
+        float yOffset = _mainCollider.bounds.extents.y * 0.8f;
 
-        return _wallHit.collider != null;
+        Vector2 upperOrigin = (Vector2)_mainCollider.bounds.center + new Vector2(direction.x * xOffset, yOffset);
+        Vector2 lowerOrigin = (Vector2)_mainCollider.bounds.center + new Vector2(direction.x * xOffset, -yOffset);
+
+        RaycastHit2D upperHit = Physics2D.Raycast(upperOrigin, direction, rayDistance, wallLayer);
+        RaycastHit2D lowerHit = Physics2D.Raycast(lowerOrigin, direction, rayDistance, wallLayer);
+
+        _wallHit = upperHit.collider != null ? upperHit : lowerHit;
+        //_wallHit = Physics2D.Raycast(rayStart, direction, rayDistance, wallLayer);
+
+        return upperHit.collider != null && lowerHit.collider != null;
+        //return _wallHit.collider != null;
     }
 
     public bool IsPushing()
@@ -205,6 +216,11 @@ public class MovementComponent2D : MonoBehaviour
     public bool IsStickingWall()
     {
         return (stickingWallLayer.value & (1 << _wallHit.collider.gameObject.layer)) != 0;
+    }
+
+    public bool CheckCurrentState(MovementStateBase targetState)
+    {
+        return _currentState == targetState;
     }
 
     private void Flip()
