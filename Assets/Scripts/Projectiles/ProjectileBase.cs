@@ -89,7 +89,10 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
             _rb.Sleep();
         }
 
-        OnReturnToPool.Invoke(this);
+        if (OnReturnToPool != null && OnReturnToPool.Target != null)
+        {
+            OnReturnToPool.Invoke(this);
+        }
     }
 
     private void OnDestroy()

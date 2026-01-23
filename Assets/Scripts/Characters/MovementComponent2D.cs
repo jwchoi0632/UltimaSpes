@@ -179,11 +179,11 @@ public class MovementComponent2D : MonoBehaviour
     {
         Vector2 direction = _isFacingRight ? Vector2.right : Vector2.left;
 
-        float rayDistance = wallCheckDistance + 0.05f;
+        float rayDistance = (_mainCollider.bounds.extents.x * 0.5f) + wallCheckDistance + 0.05f;
         Vector2 rayStart = (Vector2)_mainCollider.bounds.center + (direction * _mainCollider.bounds.extents.x);
 
-        float xOffset = _mainCollider.bounds.extents.x;
-        float yOffset = _mainCollider.bounds.extents.y * 0.8f;
+        float xOffset = _mainCollider.bounds.extents.x * 0.5f;
+        float yOffset = _mainCollider.bounds.extents.y * 0.9f;
 
         Vector2 upperOrigin = (Vector2)_mainCollider.bounds.center + new Vector2(direction.x * xOffset, yOffset);
         Vector2 lowerOrigin = (Vector2)_mainCollider.bounds.center + new Vector2(direction.x * xOffset, -yOffset);
@@ -191,10 +191,18 @@ public class MovementComponent2D : MonoBehaviour
         RaycastHit2D upperHit = Physics2D.Raycast(upperOrigin, direction, rayDistance, wallLayer);
         RaycastHit2D lowerHit = Physics2D.Raycast(lowerOrigin, direction, rayDistance, wallLayer);
 
-        _wallHit = upperHit.collider != null ? upperHit : lowerHit;
+        if (upperHit.collider != null && lowerHit.collider != null)
+        {
+            _wallHit = upperHit;
+            return true;
+        }
+
+        return false;
+
+        //_wallHit = upperHit.collider != null ? upperHit : lowerHit;
         //_wallHit = Physics2D.Raycast(rayStart, direction, rayDistance, wallLayer);
 
-        return upperHit.collider != null && lowerHit.collider != null;
+        //return upperHit.collider != null && lowerHit.collider != null;
         //return _wallHit.collider != null;
     }
 

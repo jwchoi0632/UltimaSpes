@@ -23,7 +23,12 @@ MonoBehaviour:
   moveMaxSpeed_grab: 3
   acceleration_grab_sec: 0.5
   deceleration_grab_sec: 0.2
+  wallGrabGravityMultiplier: 0.5
   jumpForce: 5
+  jumpForce_climbing: 5
+  jumpForce_wallGrab: 4
+  jumpForce_wallSticking_vertical: 3
+  jumpForce_wallSticking_horizontal: 6
   fallMultiplier: 4
   lowJumpMultiplier: 1
   dropdownMultiplier: 2
