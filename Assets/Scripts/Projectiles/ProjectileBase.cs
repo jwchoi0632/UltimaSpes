@@ -1,9 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D))]
-public class ProjectileBase : MonoBehaviour
+public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 {
     [Header("Projectile Settings")]
     [SerializeField] protected bool _isOverlapEvent = true;
@@ -18,6 +19,8 @@ public class ProjectileBase : MonoBehaviour
     protected LayerMask _targetLayer;
     protected float _damage;
 
+    public Action<ProjectileBase> OnReturnToPool { get; set; }
+    
     protected virtual void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
@@ -34,7 +37,7 @@ public class ProjectileBase : MonoBehaviour
         _targetLayer = layer;
     }
 
-    public void Launch(Vector2 direction, float force)
+    public void Launch(Vector2 startPos, Vector2 direction, float force)
     {
         gameObject.SetActive(true);
 
@@ -49,6 +52,7 @@ public class ProjectileBase : MonoBehaviour
 
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
+        transform.position = startPos;
 
         _rb.velocity = direction * force;
     }
@@ -84,5 +88,15 @@ public class ProjectileBase : MonoBehaviour
             _rb.angularVelocity = 0f;
             _rb.Sleep();
         }
+
+        if (OnReturnToPool != null && OnReturnToPool.Target != null)
+        {
+            OnReturnToPool.Invoke(this);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        OnReturnToPool = null;
     }
 }

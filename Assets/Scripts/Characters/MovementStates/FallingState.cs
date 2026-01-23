@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
 {
-    private float _grabBlockTime = 0.3f;
+    private float _grabBlockTime = 0.1f;
     private float _grabHoldTime = 0.0f;
     private float _currentblockTime;
     private float _currentHoldTime;

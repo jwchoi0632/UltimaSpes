@@ -50,6 +50,7 @@ MonoBehaviour:
   _damage: 10
   _coolDown: 0
   _isOneTimeOnly: 0
+  poolManager: {fileID: 0}
   _projectilePrefab: {fileID: 8437902880916964794, guid: 7a97185036fbbe24492b9b64f9b4f8f4, type: 3}
   _firePoint: {fileID: 2869766926802864035}
   _launchDirection: {x: 1, y: 0}
@@ -200,7 +201,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 1, z: 1}
+  m_LocalScale: {x: 9, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5073841325973349497}
