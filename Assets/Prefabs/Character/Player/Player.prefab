@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8026407656056561304}
   - component: {fileID: 1416636610757180405}
   - component: {fileID: 3489703848426006847}
+  - component: {fileID: 8104092299206571549}
   m_Layer: 3
   m_Name: Player
   m_TagString: Untagged
@@ -110,8 +111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f68484b5963edbf4e8d22626bc6de0b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stats: {fileID: 11400000, guid: 32058c1e987ef244988cf36bf0dee3ee, type: 2}
-  spriteObject: {fileID: 5438813989825463828}
+  _stats: {fileID: 11400000, guid: 32058c1e987ef244988cf36bf0dee3ee, type: 2}
+  _spriteObject: {fileID: 5438813989825463828}
 --- !u!114 &3489703848426006847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -141,6 +142,18 @@ MonoBehaviour:
   isDefaultFacingRight: 1
   jumpMaxCount: 1
   jumpHoldTime: 1
+--- !u!114 &8104092299206571549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2636408983412980670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12677d649933b9e4f917dd0494127ffc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5438813989825463828
 GameObject:
   m_ObjectHideFlags: 0

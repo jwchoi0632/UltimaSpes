@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5073841325973349497}
   - component: {fileID: 8531511291096413347}
+  - component: {fileID: 3844158723319210044}
   m_Layer: 0
   m_Name: ShotTrap
   m_TagString: Untagged
@@ -47,9 +48,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c84bb1fedc945b4291ad3d789ad3a11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _damage: 10
+  _hitInfo:
+    causer: {fileID: 0}
+    damage: 10
+    hitDuration: 0.5
+    isStun: 1
+    stunDuration: 2
+    knockForce: 5
+    airborneForce: 0
   _coolDown: 0
   _isOneTimeOnly: 0
+  _isBlockingTrap: 0
   poolManager: {fileID: 0}
   _projectilePrefab: {fileID: 8437902880916964794, guid: 7a97185036fbbe24492b9b64f9b4f8f4, type: 3}
   _firePoint: {fileID: 2869766926802864035}
@@ -58,6 +67,51 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 520
+--- !u!61 &3844158723319210044
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3344787824832330261}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1}
+  m_EdgeRadius: 0
 --- !u!1 &4369616942073435212
 GameObject:
   m_ObjectHideFlags: 0

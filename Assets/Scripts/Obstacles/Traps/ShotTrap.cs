@@ -17,7 +17,7 @@ public class ShotTrap : TrapBase
         if (_projectilePrefab == null) return;
 
         ProjectileBase projectile = poolManager?.Get<ProjectileBase>(_projectilePrefab);
-        projectile?.Init(gameObject, _damage, _targetLayer);
+        projectile?.Init(gameObject, _hitInfo, _targetLayer);
         projectile?.Launch(_firePoint.position, _launchDirection, _launchForce);
     }
 }

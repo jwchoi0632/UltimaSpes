@@ -2,35 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum CharacterState
+[System.Serializable]
+public struct HitInfo
 {
-    Idle,
-    Move,
-    Falling,
-    Jumping
+    public GameObject causer;
+    public float damage;
+    public float hitDuration;
+    public bool isStun;
+    public float stunDuration;
+    public float knockForce;
+    public float launchForce;
 }
 
+public interface IHitable { public void TakeDamage(HitInfo hitInfo); }
+
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
-[RequireComponent(typeof(MovementComponent2D))]
+[RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]
 public abstract class CharacterBase : MonoBehaviour
 {
     [Header("Data Asset")]
-    [SerializeField] protected CharacterStats stats;
+    [SerializeField] protected CharacterStats _stats;
 
     [Header("Children Object")]
-    [SerializeField] protected GameObject spriteObject;
+    [SerializeField] protected GameObject _spriteObject;
 
-    public Rigidbody2D rigidBody { get; private set; }
-    public CapsuleCollider2D mainCollider { get; private set; }
-    protected MovementComponent2D movement;
+    public Rigidbody2D _rigidBody { get; private set; }
+    public CapsuleCollider2D _mainCollider { get; private set; }
+    protected MovementComponent2D _movement;
+    protected CharacterStateMachine _stateMachine;
 
-    protected CharacterState currentState;
-    protected float currentHp;
-    protected int maxJumpCount = 1;
-    protected int currentJumpCount = 0;
+    protected float _currentHp;
+    protected int _maxJumpCount = 1;
+    protected int _currentJumpCount = 0;
 
-    public CharacterStats Stats => stats;
-    public GameObject Sprite => spriteObject;
+    public CharacterStats Stats => _stats;
+    public GameObject Sprite => _spriteObject;
 
     private void Awake()
     {
@@ -40,54 +46,57 @@ public abstract class CharacterBase : MonoBehaviour
 
     void Start()
     {
-        currentHp = stats.maxHp;
-        currentState = CharacterState.Idle;
+        _currentHp = _stats.maxHp;
         OnStart();
-    }
-
-    void Update()
-    {
-        
     }
 
     private void InitComponents()
     {
-        movement = GetComponent<MovementComponent2D>();
-        rigidBody = GetComponent<Rigidbody2D>();
-        mainCollider = GetComponent<CapsuleCollider2D>();
+        _movement = GetComponent<MovementComponent2D>();
+        _stateMachine = GetComponent<CharacterStateMachine>();
+        _rigidBody = GetComponent<Rigidbody2D>();
+        _mainCollider = GetComponent<CapsuleCollider2D>();
+    }
+
+    public virtual void SetActiveCharacter()
+    {
+        _stateMachine.ChangeState(_stateMachine._normalState);
+    }
+
+    public virtual void SetDeactiveCharacter()
+    {
+
     }
 
     protected virtual void OnAwake() { }
     protected virtual void OnStart() { }
 
-    public void ChangeState (CharacterState newState)
-    {
-        if (currentState == newState) return;
-        currentState = newState;
-    }
-
-    public void SetCurrentHp(float hp)
-    {
-        currentHp = Mathf.Clamp(hp, 0, stats.maxHp);
-    }
-
-    public void IncreaseHp(float increaseValue)
-    {
-        currentHp = Mathf.Clamp(currentHp + increaseValue, 0, stats.maxHp);
-        Debug.Log("Increase Hp. Current Hp is " + currentHp);
-    }
-    public void DecreaseHp(float decreaseValue)
-    {
-        currentHp = Mathf.Clamp(currentHp - decreaseValue, 0, stats.maxHp);
-        Debug.Log("Decrease Hp. Current Hp is " + currentHp);
-
-        if (currentHp == 0) Die();
-    }
-
     public void InstantKill()
     {
         SetCurrentHp(0);
-        Die();
+        _stateMachine.ChangeState(_stateMachine._dieState);
+    }
+
+    public void ApplyDamage(IHitable target)
+    {
+        HitInfo hitInfo = new HitInfo();
+
+        hitInfo.damage = CalculateDamage();
+        hitInfo.causer = gameObject;
+
+        target.TakeDamage(hitInfo);
+    }
+
+    protected void SetCurrentHp(float hp)
+    {
+        _currentHp = Mathf.Clamp(hp, 0, _stats.maxHp);
+    }
+
+    protected float CalculateDamage()
+    {
+        float result = _stats.strength;
+
+        return result;
     }
 
     protected abstract void Die();

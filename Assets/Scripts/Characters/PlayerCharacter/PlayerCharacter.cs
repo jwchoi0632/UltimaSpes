@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerCharacter : CharacterBase
+public class PlayerCharacter : HitableCharacter
 {
     protected override void OnAwake()
     {
@@ -17,12 +17,12 @@ public class PlayerCharacter : CharacterBase
         var actions = InputReader.Instance.inputActions.PlayerActionMap;
 
         InputReader.Instance.BindAction(actions.Move,
-            performed: () => movement.SetMoveInput(actions.Move.ReadValue<Vector2>()),
-            canceled : () => movement.SetMoveInput(Vector2.zero));
+            performed: () => _stateMachine.OnMoveInput(actions.Move.ReadValue<Vector2>()),
+            canceled : () => _stateMachine.OnEndMoveInput());
 
         InputReader.Instance.BindAction(actions.Jump,
-            started: () => movement.StartJumppressed(),
-            canceled: () => movement.EndJumppressed());
+            started: () => _stateMachine.OnJumpInput(),
+            canceled: () => _stateMachine.OnEndJumpInput());
     }
 
     void Update()

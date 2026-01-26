@@ -59,8 +59,8 @@ public class MovementComponent2D : MonoBehaviour
     {
         CharacterBase character = GetComponent<CharacterBase>();
 
-        _rb = character.rigidBody;
-        _mainCollider = character.mainCollider;
+        _rb = character._rigidBody;
+        _mainCollider = character._mainCollider;
         _stats = character.Stats;
         _spriteObject = character.Sprite;
 
@@ -158,6 +158,12 @@ public class MovementComponent2D : MonoBehaviour
         else newVelocity.y = newValue;
 
         _rb.velocity = newVelocity;
+    }
+
+    public void ApplyImpulse(Vector2 force)
+    {
+        _rb.velocity = Vector2.zero;
+        _rb.AddForce(force, ForceMode2D.Impulse);
     }
 
     public bool CheckGround()

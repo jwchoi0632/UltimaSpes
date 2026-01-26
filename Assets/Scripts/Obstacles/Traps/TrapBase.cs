@@ -6,7 +6,7 @@ using UnityEngine;
 public abstract class TrapBase : MonoBehaviour
 {
     [Header("Trap Option")]
-    [SerializeField] protected float _damage = 10.0f;
+    [SerializeField] protected HitInfo _hitInfo;
     [SerializeField] protected float _coolDown = 0.0f;
     [SerializeField] protected bool _isOneTimeOnly = false;
     [SerializeField] protected bool _isBlockingTrap = false;
@@ -18,6 +18,7 @@ public abstract class TrapBase : MonoBehaviour
     {
         _collider = GetComponent<BoxCollider2D>();
         _collider.isTrigger = !_isBlockingTrap;
+        _hitInfo.causer = gameObject;
 
         if (_isBlockingTrap) gameObject.layer = LayerMask.NameToLayer("Ground");
     }
