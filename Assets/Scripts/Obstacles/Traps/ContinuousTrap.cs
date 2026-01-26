@@ -17,7 +17,7 @@ public class ContinuousTrap : TrapBase
         _sprite.transform.localPosition = _disablePos;// test
     }
 
-    protected override void OnActivate(GameObject Target)
+    protected override void OnActivate(GameObject target)
     {
         if (!_isActivated)
         {
@@ -27,7 +27,10 @@ public class ContinuousTrap : TrapBase
             _sprite.transform.localPosition = _enablePos;// test
         }
 
-        Target.GetComponent<CharacterBase>().DecreaseHp(_damage);
+        if (target.TryGetComponent<IHitable>(out var hitable))
+        {
+            hitable.TakeDamage(_hitInfo);
+        }
     }
 
     protected IEnumerator ApplyContinuousTimer()

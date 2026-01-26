@@ -17,7 +17,8 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 
     protected Coroutine _deactivateCoroutine;
     protected LayerMask _targetLayer;
-    protected float _damage;
+    protected HitInfo _hitInfo;
+    //protected float _damage;
 
     public Action<ProjectileBase> OnReturnToPool { get; set; }
     
@@ -30,10 +31,10 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
         _collider.isTrigger = _isOverlapEvent;
     }
 
-    public virtual void Init(GameObject owner, float damage, LayerMask layer)
+    public virtual void Init(GameObject owner, HitInfo hitInfo, LayerMask layer)
     {
         _owner = owner;
-        _damage = damage;
+        _hitInfo = hitInfo;
         _targetLayer = layer;
     }
 
@@ -66,9 +67,11 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 
         if (((1 << target.layer) & _targetLayer) != 0)
         {
-            CharacterBase character = target.GetComponent<CharacterBase>();
+            if (target.TryGetComponent<IHitable>(out IHitable hitable))
+            {
+                hitable.TakeDamage(_hitInfo);
+            }
 
-            character?.DecreaseHp(_damage);
             gameObject.SetActive(false);
         }
     }
