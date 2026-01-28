@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AttackState : CharacterStateBase, IDamageable
+public class AttackState : CharacterStateBase
 {
     public AttackState(CharacterStateMachine stateMachine) : base(stateMachine) { }
 
@@ -10,6 +10,7 @@ public class AttackState : CharacterStateBase, IDamageable
     {
         base.OnStart();
 
+        _movement.SetMoveInput(Vector2.zero);
         _movement.SetCanFlip(false);
     }
 

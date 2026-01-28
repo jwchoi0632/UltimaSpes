@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public interface IAttackable { void Attack(); }
-public interface IDamageable { }
 public interface IMoveableState { }
 public interface IJumpableState { }
 
@@ -15,6 +14,9 @@ public abstract class CharacterStateBase
     protected CharacterStats _stats;
 
     protected float _stateStartTime;
+    protected bool _damageable = true;
+
+    public bool IsDamageable => _damageable;
 
     public CharacterStateBase(CharacterStateMachine stateMachine)
     {
@@ -28,7 +30,6 @@ public abstract class CharacterStateBase
     {
         _stateStartTime = Time.time;
 
-        _movement.SetMoveInput(Vector2.zero);
         _movement.EndJumppressed();
     }
 

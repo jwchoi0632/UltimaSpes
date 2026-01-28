@@ -2,13 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class StunState : CharacterStateBase
+public class GroggyState : CharacterStateBase
 {
-    private float _stunTime;
+    private float _groggyDuration = 3.0f;
 
-    public StunState(CharacterStateMachine stateMachine) : base(stateMachine) { }
-
-    public void SetStunTime(float time) => _stunTime = time;
+    public GroggyState(CharacterStateMachine stateMachine) : base(stateMachine) { }
 
     public override void OnStart()
     {
@@ -16,14 +14,14 @@ public class StunState : CharacterStateBase
 
         _movement.SetMoveInput(Vector2.zero);
         _movement.SetCanFlip(false);
-        Debug.Log("On Start Stun State");
+        Debug.Log("On Start Groggy State");
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
 
-        if (_stunTime > GetStateDuration()) return;
+        if (_groggyDuration > GetStateDuration()) return;
 
         _stateMachine.ChangeState(_stateMachine._normalState);
     }
@@ -33,6 +31,6 @@ public class StunState : CharacterStateBase
         base.OnExit();
 
         _movement.SetCanFlip(true);
-        Debug.Log("On End Stun State");
+        Debug.Log("On End Groggy State");
     }
 }

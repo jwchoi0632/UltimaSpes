@@ -51,11 +51,12 @@ MonoBehaviour:
   _hitInfo:
     causer: {fileID: 0}
     damage: 10
+    hitType: 1
     hitDuration: 0.5
-    isStun: 1
-    stunDuration: 2
-    knockForce: 5
-    airborneForce: 0
+    isStun: 0
+    stunDuration: 5
+    knockForce: 20
+    launchForce: 10
   _coolDown: 0
   _isOneTimeOnly: 0
   _isBlockingTrap: 0

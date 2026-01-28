@@ -113,6 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _stats: {fileID: 11400000, guid: 32058c1e987ef244988cf36bf0dee3ee, type: 2}
   _spriteObject: {fileID: 5438813989825463828}
+  _hitDatabase: {fileID: 11400000, guid: a53884469392ddf49a345ebf718e39d2, type: 2}
 --- !u!114 &3489703848426006847
 MonoBehaviour:
   m_ObjectHideFlags: 0

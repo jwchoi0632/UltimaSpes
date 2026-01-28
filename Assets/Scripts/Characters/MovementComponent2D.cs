@@ -10,6 +10,7 @@ public class MovementComponent2D : MonoBehaviour
     public Rigidbody2D _rb { get; private set; }
     public CharacterStats _stats { get; private set; }
     public CapsuleCollider2D _mainCollider { get; private set; }
+    public CharacterBase _character { get; private set; }
     public GameObject _spriteObject { get; private set; }
 
     [Header("Detection Settings")]
@@ -57,12 +58,12 @@ public class MovementComponent2D : MonoBehaviour
 
     private void Start()
     {
-        CharacterBase character = GetComponent<CharacterBase>();
+        _character = GetComponent<CharacterBase>();
 
-        _rb = character._rigidBody;
-        _mainCollider = character._mainCollider;
-        _stats = character.Stats;
-        _spriteObject = character.Sprite;
+        _rb = _character._rigidBody;
+        _mainCollider = _character._mainCollider;
+        _stats = _character.Stats;
+        _spriteObject = _character.Sprite;
 
         InitDefaultValue();
         InitStateClass();
@@ -140,7 +141,7 @@ public class MovementComponent2D : MonoBehaviour
 
     public void ApplyMovement(float maxSpeed, bool isHorizontal = true, float timeToReach = 1.0f, float timeToStop = 1.0f)
     {
-        if (_rb == null || _stats == null) return;
+        if (_rb == null) return;
 
         float inputValue = isHorizontal ? _moveInput.x : _moveInput.y;
         float currentValocity = isHorizontal ? _rb.velocity.x : _rb.velocity.y;
@@ -168,13 +169,13 @@ public class MovementComponent2D : MonoBehaviour
 
     public bool CheckGround()
     {
-         _groundHit = Physics2D.BoxCast(
-            _mainCollider.bounds.center,
-            new Vector2(_mainCollider.bounds.size.x * 0.9f, 0.1f),
-            0f,
-            Vector2.down,
-            _mainCollider.bounds.extents.y + groundCheckDistance,
-            groundLayer);
+        _groundHit = Physics2D.BoxCast(
+           _mainCollider.bounds.center,
+           new Vector2(_mainCollider.bounds.size.x * 0.9f, 0.1f),
+           0f,
+           Vector2.down,
+           _mainCollider.bounds.extents.y + groundCheckDistance,
+           groundLayer);
 
         if (_groundHit.collider == null) return false;
 

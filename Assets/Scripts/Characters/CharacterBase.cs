@@ -7,6 +7,7 @@ public struct HitInfo
 {
     public GameObject causer;
     public float damage;
+    public HitType hitType;
     public float hitDuration;
     public bool isStun;
     public float stunDuration;
@@ -14,7 +15,12 @@ public struct HitInfo
     public float launchForce;
 }
 
-public interface IHitable { public void TakeDamage(HitInfo hitInfo); }
+public interface IHitable 
+{ 
+    public void TakeDamage(HitInfo hitInfo);
+    public void IncreaseHp(float increaseValue);
+    public void DecreaseHp(float decreaseValue);
+}
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]

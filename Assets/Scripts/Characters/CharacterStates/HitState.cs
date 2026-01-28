@@ -6,7 +6,9 @@ using UnityEngine.InputSystem.XR;
 public class HitState : CharacterStateBase
 {
     private HitInfo _hitInfo;
-    private bool _isLaunch;
+    private HitPolicy _currentPolicy;
+
+    public HitPolicy CurrentPolicy => _currentPolicy;
 
     public HitState(CharacterStateMachine stateMachine) : base(stateMachine) { }
 
@@ -16,21 +18,23 @@ public class HitState : CharacterStateBase
     {
         base.OnStart();
 
-        _movement.SetCanFlip(false);
+        _movement.SetMoveInput(Vector2.zero);
 
-        float diffX = _hitInfo.causer.transform.position.x - _owner.transform.position.x;
-
-        if (Mathf.Abs(diffX) < 0.01f)
+        if (_owner.TryGetComponent<HitableCharacter>(out var hitOwner))
         {
-            diffX = _movement._isFacingRight ? 1f : -1f;
+            _currentPolicy = hitOwner.HitData.GetPolicy(_hitInfo.hitType);
+
+            if (_currentPolicy != null)
+            {
+                _damageable = _currentPolicy.canHit;
+                _movement.SetCanFlip(_currentPolicy.canFlip);
+                _movement._rb.gravityScale = _currentPolicy.gravityScale;
+                _stateMachine.SetIFrame(_currentPolicy.iFrame);
+                _currentPolicy.action?.OnStart(_stateMachine);
+            }
         }
 
-        float pushDir = diffX > 0 ? -1f : 1f;
-        Vector2 force = new Vector2(_hitInfo.knockForce * pushDir, _hitInfo.launchForce);
-
-        _isLaunch = _hitInfo.launchForce > 0.1f;
-
-        _movement.ApplyImpulse(force);
+        OnKnockback();
     }
 
     public override void OnUpdate()
@@ -41,19 +45,16 @@ public class HitState : CharacterStateBase
 
         if (elapsed < _hitInfo.hitDuration) return;
 
-        SelectNextState();
+        if (_hitInfo.isStun)
+        {
+            _stateMachine._stunState.SetStunTime(_hitInfo.stunDuration);
+            _stateMachine.ChangeState(_stateMachine._stunState);
+        }
 
-        //if (_isLaunch)
-        //{
-        //    if (_movement.CheckGround() && _movement._rb.velocity.y <= 0.1f)
-        //    {
-        //        SelectNextState();
-        //    }
-        //}
-        //else
-        //{
-        //    SelectNextState();
-        //}
+        if (_currentPolicy != null)
+        {
+            _currentPolicy.action?.OnUpdate(_stateMachine, _hitInfo);
+        }
     }
 
     public override void OnExit()
@@ -61,22 +62,31 @@ public class HitState : CharacterStateBase
         base.OnExit();
 
         _movement.SetCanFlip(true);
+
+        if (_currentPolicy != null)
+        {
+            _currentPolicy.action?.OnExit(_stateMachine);
+        }
+
+        //if (_hitInfo.isStun)
+        //{
+        //    _stateMachine._stunState.SetStunTime(_hitInfo.stunDuration);
+        //    _stateMachine.ChangeState(_stateMachine._stunState);
+        //}
     }
 
-    private void SelectNextState()
+    private void OnKnockback()
     {
-        if (_isLaunch)
+        float diffX = _hitInfo.causer.transform.position.x - _owner.transform.position.x;
+
+        if (Mathf.Abs(diffX) < 0.01f)
         {
-            
+            diffX = _movement._isFacingRight ? 1f : -1f;
         }
-        else if (_hitInfo.isStun)
-        {
-            _stateMachine._stunState.SetStunTime(_hitInfo.stunDuration);
-            _stateMachine.ChangeState(_stateMachine._stunState);
-        }
-        else
-        {
-            _stateMachine.ChangeState(_stateMachine._normalState);
-        }
+
+        float pushDir = diffX > 0 ? -1f : 1f;
+        Vector2 force = new Vector2(_hitInfo.knockForce * pushDir, _hitInfo.launchForce);
+
+        _movement.ApplyImpulse(force);
     }
 }

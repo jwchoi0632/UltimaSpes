@@ -10,6 +10,7 @@ public class DieState : CharacterStateBase
     {
         base.OnStart();
 
+        _movement.SetMoveInput(Vector2.zero);
         Debug.Log("On Die");
     }
 
