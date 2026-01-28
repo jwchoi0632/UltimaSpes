@@ -24,6 +24,24 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
 
         if (_context.CheckGround())
         {
+            if (_context._character is HitableCharacter hitCharacter)
+            {
+                float impactVelocity = Mathf.Abs(_rb.velocity.y);
+
+                if (impactVelocity > _stats.fallingHitImpact)
+                {
+                    float fallDamage = (impactVelocity - _stats.fallingHitImpact) * _stats.fallingHitMultiplier;
+
+                    HitInfo hitInfo = new HitInfo();
+
+                    hitInfo.damage = fallDamage;
+                    hitInfo.hitType = HitType.FallingHit;
+                    hitInfo.causer = _context._groundHit.collider.gameObject;
+
+                    hitCharacter.TakeDamage(hitInfo);
+                }
+            }
+
             _context.ChangeMoveState(_context._groundedState);
             return;
         }

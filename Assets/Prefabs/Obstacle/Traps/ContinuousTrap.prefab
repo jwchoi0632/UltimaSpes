@@ -229,11 +229,12 @@ MonoBehaviour:
   _hitInfo:
     causer: {fileID: 0}
     damage: 10
+    hitType: 2
     hitDuration: 0.5
     isStun: 0
     stunDuration: 0
     knockForce: 3
-    airborneForce: 8
+    launchForce: 20
   _coolDown: 0
   _isOneTimeOnly: 0
   _isBlockingTrap: 0

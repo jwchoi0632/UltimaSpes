@@ -33,3 +33,5 @@ MonoBehaviour:
   lowJumpMultiplier: 1
   dropdownMultiplier: 2
   grapJumpHorizontal: 0.5
+  fallingHitImpact: 20
+  fallingHitMultiplier: 1.5
