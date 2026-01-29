@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DieState : CharacterStateBase
 {
-    public DieState(CharacterStateMachine stateMachine) : base(stateMachine) { }
+    public DieState(CharacterBase character) : base(character) { }
 
     public override void OnStart()
     {

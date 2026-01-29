@@ -6,7 +6,7 @@ public class GroggyState : CharacterStateBase
 {
     private float _groggyDuration = 3.0f;
 
-    public GroggyState(CharacterStateMachine stateMachine) : base(stateMachine) { }
+    public GroggyState(CharacterBase character) : base(character) { _moveable = false; }
 
     public override void OnStart()
     {
@@ -23,7 +23,7 @@ public class GroggyState : CharacterStateBase
 
         if (_groggyDuration > GetStateDuration()) return;
 
-        _stateMachine.ChangeState(_stateMachine._normalState);
+        _stateMachine.ChangeState(_owner._normalState);
     }
 
     public override void OnExit()

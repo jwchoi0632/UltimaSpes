@@ -15,12 +15,32 @@ public struct HitInfo
     public float launchForce;
 }
 
+public enum AttackType
+{
+    Melee,
+    Range,
+    Skill
+}
+
 public interface IHitable 
 { 
-    public void TakeDamage(HitInfo hitInfo);
-    public void IncreaseHp(float increaseValue);
-    public void DecreaseHp(float decreaseValue);
+    HitState _hitState { get; }
+    void TakeDamage(HitInfo hitInfo);
+    void IncreaseHp(float increaseValue);
+    void DecreaseHp(float decreaseValue);
 }
+
+public interface IAttackable
+{  
+    AttackState _attackState { get; }
+
+    void ApplyDamage(IHitable target);
+    HitInfo ApplyAttackInfo();
+    float CalculateDamage(); 
+}
+
+public interface IStunable { public StunState _stunState { get; } }
+public interface IGroggyable { public GroggyState _groggyState { get; } }
 
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]
@@ -34,12 +54,15 @@ public abstract class CharacterBase : MonoBehaviour
 
     public Rigidbody2D _rigidBody { get; private set; }
     public CapsuleCollider2D _mainCollider { get; private set; }
-    protected MovementComponent2D _movement;
-    protected CharacterStateMachine _stateMachine;
+    public MovementComponent2D _movement { get; private set; }
+    public CharacterStateMachine _stateMachine { get; private set; }
 
     protected float _currentHp;
     protected int _maxJumpCount = 1;
     protected int _currentJumpCount = 0;
+
+    public NormalState _normalState { get; private set; }
+    public DieState _dieState { get; private set; }
 
     public CharacterStats Stats => _stats;
     public GameObject Sprite => _spriteObject;
@@ -47,6 +70,7 @@ public abstract class CharacterBase : MonoBehaviour
     private void Awake()
     {
         InitComponents();
+        InitState();
         OnAwake();
     }
 
@@ -56,7 +80,7 @@ public abstract class CharacterBase : MonoBehaviour
         OnStart();
     }
 
-    private void InitComponents()
+    protected virtual void InitComponents()
     {
         _movement = GetComponent<MovementComponent2D>();
         _stateMachine = GetComponent<CharacterStateMachine>();
@@ -64,9 +88,15 @@ public abstract class CharacterBase : MonoBehaviour
         _mainCollider = GetComponent<CapsuleCollider2D>();
     }
 
+    protected virtual void InitState()
+    {
+        _normalState = new NormalState(this);
+        _dieState = new DieState(this);
+    }
+
     public virtual void SetActiveCharacter()
     {
-        _stateMachine.ChangeState(_stateMachine._normalState);
+        _stateMachine.ChangeState(_normalState);
     }
 
     public virtual void SetDeactiveCharacter()
@@ -80,29 +110,12 @@ public abstract class CharacterBase : MonoBehaviour
     public void InstantKill()
     {
         SetCurrentHp(0);
-        _stateMachine.ChangeState(_stateMachine._dieState);
-    }
-
-    public void ApplyDamage(IHitable target)
-    {
-        HitInfo hitInfo = new HitInfo();
-
-        hitInfo.damage = CalculateDamage();
-        hitInfo.causer = gameObject;
-
-        target.TakeDamage(hitInfo);
+        _stateMachine.ChangeState(_dieState);
     }
 
     protected void SetCurrentHp(float hp)
     {
         _currentHp = Mathf.Clamp(hp, 0, _stats.maxHp);
-    }
-
-    protected float CalculateDamage()
-    {
-        float result = _stats.strength;
-
-        return result;
     }
 
     protected abstract void Die();

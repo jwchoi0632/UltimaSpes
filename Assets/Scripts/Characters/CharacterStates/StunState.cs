@@ -6,7 +6,7 @@ public class StunState : CharacterStateBase
 {
     private float _stunTime;
 
-    public StunState(CharacterStateMachine stateMachine) : base(stateMachine) { }
+    public StunState(CharacterBase character) : base(character) { _moveable = false; }
 
     public void SetStunTime(float time) => _stunTime = time;
 
@@ -25,7 +25,7 @@ public class StunState : CharacterStateBase
 
         if (_stunTime > GetStateDuration()) return;
 
-        _stateMachine.ChangeState(_stateMachine._normalState);
+        _stateMachine.ChangeState(_owner._normalState);
     }
 
     public override void OnExit()

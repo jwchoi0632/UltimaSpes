@@ -12,19 +12,12 @@ public class CharacterStateMachine : MonoBehaviour
     public CharacterStats _stats { get; private set; }
 
     public CharacterStateBase _currentState { get; private set; }
-
-    public NormalState _normalState { get; private set; }
-    public AttackState _attackState { get; private set; }
-    public HitState _hitState { get; private set; }
-    public StunState _stunState { get; private set; }
-    public GroggyState _groggyState { get; private set; }
-    public DieState _dieState { get; private set; }
+    private IAttackable _attackable;
+    private IHitable _hitable;
 
     public bool _activeIFrame { get; private set; }
 
     public Action<Collision2D> OnCollisionEntered;
-
-    private IAttackable _attackable;
 
     void Start()
     {
@@ -32,9 +25,10 @@ public class CharacterStateMachine : MonoBehaviour
         _movement = GetComponent<MovementComponent2D>();
         _stats = _character.Stats;
 
-        InitStateClass();
+        _attackable = _character as IAttackable;
+        _hitable = _character as IHitable;
 
-        ChangeState(_normalState);
+        ChangeState(_character._normalState);
     }
 
     public void ChangeState(CharacterStateBase state)
@@ -45,8 +39,6 @@ public class CharacterStateMachine : MonoBehaviour
 
         _currentState = state;
         _currentState.OnStart();
-
-        _attackable = _currentState as IAttackable;
     }
 
     public void SetIFrame(float duration) => StartCoroutine(ApplyIFrame(duration));
@@ -60,55 +52,64 @@ public class CharacterStateMachine : MonoBehaviour
         _activeIFrame = false;
     }
 
-    public void OnAttack()
-    {
-        if (_attackable == null) return;
-
-        _attackable.Attack();
-    }
-
     public void OnHit(HitInfo hitInfo)
     {
         if (!_currentState.IsDamageable) return;
 
-        _hitState.SetHitInfo(hitInfo);
-        ChangeState(_hitState);
+        if (_hitable == null) return;
+
+        _hitable._hitState.SetHitInfo(hitInfo);
+        ChangeState(_hitable._hitState);
+    }
+
+    public void OnAttackInput(AttackType type)
+    {
+        if (!_currentState.IsAttackable) return;
+
+        if (_attackable == null) return;
+
+        if (_character.TryGetComponent<WeaponComponent>(out var weaponComp))
+        {
+            _attackable._attackState.SetAttackData(weaponComp.GetWeaponData(type));
+        }
+
+        ChangeState(_attackable._attackState);
+    }
+
+    public void OnEndAttackInput()
+    {
+        if (_currentState is AttackState attackState)
+        {
+            attackState.SetAttackPressed(false);
+        }
     }
 
     public void OnMoveInput(Vector2 input)
     {
-        if (_currentState is IMoveableState) _movement.SetMoveInput(input);
-        else if (_currentState is HitState hit)
-        { 
-            if (hit.CurrentPolicy.canMove) _movement.SetMoveInput(input);
+        if (_currentState.IsMoveable) _movement.SetMoveInput(input);
+        else if (_currentState is AttackState attackState)
+        {
+            attackState.SetAimInput(input.y);
         }
     }
 
     public void OnEndMoveInput()
     {
-        if (_currentState is IMoveableState) _movement.SetMoveInput(Vector2.zero);
-        else if (_currentState is HitState hit)
+        if (_currentState.IsMoveable) _movement.SetMoveInput(Vector2.zero);
+        else if (_currentState is AttackState attackState)
         {
-            if (hit.CurrentPolicy.canMove) _movement.SetMoveInput(Vector2.zero);
+            attackState.SetAimInput(0);
         }
     }
 
     public void OnJumpInput()
     {
-        if (_currentState is IJumpableState) _movement.StartJumppressed();
-        else if (_currentState is HitState hit)
-        {
-            if (hit.CurrentPolicy.canMove) _movement.StartJumppressed();
-        }
+        if (_currentState.IsMoveable) _movement.StartJumppressed();
     }
 
     public void OnEndJumpInput()
     {
-        if (_currentState is IJumpableState) _movement.EndJumppressed();
-        else if (_currentState is HitState hit)
-        {
-            if (hit.CurrentPolicy.canMove) _movement.EndJumppressed();
-        }
+        if (_currentState.IsMoveable) _movement.EndJumppressed();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -124,15 +125,5 @@ public class CharacterStateMachine : MonoBehaviour
     void Update()
     {
         _currentState?.OnUpdate();
-    }
-
-    private void InitStateClass()
-    {
-        _normalState = new NormalState(this);
-        _attackState = new AttackState(this);
-        _hitState = new HitState(this);
-        _stunState = new StunState(this);
-        _groggyState = new GroggyState(this);
-        _dieState = new DieState(this);
     }
 }
