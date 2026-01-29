@@ -15,7 +15,10 @@ public class FallingHitAction : HitActionBase
         if (!stateMachine._movement.CheckGround() ||
             stateMachine._movement._rb.velocity.y > 0.1f) return;
 
-        stateMachine.ChangeState(stateMachine._groggyState);
+        if (stateMachine._character is IGroggyable groggyable)
+        {
+            stateMachine.ChangeState(groggyable._groggyState);
+        }
     }
 
     public override void OnExit(CharacterStateMachine stateMachine)

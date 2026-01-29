@@ -10,6 +10,9 @@ public class BlowedHitAction : HitActionBase
 
     private System.Action<Collision2D> _collisionHandler;
 
+    private IHitable hitableOwner;
+    private IGroggyable groggyableOwner;
+
     public override void OnStart(CharacterStateMachine stateMachine)
     {
         Debug.Log("On Blowed");
@@ -18,6 +21,9 @@ public class BlowedHitAction : HitActionBase
 
         _collisionHandler += (collision) => OnCrashed(stateMachine, collision);
         stateMachine.OnCollisionEntered += _collisionHandler;
+
+        hitableOwner = stateMachine._character as IHitable;
+        groggyableOwner = stateMachine._character as IGroggyable;
     }
 
     public override void OnUpdate(CharacterStateMachine stateMachine, HitInfo info)
@@ -27,7 +33,7 @@ public class BlowedHitAction : HitActionBase
         if (stateMachine._movement._rb.velocity.x < 0.1f &&
             stateMachine._movement._rb.velocity.x > -0.1f)
         {
-            stateMachine.ChangeState(stateMachine._normalState);
+            stateMachine.ChangeState(stateMachine._character._normalState);
         }
     }
 
@@ -38,34 +44,56 @@ public class BlowedHitAction : HitActionBase
         GameObject otherObj = collision.gameObject;
         GameObject ownerObj = stateMachine.gameObject;
 
-        float distance = Mathf.Abs(ownerObj.transform.position.x - _startPos);
+        float distance = CalculateDistance(ownerObj.transform.position.x);
 
         if (distance > 1.0f)
         {
-            float finalDamage = distance;
+            float finalDamage = CalculateFinalDamage(distance);
 
-            if (otherObj.TryGetComponent<IHitable>(out var other))
-            {
-                other.TakeDamage(new HitInfo { causer = ownerObj, 
-                                                damage = finalDamage,
-                                                hitType = HitType.Normal,
-                                                isStun = true,
-                                                stunDuration = distance,
-                                                knockForce = distance / 2.0f});
-            }
+            ApplyDamageToOther(ownerObj, otherObj, distance, finalDamage);
 
-            if (ownerObj.TryGetComponent<IHitable>(out var owner))
+            if (hitableOwner != null)
             {
-                owner.DecreaseHp(finalDamage);
-                stateMachine.ChangeState(stateMachine._groggyState);
+                hitableOwner.DecreaseHp(finalDamage);
+
+                if (groggyableOwner != null)
+                {
+                    stateMachine.ChangeState(groggyableOwner._groggyState);
+                }
             }
         }
-        else stateMachine.ChangeState(stateMachine._normalState);
+        else stateMachine.ChangeState(stateMachine._character._normalState);
     }
 
     public override void OnExit(CharacterStateMachine stateMachine)
     {
         Debug.Log("On End Blowed");
         stateMachine.OnCollisionEntered -= _collisionHandler;
+    }
+
+    private float CalculateDistance(float currentPos_x)
+    {
+        return Mathf.Abs(currentPos_x - _startPos);
+    }
+
+    private float CalculateFinalDamage(float distance)
+    {
+        return distance;
+    }
+
+    private void ApplyDamageToOther(GameObject owner, GameObject other, float distance, float damage)
+    {
+        if (other.TryGetComponent<IHitable>(out var target))
+        {
+            target.TakeDamage(new HitInfo
+            {
+                causer = owner,
+                damage = damage,
+                hitType = HitType.Normal,
+                isStun = true,
+                stunDuration = distance,
+                knockForce = distance / 2.0f
+            });
+        }
     }
 }

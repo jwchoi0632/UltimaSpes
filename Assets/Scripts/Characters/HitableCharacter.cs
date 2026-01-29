@@ -8,6 +8,8 @@ public class HitableCharacter : CharacterBase, IHitable
 
     public HitDatabase HitData => _hitDatabase;
 
+    public HitState _hitState { get; private set; }
+
     public void TakeDamage(HitInfo hitInfo)
     {
         if (_stateMachine._activeIFrame) return;
@@ -28,11 +30,18 @@ public class HitableCharacter : CharacterBase, IHitable
         _currentHp = Mathf.Clamp(_currentHp - decreaseValue, 0, _stats.maxHp);
         Debug.Log("Decrease Hp. Current Hp is " + _currentHp);
 
-        if (_currentHp == 0) _stateMachine.ChangeState(_stateMachine._dieState);
+        if (_currentHp == 0) _stateMachine.ChangeState(_dieState);
     }
 
     protected override void Die()
     {
 
+    }
+
+    protected override void InitState()
+    {
+        base.InitState();
+
+        _hitState = new HitState(this);
     }
 }

@@ -7,10 +7,16 @@ public class HitState : CharacterStateBase
 {
     private HitInfo _hitInfo;
     private HitPolicy _currentPolicy;
+    private IHitable _hitable;
+    private IStunable _stunable;
 
     public HitPolicy CurrentPolicy => _currentPolicy;
 
-    public HitState(CharacterStateMachine stateMachine) : base(stateMachine) { }
+    public HitState(CharacterBase character) : base(character)
+    { 
+        _stunable = _owner as IStunable;
+        _hitable = _owner as IHitable;
+    }
 
     public void SetHitInfo(HitInfo hitInfo) => _hitInfo = hitInfo;
 
@@ -27,6 +33,7 @@ public class HitState : CharacterStateBase
             if (_currentPolicy != null)
             {
                 _damageable = _currentPolicy.canHit;
+                _moveable = _currentPolicy.canMove;
                 _movement.SetCanFlip(_currentPolicy.canFlip);
                 _movement._rb.gravityScale = _currentPolicy.gravityScale;
                 _stateMachine.SetIFrame(_currentPolicy.iFrame);
@@ -45,10 +52,10 @@ public class HitState : CharacterStateBase
 
         if (elapsed < _hitInfo.hitDuration) return;
 
-        if (_hitInfo.isStun)
+        if (_hitInfo.isStun && _stunable != null)
         {
-            _stateMachine._stunState.SetStunTime(_hitInfo.stunDuration);
-            _stateMachine.ChangeState(_stateMachine._stunState);
+            _stunable._stunState.SetStunTime(_hitInfo.stunDuration);
+            _stateMachine.ChangeState(_stunable._stunState);
         }
 
         if (_currentPolicy != null)
@@ -67,12 +74,6 @@ public class HitState : CharacterStateBase
         {
             _currentPolicy.action?.OnExit(_stateMachine);
         }
-
-        //if (_hitInfo.isStun)
-        //{
-        //    _stateMachine._stunState.SetStunTime(_hitInfo.stunDuration);
-        //    _stateMachine.ChangeState(_stateMachine._stunState);
-        //}
     }
 
     private void OnKnockback()

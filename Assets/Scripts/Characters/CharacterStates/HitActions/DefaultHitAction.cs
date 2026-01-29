@@ -19,7 +19,7 @@ public class DefaultHitAction : HitActionBase
             stateMachine._movement._rb.velocity.x > - 0.1f &&
             stateMachine._movement._rb.velocity.x < 0.1f)
         {
-            stateMachine.ChangeState(stateMachine._normalState);
+            stateMachine.ChangeState(stateMachine._character._normalState);
         }
     }
 

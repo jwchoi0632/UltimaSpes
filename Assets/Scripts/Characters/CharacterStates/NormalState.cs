@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NormalState : CharacterStateBase, IAttackable, IMoveableState, IJumpableState
+public class NormalState : CharacterStateBase
 {
-    public NormalState(CharacterStateMachine stateMachine) : base(stateMachine) { }
+    public NormalState(CharacterBase character) : base(character) { _attackable = true; }
 
-    public void Attack()
+    public override void OnStart()
     {
-
+        base.OnStart();
     }
 }

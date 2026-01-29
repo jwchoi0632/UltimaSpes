@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IAttackable { void Attack(); }
-public interface IMoveableState { }
-public interface IJumpableState { }
 
 public abstract class CharacterStateBase
 {
@@ -15,15 +12,19 @@ public abstract class CharacterStateBase
 
     protected float _stateStartTime;
     protected bool _damageable = true;
+    protected bool _moveable = true;
+    protected bool _attackable = false;
 
     public bool IsDamageable => _damageable;
+    public bool IsMoveable => _moveable;
+    public bool IsAttackable => _attackable;
 
-    public CharacterStateBase(CharacterStateMachine stateMachine)
+    public CharacterStateBase(CharacterBase character)
     {
-        _stateMachine = stateMachine;
-        _stats = _stateMachine._stats;
-        _owner = _stateMachine._character;
-        _movement = _stateMachine._movement;
+        _owner = character;
+        _stateMachine = _owner._stateMachine;
+        _movement = _owner._movement;
+        _stats = _owner.Stats;
     }
 
     public virtual void OnStart()
