@@ -191,7 +191,7 @@ GameObject:
   - component: {fileID: 161755101344458652}
   - component: {fileID: 3465230038679663172}
   m_Layer: 0
-  m_Name: ContinuousTrap
+  m_Name: ContinuousTrap_Base
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
