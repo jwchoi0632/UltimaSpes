@@ -14,24 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 100
   strength: 10
-  moveMaxSpeed: 5
-  acceleration_sec: 0.3
-  deceleration_sec: 0.2
-  moveMaxSpeed_air: 2.5
-  acceleration_air_sec: 0.6
-  deceleration_air_sec: 0.4
+  moveMaxSpeed: 4.5
+  acceleration_sec: 0.2
+  deceleration_sec: 0.1
+  moveMaxSpeed_air: 3.5
+  acceleration_air_sec: 3
+  deceleration_air_sec: 0.6
   moveMaxSpeed_grab: 3
   acceleration_grab_sec: 0.5
   deceleration_grab_sec: 0.2
   wallGrabGravityMultiplier: 0.5
-  jumpForce: 5
+  jumpForce: 6
   jumpForce_climbing: 5
   jumpForce_wallGrab: 4
   jumpForce_wallSticking_vertical: 3
   jumpForce_wallSticking_horizontal: 6
-  fallMultiplier: 4
-  lowJumpMultiplier: 1
-  dropdownMultiplier: 2
+  fallMultiplier: 6
+  lowJumpMultiplier: 2
+  dropdownMultiplier: 1
   grapJumpHorizontal: 0.5
   fallingHitImpact: 20
   fallingHitMultiplier: 1.5
