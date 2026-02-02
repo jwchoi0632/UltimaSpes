@@ -33,7 +33,7 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
 
     public void Move(Vector2 input)
     {
-        _context.ApplyMovement(maxSpeed: _stats.moveMaxSpeed_air,
+        _context.ApplyMovement(maxSpeed: _context._currentMaxSpeed_air,
                                timeToReach: _stats.dropdownMultiplier,
                                timeToStop: _stats.dropdownMultiplier);
     }

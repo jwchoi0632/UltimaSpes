@@ -45,7 +45,7 @@ public class JumppingState : MovementStateBase, IMoveable, IJumpable, IGravityEf
 
     public void Move(Vector2 input)
     {
-        _context.ApplyMovement(maxSpeed: _stats.moveMaxSpeed_air,
+        _context.ApplyMovement(maxSpeed: _context._currentMaxSpeed_air,
                                timeToReach: _stats.acceleration_air_sec,
                                timeToStop: _stats.deceleration_air_sec);
     }

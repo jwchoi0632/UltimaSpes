@@ -15,6 +15,13 @@ public struct HitInfo
     public float launchForce;
 }
 
+public struct DamageContext
+{
+    public float baseDamage;
+    public float attackMultiplier;
+    public float attackDamage;
+}
+
 public enum AttackType
 {
     Melee,
@@ -34,9 +41,8 @@ public interface IAttackable
 {  
     AttackState _attackState { get; }
 
-    void ApplyDamage(IHitable target);
-    HitInfo ApplyAttackInfo();
-    float CalculateDamage(); 
+    void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo);
+    float CalculateDamage(DamageContext damageContext);
 }
 
 public interface IStunable { public StunState _stunState { get; } }
@@ -46,6 +52,8 @@ public interface IGroggyable { public GroggyState _groggyState { get; } }
 [RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]
 public abstract class CharacterBase : MonoBehaviour
 {
+    [SerializeField] protected LayerMask _targetLayer;
+
     [Header("Data Asset")]
     [SerializeField] protected CharacterStats _stats;
 
@@ -66,6 +74,7 @@ public abstract class CharacterBase : MonoBehaviour
 
     public CharacterStats Stats => _stats;
     public GameObject Sprite => _spriteObject;
+    public LayerMask TargetLayer => _targetLayer;
 
     private void Awake()
     {

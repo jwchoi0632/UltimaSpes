@@ -86,8 +86,12 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnMoveInput(Vector2 input)
     {
-        if (_currentState.IsMoveable) _movement.SetMoveInput(input);
-        else if (_currentState is AttackState attackState)
+        if (_currentState.IsMoveable)
+        {
+            _movement.SetMoveInput(input);
+        }
+        
+        if (_currentState is AttackState attackState)
         {
             attackState.SetAimInput(input.y);
         }
@@ -95,8 +99,12 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnEndMoveInput()
     {
-        if (_currentState.IsMoveable) _movement.SetMoveInput(Vector2.zero);
-        else if (_currentState is AttackState attackState)
+        if (_currentState.IsMoveable)
+        {
+            _movement.SetMoveInput(Vector2.zero);
+        }
+        
+        if (_currentState is AttackState attackState)
         {
             attackState.SetAimInput(0);
         }

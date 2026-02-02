@@ -18,7 +18,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     protected Coroutine _deactivateCoroutine;
     protected LayerMask _targetLayer;
     protected HitInfo _hitInfo;
-    //protected float _damage;
+    protected DamageContext _damageContext;
 
     public Action<ProjectileBase> OnReturnToPool { get; set; }
     
@@ -38,7 +38,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
         _targetLayer = layer;
     }
 
-    public void Launch(Vector2 startPos, Vector2 direction, float force)
+    public void Launch(AttackContext attackContext, float force)
     {
         gameObject.SetActive(true);
 
@@ -47,15 +47,17 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
             _rb.WakeUp();
         }
 
+        _damageContext = attackContext.damageContext;
+
         if (_deactivateCoroutine != null) StopCoroutine(_deactivateCoroutine);
 
         _deactivateCoroutine = StartCoroutine(DeactivateTimer());
 
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        float angle = Mathf.Atan2(attackContext.direction.y, attackContext.direction.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
-        transform.position = startPos;
+        transform.position = attackContext.spawnPos;
 
-        _rb.velocity = direction * force;
+        _rb.velocity = attackContext.direction * force;
     }
 
     private void OnTriggerEnter2D(Collider2D collision) => OnHitTarget(collision.gameObject);
@@ -69,7 +71,10 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
         {
             if (target.TryGetComponent<IHitable>(out IHitable hitable))
             {
-                hitable.TakeDamage(_hitInfo);
+                if (_owner.TryGetComponent<IAttackable>(out var attacker))
+                {
+                    attacker.ApplyDamage(hitable, _damageContext, _hitInfo);
+                }
             }
 
             gameObject.SetActive(false);

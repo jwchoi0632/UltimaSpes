@@ -26,7 +26,7 @@ public class GroundedState : MovementStateBase, IMoveable, IJumpable, IGravityEf
 
     public void Move(Vector2 input)
     {
-        _context.ApplyMovement(maxSpeed: _stats.moveMaxSpeed,
+        _context.ApplyMovement(maxSpeed: _context._currentMaxSpeed,
                                timeToReach: _stats.acceleration_sec,
                                timeToStop: _stats.deceleration_sec);
     }

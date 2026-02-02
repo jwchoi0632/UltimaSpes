@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
 
 public class WeaponComponent : MonoBehaviour
@@ -71,4 +72,8 @@ public class WeaponComponent : MonoBehaviour
     {
         _lineRenderer.enabled = enable;
     }
+
+    public bool IsEnabledAimLiner() => _lineRenderer.enabled;
+
+    public Vector2 GetFirepoint() => _firePoint.transform.position;
 }
