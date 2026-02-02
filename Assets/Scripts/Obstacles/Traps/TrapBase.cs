@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(BoxCollider2D))]
-public abstract class TrapBase : MonoBehaviour
+public abstract class TrapBase : MonoBehaviour, IAttackable
 {
     [Header("Trap Option")]
     [SerializeField] protected HitInfo _hitInfo;
@@ -13,6 +13,8 @@ public abstract class TrapBase : MonoBehaviour
 
     protected bool _isReady = true;
     protected BoxCollider2D _collider;
+
+    public AttackState _attackState { get; private set; }
 
     private void Awake()
     {
@@ -32,6 +34,22 @@ public abstract class TrapBase : MonoBehaviour
         OnActivate(target);
 
         if (!_isOneTimeOnly) StartCoroutine(ApplyCoolDown());
+    }
+
+    public void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo)
+    {
+        hitInfo.damage = CalculateDamage(damageContext);
+        target?.TakeDamage(hitInfo);
+    }
+    public float CalculateDamage(DamageContext damageContext)
+    {
+        float result = _hitInfo.damage;
+
+        result += damageContext.baseDamage;
+        result += damageContext.attackDamage;
+        result *= damageContext.attackMultiplier;
+
+        return result;
     }
 
     protected abstract void OnActivate(GameObject Target);

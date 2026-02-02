@@ -112,6 +112,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f68484b5963edbf4e8d22626bc6de0b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetLayer:
+    serializedVersion: 2
+    m_Bits: 512
   _stats: {fileID: 11400000, guid: 32058c1e987ef244988cf36bf0dee3ee, type: 2}
   _spriteObject: {fileID: 5438813989825463828}
   _hitDatabase: {fileID: 11400000, guid: a53884469392ddf49a345ebf718e39d2, type: 2}
@@ -170,11 +173,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slots:
   - type: 0
-    data: {fileID: 11400000, guid: 35ad973eb1fadaf489655f50867b5f17, type: 2}
+    data: {fileID: 11400000, guid: 2d99ab492283b694a8d1b92230958523, type: 2}
   - type: 1
-    data: {fileID: 11400000, guid: 45fcfb38335d0a9498b2ff7c0a706eb0, type: 2}
+    data: {fileID: 11400000, guid: 6f9f7d88a325cda43bde329c90519fe0, type: 2}
   - type: 2
-    data: {fileID: 11400000, guid: 58cac4f69f2099a4bb14cb201166890f, type: 2}
+    data: {fileID: 11400000, guid: 45fb0101c7c4f6f499cd3161f6eded47, type: 2}
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 3520

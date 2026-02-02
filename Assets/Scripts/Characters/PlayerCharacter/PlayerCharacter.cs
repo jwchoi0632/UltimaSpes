@@ -44,24 +44,20 @@ public class PlayerCharacter : HitableCharacter, IAttackable, IStunable, IGroggy
         _groggyState = new GroggyState(this);
     }
 
-    public void ApplyDamage(IHitable target)
+    public void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo)
     {
-        target.TakeDamage(ApplyAttackInfo());
-    }
-    
-    public HitInfo ApplyAttackInfo()
-    {
-        HitInfo attackInfo = new HitInfo();
-
-        attackInfo.damage = CalculateDamage();
-        attackInfo.causer = gameObject;
-
-        return attackInfo;
+        float damage = CalculateDamage(damageContext);
+        hitInfo.damage = damage;
+        target.TakeDamage(hitInfo);
     }
 
-    public float CalculateDamage()
+    public float CalculateDamage(DamageContext damageContext)
     {
         float result = _stats.strength;
+
+        result += damageContext.baseDamage;
+        result += damageContext.attackDamage;
+        result *= damageContext.attackMultiplier;
 
         return result;
     }

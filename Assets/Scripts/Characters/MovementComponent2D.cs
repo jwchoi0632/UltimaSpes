@@ -26,6 +26,10 @@ public class MovementComponent2D : MonoBehaviour
     [SerializeField] private int jumpMaxCount;
     [SerializeField] private float jumpHoldTime;
 
+    public float _maxSpeed_ground { get; private set; }
+    public float _maxSpeed_air { get; private set; }
+    public float _currentMaxSpeed { get; private set; }
+    public float _currentMaxSpeed_air { get; private set; }
 
     public bool _isJumpPressed { get; private set; }
     public bool _canFlip { get; private set; }
@@ -65,6 +69,9 @@ public class MovementComponent2D : MonoBehaviour
         _stats = _character.Stats;
         _spriteObject = _character.Sprite;
 
+        _currentMaxSpeed = _maxSpeed_ground = _stats.moveMaxSpeed;
+        _currentMaxSpeed_air = _maxSpeed_air = _stats.moveMaxSpeed_air;
+
         InitDefaultValue();
         InitStateClass();
 
@@ -87,6 +94,10 @@ public class MovementComponent2D : MonoBehaviour
     public void IncreaseJumpCount() => ++_currentJumpCount;
     public void SetJumpInput(bool pressed) => _isJumpPressed = pressed;
     public void SetCanFlip(bool canFlip) => _canFlip = canFlip;
+    public void SetCurrentMaxSpeedOnGround(float speed) => _currentMaxSpeed = speed;
+    public void SetCurrentMaxSpeedInAir(float speed) => _currentMaxSpeed_air = speed;
+    public void SetMaxSpeedOnGround(float speed) => _maxSpeed_ground = speed;
+    public void SetMaxSpeedInAir(float speed) => _maxSpeed_air = speed;
 
     public void ChangeMoveState(MovementStateBase newState)
     {

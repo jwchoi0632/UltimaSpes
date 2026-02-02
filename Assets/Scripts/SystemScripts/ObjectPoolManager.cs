@@ -10,22 +10,22 @@ public interface IPoolable<T> where T : Component
 
 public class ObjectPoolManager : MonoBehaviour
 {
-    private Dictionary<Type, Stack<Component>> _poolDict = new Dictionary<Type, Stack<Component>>();
+    private Dictionary<int, Stack<Component>> _poolDict = new Dictionary<int, Stack<Component>>();
 
     public T Get<T>(T prefab) where T : Component
     {
-        Type type = typeof(T);
+        int keyIndex = prefab.gameObject.GetInstanceID();
 
-        if (!_poolDict.ContainsKey(type))
+        if (!_poolDict.ContainsKey(keyIndex))
         {
-            _poolDict[type] = new Stack<Component>();
+            _poolDict[keyIndex] = new Stack<Component>();
         }
 
         T obj;
 
-        if (_poolDict[type].Count > 0)
+        if (_poolDict[keyIndex].Count > 0)
         {
-            obj = (T)_poolDict[type].Pop();
+            obj = (T)_poolDict[keyIndex].Pop();
         }
         else
         {
@@ -33,15 +33,15 @@ public class ObjectPoolManager : MonoBehaviour
             
             if (obj is IPoolable<T> poolable)
             {
-                poolable.OnReturnToPool += ReturnToPool;
+                poolable.OnReturnToPool += (returnObj) => ReturnToPool(keyIndex, returnObj);
             }
         }
 
         return obj;
     }
 
-    public void ReturnToPool<T>(T obj) where T : Component
+    public void ReturnToPool<T>(int keyIndex, T obj) where T : Component
     {
-        _poolDict[typeof(T)].Push(obj);
+        _poolDict[keyIndex].Push(obj);
     }
 }

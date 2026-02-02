@@ -18,6 +18,13 @@ public class ShotTrap : TrapBase
 
         ProjectileBase projectile = poolManager?.Get<ProjectileBase>(_projectilePrefab);
         projectile?.Init(gameObject, _hitInfo, _targetLayer);
-        projectile?.Launch(_firePoint.position, _launchDirection, _launchForce);
+
+        AttackContext attackContext = new AttackContext();
+        attackContext.spawnPos = _firePoint.position;
+        attackContext.direction = _launchDirection;
+        attackContext.damageContext.attackMultiplier = 1.0f;
+        attackContext.damageContext.baseDamage = _hitInfo.damage;
+
+        projectile?.Launch(attackContext, _launchForce);
     }
 }
