@@ -158,6 +158,8 @@ public class AttackState : CharacterStateBase
         _movement.SetCanFlip(true);
         _attackPressed = false;
         _currentData = null;
+
+        //
     }
 
     private void UpdateAim()
