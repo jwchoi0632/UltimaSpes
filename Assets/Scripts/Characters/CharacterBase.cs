@@ -32,9 +32,12 @@ public enum AttackType
 public interface IHitable 
 { 
     HitState _hitState { get; }
+    HitDatabase HitData { get; }
+
     void TakeDamage(HitInfo hitInfo);
     void IncreaseHp(float increaseValue);
     void DecreaseHp(float decreaseValue);
+    void PostHit();
 }
 
 public interface IAttackable
@@ -43,6 +46,7 @@ public interface IAttackable
 
     void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo);
     float CalculateDamage(DamageContext damageContext);
+    void PostAttack();
 }
 
 public interface IStunable { public StunState _stunState { get; } }
@@ -55,7 +59,8 @@ public abstract class CharacterBase : MonoBehaviour
     [SerializeField] protected LayerMask _targetLayer;
 
     [Header("Data Asset")]
-    [SerializeField] protected CharacterStats _stats;
+    //[SerializeField] protected CharacterStats _stats;
+    [SerializeReference, SubclassSelector] protected CharacterStatsBase _stats;
 
     [Header("Children Object")]
     [SerializeField] protected GameObject _spriteObject;
@@ -64,6 +69,7 @@ public abstract class CharacterBase : MonoBehaviour
     public CapsuleCollider2D _mainCollider { get; private set; }
     public MovementComponent2D _movement { get; private set; }
     public CharacterStateMachine _stateMachine { get; private set; }
+    public RoomManager _currentRoom { get; private set; }
 
     protected float _currentHp;
     protected int _maxJumpCount = 1;
@@ -72,7 +78,7 @@ public abstract class CharacterBase : MonoBehaviour
     public NormalState _normalState { get; private set; }
     public DieState _dieState { get; private set; }
 
-    public CharacterStats Stats => _stats;
+    public CharacterStatsBase Stats => _stats;
     public GameObject Sprite => _spriteObject;
     public LayerMask TargetLayer => _targetLayer;
 
@@ -103,14 +109,32 @@ public abstract class CharacterBase : MonoBehaviour
         _dieState = new DieState(this);
     }
 
-    public virtual void SetActiveCharacter()
+    public void SetCurrentRoom(RoomManager roomManager)
     {
-        _stateMachine.ChangeState(_normalState);
+        _currentRoom = roomManager;
+
+        if (TryGetComponent<AINavigator>(out var navigator))
+        {
+            navigator.SetCurrentRoom(roomManager);
+        }
+    }
+
+    public virtual void SetActiveCharacter(Vector2 spawnPos)
+    {
+        gameObject.SetActive(true);
+
+        if (_rigidBody.IsSleeping())
+        {
+            _rigidBody.WakeUp();
+        }
+
+        gameObject.transform.position = spawnPos;
+        //_stateMachine.ChangeState(_normalState);
     }
 
     public virtual void SetDeactiveCharacter()
     {
-
+        gameObject.SetActive(false);
     }
 
     protected virtual void OnAwake() { }

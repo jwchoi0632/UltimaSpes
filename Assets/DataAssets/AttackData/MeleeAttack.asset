@@ -22,7 +22,7 @@ MonoBehaviour:
     hitDuration: 0
     isStun: 0
     stunDuration: 0
-    knockForce: 0
+    knockForce: 3
     launchForce: 0
   overrideLayer:
     serializedVersion: 2

@@ -8,7 +8,7 @@ public abstract class CharacterStateBase
     protected CharacterBase _owner;
     protected CharacterStateMachine _stateMachine;
     protected MovementComponent2D _movement;
-    protected CharacterStats _stats;
+    protected CharacterStatsBase _stats;
 
     protected float _stateStartTime;
     protected bool _damageable = true;

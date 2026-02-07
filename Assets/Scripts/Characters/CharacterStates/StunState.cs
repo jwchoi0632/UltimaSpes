@@ -25,7 +25,7 @@ public class StunState : CharacterStateBase
 
         if (_stunTime > GetStateDuration()) return;
 
-        _stateMachine.ChangeState(_owner._normalState);
+        _stateMachine.OnHitEnd();
     }
 
     public override void OnExit()

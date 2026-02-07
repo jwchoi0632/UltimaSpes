@@ -35,7 +35,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 170342852660361962}
   - {fileID: 277514564424351807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -116,9 +115,43 @@ MonoBehaviour:
   _targetLayer:
     serializedVersion: 2
     m_Bits: 512
-  _stats: {fileID: 11400000, guid: 32058c1e987ef244988cf36bf0dee3ee, type: 2}
+  _stats:
+    rid: 6238626895750496257
   _spriteObject: {fileID: 5438813989825463828}
   _hitDatabase: {fileID: 11400000, guid: a53884469392ddf49a345ebf718e39d2, type: 2}
+  references:
+    version: 2
+    RefIds:
+    - rid: 6238626895750496257
+      type: {class: CharacterStatsBase, ns: , asm: Assembly-CSharp}
+      data:
+        maxHp: 100
+        strength: 10
+        moveType: 0
+        moveMaxSpeed: 4.5
+        acceleration_sec: 0.2
+        deceleration_sec: 0.1
+        moveMaxSpeed_air: 3.5
+        acceleration_air_sec: 3
+        deceleration_air_sec: 0.6
+        moveMaxSpeed_grab: 3
+        acceleration_grab_sec: 0.5
+        deceleration_grab_sec: 0.2
+        wallGrabGravityMultiplier: 0.5
+        moveMaxSpeed_flying: 5
+        acceleration_flying_sec: 0.3
+        deceleration_flying_sec: 0.5
+        jumpForce: 6
+        jumpForce_climbing: 5
+        jumpForce_wallGrab: 4
+        jumpForce_wallSticking_vertical: 3
+        jumpForce_wallSticking_horizontal: 6
+        fallMultiplier: 6
+        lowJumpMultiplier: 2
+        dropdownMultiplier: 1
+        grapJumpHorizontal: 0.5
+        fallingHitImpact: 20
+        fallingHitMultiplier: 1.5
 --- !u!114 &3489703848426006847
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +246,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 4, y: 4, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 170342852660361962}
   m_Father: {fileID: 9052905590790113862}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &4000127938115401640
@@ -295,11 +329,11 @@ Transform:
   m_GameObject: {fileID: 8629686974553307341}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.2, z: 1}
+  m_LocalPosition: {x: 0.0625, y: 0, z: 0}
+  m_LocalScale: {x: 0.1, y: 0.05, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9052905590790113862}
+  m_Father: {fileID: 277514564424351807}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7462221365853894695
 SpriteRenderer:

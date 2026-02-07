@@ -12,6 +12,11 @@ public class DieState : CharacterStateBase
 
         _movement.SetMoveInput(Vector2.zero);
         Debug.Log("On Die");
+
+        if (_owner is IPoolable<EnemyCharacterBase>)
+        {
+            _owner.SetDeactiveCharacter();
+        }
     }
 
     public override void OnExit()

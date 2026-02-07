@@ -25,6 +25,7 @@ public class WeaponDataBase : ScriptableObject
 {
     [Header("Weapon Data")]
     public float weaponDamage;
+    public float coolDown;
 
     [Header("Attack Data")]
     public AttackDataBase normalAttackData;

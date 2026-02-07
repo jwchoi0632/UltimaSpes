@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: BaseMeleeWeapon
   m_EditorClassIdentifier: 
   weaponDamage: 0
+  coolDown: 2
   normalAttackData: {fileID: 11400000, guid: 61f43985bfed047438fea4dcb1fd58b1, type: 2}
   chargeAttackData: {fileID: 0}
   <MaxSpeedOnGround>k__BackingField: 3

@@ -16,6 +16,7 @@ public class ProjectilePerformer : AttackPerformerBase
             var projectile = SceneManagerBase.Instance._poolManager.Get<ProjectileBase>(projectileSpawn.ProjectilePref);
 
             attackData.attackInfo.causer = owner.gameObject;
+            attackContext.damageContext = _damageContext;
 
             projectile.Init(owner.gameObject, attackData.attackInfo, _finalLayer);
 
