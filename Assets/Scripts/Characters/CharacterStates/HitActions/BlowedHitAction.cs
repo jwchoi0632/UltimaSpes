@@ -33,7 +33,7 @@ public class BlowedHitAction : HitActionBase
         if (stateMachine._movement._rb.velocity.x < 0.1f &&
             stateMachine._movement._rb.velocity.x > -0.1f)
         {
-            stateMachine.ChangeState(stateMachine._character._normalState);
+            stateMachine.OnHitEnd();
         }
     }
 
@@ -62,7 +62,7 @@ public class BlowedHitAction : HitActionBase
                 }
             }
         }
-        else stateMachine.ChangeState(stateMachine._character._normalState);
+        else stateMachine.OnHitEnd();
     }
 
     public override void OnExit(CharacterStateMachine stateMachine)

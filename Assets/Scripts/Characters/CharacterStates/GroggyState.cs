@@ -23,7 +23,7 @@ public class GroggyState : CharacterStateBase
 
         if (_groggyDuration > GetStateDuration()) return;
 
-        _stateMachine.ChangeState(_owner._normalState);
+        _stateMachine.OnHitEnd();
     }
 
     public override void OnExit()

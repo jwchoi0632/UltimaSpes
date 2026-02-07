@@ -15,7 +15,7 @@ public class LaunchHitAction : HitActionBase
         if (!stateMachine._movement.CheckGround() ||
             stateMachine._movement._rb.velocity.y > 0.1f) return;
 
-        stateMachine.ChangeState(stateMachine._character._normalState);
+        stateMachine.OnHitEnd();
     }
 
     public override void OnExit(CharacterStateMachine stateMachine)

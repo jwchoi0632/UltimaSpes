@@ -23,6 +23,7 @@ public class MeleePerformer : AttackPerformerBase
             {
                 HitInfo hitInfo = attackData.attackInfo;
                 hitInfo.damage = attacker.CalculateDamage(_damageContext);
+                hitInfo.causer = owner.gameObject;
                 DrawDebugCircle(spawnPos, colliderData.Range, 2.0f);
 
                 foreach (var target in targets)

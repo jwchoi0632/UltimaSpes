@@ -24,7 +24,7 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
 
         if (_context.CheckGround())
         {
-            if (_context._character is HitableCharacter hitCharacter)
+            if (_context._character is IHitable hitCharacter)
             {
                 float impactVelocity = Mathf.Abs(_rb.velocity.y);
 

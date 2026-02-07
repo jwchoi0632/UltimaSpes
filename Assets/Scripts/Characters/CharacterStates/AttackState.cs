@@ -189,8 +189,9 @@ public class AttackState : CharacterStateBase
 
     private void PostAttack()
     {
-        
+
         // TODO : 공격 후 후딜 처리
-        _stateMachine.ChangeState(_owner._normalState);
+        if (weaponComp != null) weaponComp.SetCooldown(_currentData);
+        _stateMachine.OnAttackEnd();
     }
 }

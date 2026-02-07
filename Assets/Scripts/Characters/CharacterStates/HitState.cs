@@ -26,9 +26,9 @@ public class HitState : CharacterStateBase
 
         _movement.SetMoveInput(Vector2.zero);
 
-        if (_owner.TryGetComponent<HitableCharacter>(out var hitOwner))
+        if (_hitable != null)
         {
-            _currentPolicy = hitOwner.HitData.GetPolicy(_hitInfo.hitType);
+            _currentPolicy = _hitable.HitData.GetPolicy(_hitInfo.hitType);
 
             if (_currentPolicy != null)
             {

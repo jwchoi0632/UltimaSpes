@@ -10,7 +10,7 @@ public abstract class MovementStateBase
 {
     protected MovementComponent2D _context;
     protected Rigidbody2D _rb;
-    protected CharacterStats _stats;
+    protected CharacterStatsBase _stats;
 
     public MovementStateBase(MovementComponent2D context)
     {

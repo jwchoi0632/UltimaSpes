@@ -6,6 +6,7 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
 {
     private float dropTime = 0.4f;
     private float currentTime;
+    private Collider2D _ignoreCollider;
     public DroppingState(MovementComponent2D context) : base(context) { }
 
     public override void OnStart()
@@ -13,7 +14,12 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
         base.OnStart();
 
         currentTime = dropTime;
-        Physics2D.IgnoreCollision(_context._mainCollider, _context._groundHit.collider, true);
+        _ignoreCollider = _context._groundHit.collider;
+
+        if (_ignoreCollider != null)
+        {
+            Physics2D.IgnoreCollision(_context._mainCollider, _ignoreCollider, true);
+        }
     }
 
     public override void OnUpdate()
@@ -28,7 +34,11 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
     {
         base.OnExit();
 
-        Physics2D.IgnoreCollision(_context._mainCollider, _context._groundHit.collider, false);
+        if (_ignoreCollider != null)
+        {
+            Physics2D.IgnoreCollision(_context._mainCollider, _ignoreCollider, false);
+            _ignoreCollider = null;
+        }
     }
 
     public void Move(Vector2 input)

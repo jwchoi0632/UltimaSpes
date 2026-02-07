@@ -52,6 +52,8 @@ public abstract class TrapBase : MonoBehaviour, IAttackable
         return result;
     }
 
+    public void PostAttack() { }
+
     protected abstract void OnActivate(GameObject Target);
 
     protected IEnumerator ApplyCoolDown()

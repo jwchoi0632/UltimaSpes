@@ -8,7 +8,7 @@ using UnityEngine;
 public class MovementComponent2D : MonoBehaviour
 {
     public Rigidbody2D _rb { get; private set; }
-    public CharacterStats _stats { get; private set; }
+    public CharacterStatsBase _stats { get; private set; }
     public CapsuleCollider2D _mainCollider { get; private set; }
     public CharacterBase _character { get; private set; }
     public GameObject _spriteObject { get; private set; }
@@ -28,8 +28,10 @@ public class MovementComponent2D : MonoBehaviour
 
     public float _maxSpeed_ground { get; private set; }
     public float _maxSpeed_air { get; private set; }
+    public float _maxSpeed_flying { get; private set; }
     public float _currentMaxSpeed { get; private set; }
     public float _currentMaxSpeed_air { get; private set; }
+    public float _currentMaxSpeed_flying { get; private set; }
 
     public bool _isJumpPressed { get; private set; }
     public bool _canFlip { get; private set; }
@@ -53,6 +55,7 @@ public class MovementComponent2D : MonoBehaviour
     public WallGrabState _wallGrabState { get; private set; }
     public ClimbingState _climbingState { get; private set; }
     public WallStickingState _wallStickingState { get; private set; }
+    public FlyingState _flyingState { get; private set; }
 
     private MovementStateBase _currentState;
 
@@ -71,11 +74,13 @@ public class MovementComponent2D : MonoBehaviour
 
         _currentMaxSpeed = _maxSpeed_ground = _stats.moveMaxSpeed;
         _currentMaxSpeed_air = _maxSpeed_air = _stats.moveMaxSpeed_air;
+        _currentMaxSpeed_flying = _maxSpeed_flying = _stats.moveMaxSpeed_flying;
 
         InitDefaultValue();
         InitStateClass();
 
-        ChangeMoveState(_groundedState);
+        if (_stats.moveType == MoveType.OnlyFlying) StartFlying();
+        else ChangeMoveState(_groundedState);
     }
 
     private void FixedUpdate()
@@ -96,8 +101,10 @@ public class MovementComponent2D : MonoBehaviour
     public void SetCanFlip(bool canFlip) => _canFlip = canFlip;
     public void SetCurrentMaxSpeedOnGround(float speed) => _currentMaxSpeed = speed;
     public void SetCurrentMaxSpeedInAir(float speed) => _currentMaxSpeed_air = speed;
+    public void SetCurrentMaxSpeedOnFlying(float speed) => _currentMaxSpeed_flying = speed;
     public void SetMaxSpeedOnGround(float speed) => _maxSpeed_ground = speed;
     public void SetMaxSpeedInAir(float speed) => _maxSpeed_air = speed;
+    public void SetMaxSpeedOnFlying(float speed) => _maxSpeed_flying = speed;
 
     public void ChangeMoveState(MovementStateBase newState)
     {
@@ -124,6 +131,47 @@ public class MovementComponent2D : MonoBehaviour
             (moveInput.x > 0 && !_isFacingRight)) Flip(); 
     }
 
+    public float GetMaxJumpHeight()
+    {
+        float gravity = Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale);
+
+        if (gravity == 0) return float.MaxValue;
+
+        return (_stats.jumpForce * _stats.jumpForce) / (2 * gravity);
+    }
+
+    public float GetMaxJumpDistance()
+    {
+        float gravity = Mathf.Abs(Physics2D.gravity.y * _rb.gravityScale);
+
+        if (gravity == 0) return float.MaxValue;
+
+        float airTime = 2 * (_stats.jumpForce / gravity);
+
+        return _maxSpeed_ground * airTime;
+    }
+
+    public void StartFlying()
+    {
+        if (_stats.moveType == MoveType.OnlyGround) return;
+
+        SetMovementPhysics(true);
+        ChangeMoveState(_flyingState);
+    }
+
+    public void EndFlying()
+    {
+        if (_stats.moveType == MoveType.OnlyGround) return;
+
+        SetMovementPhysics(false);
+        ChangeMoveState(_fallingState);
+    }
+
+    public void SetMovementPhysics(bool isFlying)
+    {
+        _rb.gravityScale = isFlying ? 0 : _defaultGravityScale;
+    }
+
     public bool IsOnThinPlatform()
     {
         if (_currentState != _groundedState) return false;
@@ -148,6 +196,27 @@ public class MovementComponent2D : MonoBehaviour
         SetJumpInput(false);
 
         //if (_moveState == MovementState.jumping) _moveState = MovementState.falling;
+    }
+
+    public void ApplyFlyingMovement(float maxSpeed, float timeToReach = 1.0f, float timeToStop = 1.0f)
+    {
+        if (_rb == null) return;
+
+        Vector2 normalizedInput = _moveInput.magnitude > 1f ? _moveInput.normalized : _moveInput;
+        Vector2 targetSpeed = new Vector2(maxSpeed * normalizedInput.x, maxSpeed * normalizedInput.y);
+        Vector2 currentRate = Vector2.zero;
+        Vector2 newVelocity = Vector2.zero;
+
+        float accelUnit = maxSpeed / Mathf.Max(timeToReach, 0.01f);
+        float decelUnit = maxSpeed / Mathf.Max(timeToStop, 0.01f);
+
+        currentRate.x = (Mathf.Abs(targetSpeed.x) > 0.01f) ? accelUnit : decelUnit;
+        currentRate.y = (Mathf.Abs(targetSpeed.y) > 0.01f) ? accelUnit : decelUnit;
+
+        newVelocity.x = Mathf.MoveTowards(_rb.velocity.x, targetSpeed.x, currentRate.x * Time.fixedDeltaTime);
+        newVelocity.y = Mathf.MoveTowards(_rb.velocity.y, targetSpeed.y, currentRate.y * Time.fixedDeltaTime);
+
+        _rb.velocity = newVelocity;
     }
 
     public void ApplyMovement(float maxSpeed, bool isHorizontal = true, float timeToReach = 1.0f, float timeToStop = 1.0f)
@@ -281,5 +350,6 @@ public class MovementComponent2D : MonoBehaviour
         _wallGrabState = new WallGrabState(this);
         _wallStickingState = new WallStickingState(this);
         _climbingState = new ClimbingState(this);
+        _flyingState = new FlyingState(this);
     }
 }
