@@ -92,6 +92,7 @@ public abstract class CharacterBase : MonoBehaviour
     void Start()
     {
         _currentHp = _stats.maxHp;
+        _movement.Initialize(_stats, _spriteObject);
         OnStart();
     }
 

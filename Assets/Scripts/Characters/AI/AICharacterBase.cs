@@ -20,6 +20,7 @@ public interface IReturnable
 public interface INoticeable
 {
     public NoticeState _noticeState { get; }
+    public GameObject NoticeSprite { get; }
 }
 
 public interface IPatrolable
@@ -58,7 +59,7 @@ public abstract class AICharacterBase : CharacterBase, IIdleable, IWaitable
     {
         base.SetActiveCharacter(spawnPos);
 
-        if (this is INoticeable noticeable) noticeable._noticeState.InitNotice();
+        if (this is INoticeable noticeable) noticeable._noticeState.InitNotice(noticeable.NoticeSprite);
         if (this is IReturnable returnable) returnable._returnState.SetReturnPoint(spawnPos);
         if (this is IPatrolable patrolable) patrolable._patrolState.SetStartPos(spawnPos);
 

@@ -73,6 +73,21 @@ public class AINavigator : MonoBehaviour
         return false;
     }
 
+    public Vector2 GetNearestValidPoint()
+    {
+        if (_stats.moveType == MoveType.OnlyFlying)
+        {
+            RaycastHit2D ceilingHit = Physics2D.Raycast(transform.position, Vector2.up, 10f, _stats.obstacleLayer);
+            if (ceilingHit.collider != null)
+            {
+                return ceilingHit.point + Vector2.down * (_owner._mainCollider.bounds.size.y / 2);
+            }
+        }
+
+        RaycastHit2D groundHit = Physics2D.Raycast(transform.position, Vector2.down, 10f, _stats.obstacleLayer);
+        return groundHit.collider ? groundHit.point + Vector2.up * (_owner._mainCollider.bounds.size.y / 2) : (Vector2)transform.position;
+    }
+
     #region Navigation Strategies
 
     private bool CheckArrival(Vector2 diff)
@@ -126,7 +141,6 @@ public class AINavigator : MonoBehaviour
             if (finalDir != Vector2.zero)
             {
                 finalDir = GetSmartAvoidanceDir(finalDir);
-                finalDir = AdjustFlyingHeight(finalDir);
             }
         }
 
@@ -210,24 +224,6 @@ public class AINavigator : MonoBehaviour
         float avoidY = (upSpace >= downSpace) ? 1f : -1f;
 
         return new Vector2(currentDir.x, avoidY).normalized;
-    }
-
-    private Vector2 AdjustFlyingHeight(Vector2 originalDir)
-    {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, _stats.groundCheckDist, _stats.obstacleLayer);
-
-        if (hit.collider != null)
-        {
-            float distToGround = hit.distance;
-
-            if (distToGround < _stats.groundCheckDist)
-            {
-                float safeY = Mathf.Max(originalDir.y, 0.2f);
-                return new Vector2(originalDir.x, safeY).normalized;
-            }
-        }
-
-        return originalDir;
     }
 
     private Vector2 MaintainFlyingDistance(Vector2 currentDir, Vector2 diff)
