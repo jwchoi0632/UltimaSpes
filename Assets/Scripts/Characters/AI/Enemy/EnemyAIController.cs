@@ -156,7 +156,7 @@ public class EnemyAIController : AIControllerBase
             _perception.SetChaseMode(true);
         }
         
-        _stateMachine.OnNotice(1.0f);
+        _stateMachine.OnNotice(_stats.noticeTime);
     }
 
     protected virtual void OnTargetLost()
