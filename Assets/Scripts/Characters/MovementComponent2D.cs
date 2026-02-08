@@ -63,12 +63,15 @@ public class MovementComponent2D : MonoBehaviour
     private IJumpable _jumpable;
     private IGravityEffect _gravityEffect;
 
-    private void Start()
-    {
-        _character = GetComponent<CharacterBase>();
+    private bool _ignoreHoverHeight = false;
 
-        _rb = _character._rigidBody;
-        _mainCollider = _character._mainCollider;
+    private void Awake()
+    {
+        InitComponent();
+    }
+
+    public void Initialize(CharacterStatsBase stats, GameObject spriteObj)
+    {
         _stats = _character.Stats;
         _spriteObject = _character.Sprite;
 
@@ -76,11 +79,15 @@ public class MovementComponent2D : MonoBehaviour
         _currentMaxSpeed_air = _maxSpeed_air = _stats.moveMaxSpeed_air;
         _currentMaxSpeed_flying = _maxSpeed_flying = _stats.moveMaxSpeed_flying;
 
-        InitDefaultValue();
         InitStateClass();
+        InitDefaultValue();
 
-        if (_stats.moveType == MoveType.OnlyFlying) StartFlying();
-        else ChangeMoveState(_groundedState);
+        ChangeMoveState(_groundedState);
+    }
+
+    private void Start()
+    {
+        
     }
 
     private void FixedUpdate()
@@ -105,6 +112,7 @@ public class MovementComponent2D : MonoBehaviour
     public void SetMaxSpeedOnGround(float speed) => _maxSpeed_ground = speed;
     public void SetMaxSpeedInAir(float speed) => _maxSpeed_air = speed;
     public void SetMaxSpeedOnFlying(float speed) => _maxSpeed_flying = speed;
+    public void IsIgnoreHoverHeight(bool ignore) => _ignoreHoverHeight = ignore;
 
     public void ChangeMoveState(MovementStateBase newState)
     {
@@ -203,7 +211,16 @@ public class MovementComponent2D : MonoBehaviour
         if (_rb == null) return;
 
         Vector2 normalizedInput = _moveInput.magnitude > 1f ? _moveInput.normalized : _moveInput;
-        Vector2 targetSpeed = new Vector2(maxSpeed * normalizedInput.x, maxSpeed * normalizedInput.y);
+
+        float finalInputY = normalizedInput.y;
+
+        if (CheckGround())
+        {
+            if (!_ignoreHoverHeight) finalInputY = Mathf.Max(finalInputY, 0.5f);
+
+        }
+
+        Vector2 targetSpeed = new Vector2(maxSpeed * normalizedInput.x, maxSpeed * finalInputY);
         Vector2 currentRate = Vector2.zero;
         Vector2 newVelocity = Vector2.zero;
 
@@ -339,6 +356,13 @@ public class MovementComponent2D : MonoBehaviour
 
         _canFlip = true;
         _isFacingRight = isDefaultFacingRight;
+    }
+
+    void InitComponent()
+    {
+        _character = GetComponent<CharacterBase>();
+        _rb = GetComponent<Rigidbody2D>();
+        _mainCollider = GetComponent<CapsuleCollider2D>();
     }
 
     private void InitStateClass()

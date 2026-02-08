@@ -69,6 +69,7 @@ public class HitState : CharacterStateBase
         base.OnExit();
 
         _movement.SetCanFlip(true);
+        _movement._rb.gravityScale = _movement._defaultGravityScale;
 
         if (_currentPolicy != null)
         {

@@ -6,11 +6,33 @@ public class NoticeState : CharacterStateBase
 {
     private bool _isNoticeable = true;
     private float _currentTime;
+    private GameObject _noticeObj;
+    private EnemyCharacterBase _character;
 
-    public NoticeState(CharacterBase character) : base(character) { }
+    public NoticeState(CharacterBase character) : base(character) 
+    {
+        _character = _owner as EnemyCharacterBase;
+    }
 
-    public void InitNotice() => _isNoticeable = true;
+    public void InitNotice(GameObject noticeObj)
+    {
+        _isNoticeable = true;
+        _noticeObj = noticeObj;
+        _noticeObj.SetActive(false);
+    }
+
     public void SetNoticeTime(float time) => _currentTime = time;
+
+    public override void OnStart()
+    {
+        base.OnStart();
+
+        if (_isNoticeable )
+        {
+            _noticeObj.SetActive(_isNoticeable);
+            _character._navigation.Stop();
+        }
+    }
 
     public override void OnUpdate()
     {
@@ -33,5 +55,6 @@ public class NoticeState : CharacterStateBase
         base.OnExit();
 
         _isNoticeable = false;
+        _noticeObj.SetActive(_isNoticeable);
     }
 }
