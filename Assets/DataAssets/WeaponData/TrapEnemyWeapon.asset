@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71663f07b81e5874ba37dd4c64418ed0, type: 3}
+  m_Name: TrapEnemyWeapon
+  m_EditorClassIdentifier: 
+  weaponDamage: 0
+  coolDown: 5
+  normalAttackData: {fileID: 11400000, guid: e910b06700b749b4e811d710b9588dbd, type: 2}
+  chargeAttackData: {fileID: 0}
+  <MaxSpeedOnGround>k__BackingField: 0
+  <MaxSpeedInAir>k__BackingField: 0

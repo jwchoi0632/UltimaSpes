@@ -21,6 +21,9 @@ public enum AttackSelectType
 [System.Serializable]
 public class EnemyStats : CharacterStatsBase
 {
+    [Header("Notice Stats")]
+    public float noticeTime = 1.0f;
+
     [Header("Attack Stats")]
     public AttackSelectType attackSelectType;
 
