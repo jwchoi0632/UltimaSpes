@@ -2,32 +2,40 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(WeaponComponent))]
-public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable
+[RequireComponent(typeof(WeaponComponent), typeof(InteractionComponent), typeof(PlayerController))]
+public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable, ICarryable, IPushable
 {
     [SerializeField] protected HitDatabase _hitDatabase;
+    [SerializeField] private Transform _carryHoldSocket;
 
     public AttackState _attackState { get; private set; }
     public StunState _stunState { get; private set; }
     public GroggyState _groggyState { get; private set; }
     public HitState _hitState { get; private set; }
+    public CarryState _carryState { get; private set; }
+    public PushState _pushState { get; private set; }
 
+    public PlayerController _playerControlelr { get; private set; }
     public WeaponComponent _weaponComponent { get; private set; }
+    public InteractionComponent _interactionComponent { get; private set; }
 
     public HitDatabase HitData => _hitDatabase;
+    public Transform CarryHoldSocket => _carryHoldSocket;
 
     protected override void OnAwake()
     {
         base.OnAwake();
         
+        _playerControlelr = GetComponent<PlayerController>();
         _weaponComponent = GetComponent<WeaponComponent>();
+        _interactionComponent = GetComponent<InteractionComponent>();
     }
 
     protected override void OnStart()
     {
         base.OnStart();
 
-        BindInputAction();
+        _playerControlelr.BindInputAction();
         _stateMachine.ChangeState(_normalState);
     }
 
@@ -49,6 +57,8 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
         _stunState = new StunState(this);
         _groggyState = new GroggyState(this);
         _hitState = new HitState(this);
+        _carryState = new CarryState(this);
+        _pushState = new PushState(this);
     }
 
     public void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo)
@@ -100,31 +110,6 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
     public void PostHit()
     {
         _stateMachine.ChangeState(_normalState);
-    }
-
-    protected void BindInputAction()
-    {
-        var actions = InputReader.Instance.inputActions.PlayerActionMap;
-
-        InputReader.Instance.BindAction(actions.Move,
-            performed: () => _stateMachine.OnMoveInput(actions.Move.ReadValue<Vector2>()),
-            canceled: () => _stateMachine.OnEndMoveInput());
-
-        InputReader.Instance.BindAction(actions.Jump,
-            started: () => _stateMachine.OnJumpInput(),
-            canceled: () => _stateMachine.OnEndJumpInput());
-
-        InputReader.Instance.BindAction(actions.Melee,
-            started: () => _stateMachine.OnAttackInput(AttackType.Melee),
-            canceled: () => _stateMachine.OnEndAttackInput());
-
-        InputReader.Instance.BindAction(actions.Ranged,
-            started: () => _stateMachine.OnAttackInput(AttackType.Range),
-            canceled: () => _stateMachine.OnEndAttackInput());
-
-        InputReader.Instance.BindAction(actions.Skill,
-            started: () => _stateMachine.OnAttackInput(AttackType.Skill),
-            canceled: () => _stateMachine.OnEndAttackInput());
     }
 
     private void OnDisable()

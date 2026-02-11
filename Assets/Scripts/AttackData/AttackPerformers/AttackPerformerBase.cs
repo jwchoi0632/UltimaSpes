@@ -17,7 +17,8 @@ public abstract class AttackPerformerBase : ScriptableObject
 
     public virtual void Excute(CharacterBase owner, AttackDataBase attackData, AttackContext attackContext)
     {
-        _finalLayer = (attackData.overrideLayer != 0) ? attackData.overrideLayer : owner.TargetLayer;
+        //_finalLayer = (attackData.overrideLayer != 0) ? attackData.overrideLayer : owner.TargetLayer;
+        _finalLayer = owner.TargetLayer | attackData.overrideLayer;
         _damageContext.attackMultiplier = attackData.attackMultiplier;
         _damageContext.attackDamage = attackData.attackDamage;
     }
