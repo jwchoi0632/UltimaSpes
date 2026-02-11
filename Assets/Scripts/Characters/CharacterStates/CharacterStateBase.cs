@@ -14,10 +14,12 @@ public abstract class CharacterStateBase
     protected bool _damageable = true;
     protected bool _moveable = true;
     protected bool _attackable = false;
+    protected bool _interactable = false;
 
     public bool IsDamageable => _damageable;
     public bool IsMoveable => _moveable;
     public bool IsAttackable => _attackable;
+    public bool IsInteractable => _interactable;
 
     public CharacterStateBase(CharacterBase character)
     {

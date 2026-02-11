@@ -164,7 +164,7 @@ public class AttackState : CharacterStateBase
     {
         if (!weaponComp.IsEnabledAimLiner())
         {
-            _currentAimAngle = -90;
+            //_currentAimAngle = -90;
             weaponComp.SetAimLinerEnable(true);
         }
 

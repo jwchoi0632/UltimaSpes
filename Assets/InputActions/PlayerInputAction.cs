@@ -136,6 +136,42 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interaction"",
+                    ""type"": ""Button"",
+                    ""id"": ""1f36d30b-3df3-42a0-8abd-a69d7ed53c1b"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Swap"",
+                    ""type"": ""Button"",
+                    ""id"": ""f21dd51d-1f95-4066-8e0a-b91b99fdc177"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Walk"",
+                    ""type"": ""Button"",
+                    ""id"": ""ce4d471b-c274-43fd-a186-ab2d67b58cbf"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Menu"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc0f48b5-a36e-4f09-b0f8-036c34052191"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -220,7 +256,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""78c3fc15-1cb1-4c1c-99ed-b45150a137f7"",
                     ""path"": ""<Keyboard>/z"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Melee"",
@@ -231,7 +267,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""8ff3305f-8e1c-451f-84cb-974516645a90"",
                     ""path"": ""<Keyboard>/x"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Ranged"",
@@ -242,10 +278,54 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""name"": """",
                     ""id"": ""2001bc55-7dd5-42e8-b0c2-3a56795377d5"",
                     ""path"": ""<Keyboard>/c"",
-                    ""interactions"": """",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Skill"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6699c884-baa0-44a6-bfd4-850ebad183f7"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interaction"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ffae0872-928b-401d-858d-324955a59d95"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Swap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8e01668f-c7d2-47dd-b61b-95e8aec0f335"",
+                    ""path"": ""<Keyboard>/ctrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Walk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d88ffa19-b34f-488d-b2ca-52ae0626511c"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Menu"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -261,6 +341,10 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_PlayerActionMap_Melee = m_PlayerActionMap.FindAction("Melee", throwIfNotFound: true);
         m_PlayerActionMap_Ranged = m_PlayerActionMap.FindAction("Ranged", throwIfNotFound: true);
         m_PlayerActionMap_Skill = m_PlayerActionMap.FindAction("Skill", throwIfNotFound: true);
+        m_PlayerActionMap_Interaction = m_PlayerActionMap.FindAction("Interaction", throwIfNotFound: true);
+        m_PlayerActionMap_Swap = m_PlayerActionMap.FindAction("Swap", throwIfNotFound: true);
+        m_PlayerActionMap_Walk = m_PlayerActionMap.FindAction("Walk", throwIfNotFound: true);
+        m_PlayerActionMap_Menu = m_PlayerActionMap.FindAction("Menu", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -346,6 +430,10 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerActionMap_Melee;
     private readonly InputAction m_PlayerActionMap_Ranged;
     private readonly InputAction m_PlayerActionMap_Skill;
+    private readonly InputAction m_PlayerActionMap_Interaction;
+    private readonly InputAction m_PlayerActionMap_Swap;
+    private readonly InputAction m_PlayerActionMap_Walk;
+    private readonly InputAction m_PlayerActionMap_Menu;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerActionMap".
     /// </summary>
@@ -377,6 +465,22 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerActionMap/Skill".
         /// </summary>
         public InputAction @Skill => m_Wrapper.m_PlayerActionMap_Skill;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActionMap/Interaction".
+        /// </summary>
+        public InputAction @Interaction => m_Wrapper.m_PlayerActionMap_Interaction;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActionMap/Swap".
+        /// </summary>
+        public InputAction @Swap => m_Wrapper.m_PlayerActionMap_Swap;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActionMap/Walk".
+        /// </summary>
+        public InputAction @Walk => m_Wrapper.m_PlayerActionMap_Walk;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerActionMap/Menu".
+        /// </summary>
+        public InputAction @Menu => m_Wrapper.m_PlayerActionMap_Menu;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -418,6 +522,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Skill.started += instance.OnSkill;
             @Skill.performed += instance.OnSkill;
             @Skill.canceled += instance.OnSkill;
+            @Interaction.started += instance.OnInteraction;
+            @Interaction.performed += instance.OnInteraction;
+            @Interaction.canceled += instance.OnInteraction;
+            @Swap.started += instance.OnSwap;
+            @Swap.performed += instance.OnSwap;
+            @Swap.canceled += instance.OnSwap;
+            @Walk.started += instance.OnWalk;
+            @Walk.performed += instance.OnWalk;
+            @Walk.canceled += instance.OnWalk;
+            @Menu.started += instance.OnMenu;
+            @Menu.performed += instance.OnMenu;
+            @Menu.canceled += instance.OnMenu;
         }
 
         /// <summary>
@@ -444,6 +560,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Skill.started -= instance.OnSkill;
             @Skill.performed -= instance.OnSkill;
             @Skill.canceled -= instance.OnSkill;
+            @Interaction.started -= instance.OnInteraction;
+            @Interaction.performed -= instance.OnInteraction;
+            @Interaction.canceled -= instance.OnInteraction;
+            @Swap.started -= instance.OnSwap;
+            @Swap.performed -= instance.OnSwap;
+            @Swap.canceled -= instance.OnSwap;
+            @Walk.started -= instance.OnWalk;
+            @Walk.performed -= instance.OnWalk;
+            @Walk.canceled -= instance.OnWalk;
+            @Menu.started -= instance.OnMenu;
+            @Menu.performed -= instance.OnMenu;
+            @Menu.canceled -= instance.OnMenu;
         }
 
         /// <summary>
@@ -519,5 +647,33 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSkill(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interaction" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteraction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Swap" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSwap(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Walk" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnWalk(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Menu" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnMenu(InputAction.CallbackContext context);
     }
 }

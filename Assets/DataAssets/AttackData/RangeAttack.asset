@@ -15,6 +15,7 @@ MonoBehaviour:
   performer: {fileID: 11400000, guid: 8f2da7d80b078e34391856707b1e5c3f, type: 2}
   attackMultiplier: 1
   attackDamage: 0
+  breakable: 0
   attackInfo:
     causer: {fileID: 0}
     damage: 0
@@ -27,5 +28,8 @@ MonoBehaviour:
   overrideLayer:
     serializedVersion: 2
     m_Bits: 0
+  breakableLayer:
+    serializedVersion: 2
+    m_Bits: 8192
   <ProjectilePref>k__BackingField: {fileID: 8437902880916964794, guid: 7a97185036fbbe24492b9b64f9b4f8f4, type: 3}
   <ProjectileSpeed>k__BackingField: 5
