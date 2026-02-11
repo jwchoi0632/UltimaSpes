@@ -19,6 +19,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     protected LayerMask _targetLayer;
     protected HitInfo _hitInfo;
     protected DamageContext _damageContext;
+    protected AttackDataBase _attackData;
 
     public Action<ProjectileBase> OnReturnToPool { get; set; }
     
@@ -29,6 +30,12 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 
         _rb.gravityScale = _gravity;
         _collider.isTrigger = _isOverlapEvent;
+    }
+
+    public virtual void Init(AttackDataBase attackData, LayerMask layer)
+    {
+        _attackData = attackData;
+        _targetLayer = layer;
     }
 
     public virtual void Init(GameObject owner, HitInfo hitInfo, LayerMask layer)
@@ -69,6 +76,15 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 
         if (((1 << target.layer) & _targetLayer) != 0)
         {
+            if (((1 << target.layer) & _attackData.breakableLayer) != 0)
+            {
+                if (!_attackData.breakable)
+                {
+                    gameObject.SetActive(false);
+                    return;
+                }
+            }
+
             if (target.TryGetComponent<IHitable>(out IHitable hitable))
             {
                 if (_owner.TryGetComponent<IAttackable>(out var attacker))

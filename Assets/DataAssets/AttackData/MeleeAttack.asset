@@ -15,6 +15,7 @@ MonoBehaviour:
   performer: {fileID: 11400000, guid: f32d350b53c96384990d519867acda0c, type: 2}
   attackMultiplier: 1
   attackDamage: 0
+  breakable: 1
   attackInfo:
     causer: {fileID: 0}
     damage: 0
@@ -26,6 +27,9 @@ MonoBehaviour:
     launchForce: 0
   overrideLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8192
+  breakableLayer:
+    serializedVersion: 2
+    m_Bits: 8192
   <Range>k__BackingField: 1
   <Offset>k__BackingField: {x: 1, y: 0}

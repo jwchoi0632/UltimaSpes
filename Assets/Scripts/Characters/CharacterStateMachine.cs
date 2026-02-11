@@ -10,6 +10,7 @@ public class CharacterStateMachine : MonoBehaviour
     public CharacterBase _character { get; private set; }
     public MovementComponent2D _movement { get; private set; }
     public CharacterStatsBase _stats { get; private set; }
+    public InteractionComponent _interaction { get; private set; }
 
     public CharacterStateBase _currentState { get; private set; }
     private IAttackable _attackable;
@@ -22,16 +23,24 @@ public class CharacterStateMachine : MonoBehaviour
     private IReturnable _returnable;
     private INoticeable _noticeable;
 
+    private ICarryable _carryable;
+    private IPushable _pushable;
+
     public bool _activeIFrame { get; private set; }
 
     public Action<Collision2D> OnCollisionEntered;
 
     private Coroutine _iframe;
 
+    private bool _isInteractionPressed = false;
+    private bool _isSwapPressed = false;
+
     void Start()
     {
         _character = GetComponent<CharacterBase>();
         _movement = GetComponent<MovementComponent2D>();
+        _interaction = GetComponent<InteractionComponent>();
+
         _stats = _character.Stats;
 
         _attackable = _character as IAttackable;
@@ -44,17 +53,21 @@ public class CharacterStateMachine : MonoBehaviour
         _returnable = _character as IReturnable;
         _noticeable = _character as INoticeable;
 
-        //ChangeState(_character._normalState);
+        _carryable = _character as ICarryable;
+        _pushable = _character as IPushable;
     }
 
     public void ChangeState(CharacterStateBase state)
     {
         _currentState?.OnExit();
+        _interaction?.OnMissCarryObject();
 
         if (state == null) return;
 
         _currentState = state;
         _currentState.OnStart();
+
+        _interaction?.SetInteractionEnable(_currentState.IsInteractable);
     }
 
     public void SetIFrame(float duration)
@@ -184,7 +197,8 @@ public class CharacterStateMachine : MonoBehaviour
     {
         if (_character.TryGetComponent<WeaponComponent>(out var weaponComp))
         {
-            OnAttack(weaponComp.GetWeaponData(type));
+            if (_isSwapPressed) weaponComp.Swap(type);
+            else OnAttack(weaponComp.GetWeaponData(type));
         }
     }
 
@@ -194,6 +208,14 @@ public class CharacterStateMachine : MonoBehaviour
         {
             attackState.SetAttackPressed(false);
         }
+    }
+
+    public void OnStartMoveInput(Vector2 input)
+    {
+        if (_currentState.IsInteractable
+            && CheckInteraction(input)) return;
+
+        OnMoveInput(input);
     }
 
     public void OnMoveInput(Vector2 input)
@@ -230,6 +252,71 @@ public class CharacterStateMachine : MonoBehaviour
     public void OnEndJumpInput()
     {
         if (_currentState.IsMoveable) _movement.EndJumppressed();
+    }
+
+    public void OnInteractionInput()
+    {
+        if (!_currentState.IsInteractable) return;
+
+        _isInteractionPressed = true;
+
+        if (_interaction != null) _interaction.OnInteraction();
+    }
+
+    public void OnEndInteractionInput()
+    {
+        _isInteractionPressed = false;
+    }
+
+    public void OnSwapInput()
+    {
+        if (!_currentState.IsAttackable) return;
+
+        _isSwapPressed = true;
+    }
+
+    public void OnEndSwapInput()
+    {
+        _isSwapPressed = false;
+    }
+
+    public void OnThrowInput()
+    {
+        if (_currentState is CarryState carry)
+        {
+            carry.OnThrow();
+            _interaction?.ClearCarryableObject();
+        }
+    }
+
+    private bool CheckInteraction(Vector2 input)
+    {
+        if (_interaction == null) return false;
+
+        if (input.y < -0.5f)
+        {
+            if (_carryable != null && _isInteractionPressed && _movement.CheckGround())
+            {
+                bool result = _interaction.OnCarryInteraction();
+
+                if (result)
+                {
+                    _carryable._carryState.SetHoldSocket(_carryable.CarryHoldSocket);
+                    _carryable._carryState.SetCarryableObject(_interaction.GetCarryableObject());
+                    ChangeState(_carryable._carryState);
+                }
+                
+                return result;
+            }
+
+            return _interaction.OnDownDirectionInteraction();
+        }
+        else if (input.y > 0.5f)
+        {
+            return _interaction.OnUpDirectionInteraction();
+        }
+
+        return false;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

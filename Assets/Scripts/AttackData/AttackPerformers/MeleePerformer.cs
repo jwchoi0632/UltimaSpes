@@ -36,6 +36,11 @@ public class MeleePerformer : AttackPerformerBase
                     //    hitable.TakeDamage(hitInfo);
                     //}
 
+                    if (((1 << target.gameObject.layer) & attackData.breakableLayer) != 0)
+                    {
+                        if (!attackData.breakable) continue;
+                    }
+
                     if (target.TryGetComponent<IHitable>(out var hitable))
                     {
                         hitable.TakeDamage(hitInfo);

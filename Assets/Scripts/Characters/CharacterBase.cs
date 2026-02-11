@@ -52,6 +52,14 @@ public interface IAttackable
 public interface IStunable { public StunState _stunState { get; } }
 public interface IGroggyable { public GroggyState _groggyState { get; } }
 
+public interface ICarryable 
+{ 
+    public CarryState _carryState { get; } 
+    public Transform CarryHoldSocket { get; }
+}
+
+public interface IPushable { public PushState _pushState { get; } }
+
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]
 public abstract class CharacterBase : MonoBehaviour

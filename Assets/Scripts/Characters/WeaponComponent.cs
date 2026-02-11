@@ -60,6 +60,11 @@ public class WeaponComponent : MonoBehaviour
         _weaponDic[type] = weapon;
     }
 
+    public void Swap(AttackType type)
+    {
+        // TODO : 타입별 무기 리스트 만들어서 다음 인덱스로 스왑
+    }
+
     public bool IsReady(int index)
     {
         if (index < 0 || index >= _cooldownTimes.Length) return false;
