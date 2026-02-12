@@ -22,7 +22,7 @@ public class PatrolState : CharacterStateBase
     public override void OnStart()
     {
         base.OnStart();
-        Debug.Log(_owner.name + "On Patrol");
+
         SetNewPatrolTarget();
     }
 

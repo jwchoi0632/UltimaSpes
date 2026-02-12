@@ -30,7 +30,6 @@ public class CarryableObject : MonoBehaviour, IInteractable
 
     protected virtual void OnCarry(GameObject causer)
     {
-        Debug.Log("On Carry");
         _isOnCarry = true;
 
         _rb.velocity = Vector2.zero;
@@ -43,7 +42,6 @@ public class CarryableObject : MonoBehaviour, IInteractable
 
     protected virtual void OnThrow(GameObject causer, Vector2 force)
     {
-        Debug.Log("OnThrow");
         _isOnCarry = false;
         _col.enabled = true;
         _rb.simulated = true;

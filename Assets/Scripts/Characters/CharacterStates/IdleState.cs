@@ -11,6 +11,5 @@ public class IdleState : CharacterStateBase
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);
-        Debug.Log(_owner.name + "On Idle");
     }
 }
