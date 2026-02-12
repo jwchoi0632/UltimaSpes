@@ -35,6 +35,8 @@ public class CharacterStateMachine : MonoBehaviour
     private bool _isInteractionPressed = false;
     private bool _isSwapPressed = false;
 
+    private IAimming _aimming;
+
     void Start()
     {
         _character = GetComponent<CharacterBase>();
@@ -60,7 +62,6 @@ public class CharacterStateMachine : MonoBehaviour
     public void ChangeState(CharacterStateBase state)
     {
         _currentState?.OnExit();
-        _interaction?.OnMissCarryObject();
 
         if (state == null) return;
 
@@ -68,6 +69,8 @@ public class CharacterStateMachine : MonoBehaviour
         _currentState.OnStart();
 
         _interaction?.SetInteractionEnable(_currentState.IsInteractable);
+
+        _aimming = _currentState as IAimming;
     }
 
     public void SetIFrame(float duration)
@@ -225,10 +228,14 @@ public class CharacterStateMachine : MonoBehaviour
             _movement.SetMoveInput(input);
         }
         
-        if (_currentState is AttackState attackState)
+        if (_aimming != null)
         {
-            attackState.SetAimInput(input.y);
+            _aimming.SetAimInput(input.y);
         }
+        //if (_currentState is AttackState attackState)
+        //{
+        //    attackState.SetAimInput(input.y);
+        //}
     }
 
     public void OnEndMoveInput()
@@ -237,11 +244,15 @@ public class CharacterStateMachine : MonoBehaviour
         {
             _movement.SetMoveInput(Vector2.zero);
         }
-        
-        if (_currentState is AttackState attackState)
+
+        if (_aimming != null)
         {
-            attackState.SetAimInput(0);
+            _aimming.SetAimInput(0);
         }
+        //if (_currentState is AttackState attackState)
+        //{
+        //    attackState.SetAimInput(0);
+        //}
     }
 
     public void OnJumpInput()
@@ -256,6 +267,12 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnInteractionInput()
     {
+        if (_currentState is CarryState carry) // test
+        {
+            OnThrowInput();
+            return;
+        }
+
         if (!_currentState.IsInteractable) return;
 
         _isInteractionPressed = true;
@@ -284,8 +301,8 @@ public class CharacterStateMachine : MonoBehaviour
     {
         if (_currentState is CarryState carry)
         {
-            carry.OnThrow();
             _interaction?.ClearCarryableObject();
+            carry.OnThrow();
         }
     }
 

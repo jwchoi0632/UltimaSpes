@@ -35,6 +35,8 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     public virtual void Init(AttackDataBase attackData, LayerMask layer)
     {
         _attackData = attackData;
+        _owner = _attackData.attackInfo.causer;
+        _hitInfo = _attackData.attackInfo;
         _targetLayer = layer;
     }
 
