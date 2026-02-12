@@ -23,8 +23,8 @@ public interface IInteractable
     public InteractionType SupportedType { get; }
     public GameObject gameObject { get; }
 
-    public bool CanInteraction(GameObject casuer, InteractionType type);
-    public void OnInteraction(GameObject casuer, InteractionType type, Vector2 force = default);
+    public bool CanInteraction(GameObject causer, InteractionType type);
+    public void OnInteraction(GameObject causer, InteractionType type, Vector2 force = default);
 }
 
 public class InteractionComponent : MonoBehaviour

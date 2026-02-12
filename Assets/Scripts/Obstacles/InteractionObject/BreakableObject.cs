@@ -12,7 +12,7 @@ public class BreakableObject : MonoBehaviour, IHitable, IInteractable
 
     public InteractionType SupportedType => _interactionType;
 
-    public bool CanInteraction(GameObject casuer, InteractionType type)
+    public bool CanInteraction(GameObject causer, InteractionType type)
     {
         if (type == InteractionType.Breakable) return true;
 
@@ -23,7 +23,7 @@ public class BreakableObject : MonoBehaviour, IHitable, IInteractable
 
     public void IncreaseHp(float increaseValue) { }
 
-    public void OnInteraction(GameObject casuer, InteractionType type, Vector2 force = default)
+    public void OnInteraction(GameObject causer, InteractionType type, Vector2 force = default)
     {
         gameObject.SetActive(false);
     }
