@@ -177,3 +177,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _interactionType: 32
   _toDisableTime: 1
+  _dropItemPref: {fileID: 6565409654231367696, guid: b5729ef8000646e4dbe3df8514d079fe, type: 3}
+  _dropCount: 3

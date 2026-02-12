@@ -7,6 +7,8 @@ public class OpenableObject : MonoBehaviour, IInteractable
 {
     [SerializeField] protected InteractionType _interactionType;
     [SerializeField] protected float _toDisableTime = 1.0f;
+    [SerializeField] protected PickupItem _dropItemPref;
+    [SerializeField] protected int _dropCount = 3;
 
     public InteractionType SupportedType => _interactionType;
 
@@ -23,7 +25,6 @@ public class OpenableObject : MonoBehaviour, IInteractable
         {
             if (CheckOpenable(causer))
             {
-                Debug.Log("Open");
                 ApplyOpen(causer);
                 StartCoroutine(PostOpen());
             }
@@ -32,7 +33,15 @@ public class OpenableObject : MonoBehaviour, IInteractable
 
     protected virtual void ApplyOpen(GameObject causer)
     {
-        Debug.Log("Drop Item");
+        if (_dropItemPref == null) return;
+
+        for (int i = 0; i < _dropCount; ++i)
+        {
+            PickupItem item = SceneManagerBase.Instance._poolManager.Get<PickupItem>(_dropItemPref);
+
+            item.InitItem(i); // TODO : 아이템 정보 랜덤하게 가져오고 전달하는 과정 필요
+            item.Drop(transform.position);
+        }
     }
 
     protected virtual bool CheckOpenable(GameObject causer)

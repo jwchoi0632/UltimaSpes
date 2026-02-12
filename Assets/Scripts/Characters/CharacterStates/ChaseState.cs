@@ -22,7 +22,6 @@ public class ChaseState : CharacterStateBase
         base.OnStart();
 
         if (_stats.moveType == MoveType.OnlyFlying) _movement.IsIgnoreHoverHeight(false);
-        Debug.Log(_owner.name + "On Chase");
     }
 
     public override void OnUpdate()
