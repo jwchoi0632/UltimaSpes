@@ -8,6 +8,7 @@ public class OpenableObject : MonoBehaviour, IInteractable
     [SerializeField] protected InteractionType _interactionType;
     [SerializeField] protected float _toDisableTime = 1.0f;
     [SerializeField] protected PickupItem _dropItemPref;
+    [SerializeField] protected ObtainItem _dropObtainPref;
     [SerializeField] protected int _dropCount = 3;
 
     public InteractionType SupportedType => _interactionType;
@@ -37,7 +38,12 @@ public class OpenableObject : MonoBehaviour, IInteractable
 
         for (int i = 0; i < _dropCount; ++i)
         {
-            PickupItem item = SceneManagerBase.Instance._poolManager.Get<PickupItem>(_dropItemPref);
+            int random = Random.Range(0, 2);
+
+            DropItem item = null;
+
+            if (random == 0) item = SceneManagerBase.Instance._poolManager.Get<PickupItem>(_dropItemPref);
+            else item = SceneManagerBase.Instance._poolManager.Get<ObtainItem>(_dropObtainPref);
 
             item.InitItem(i); // TODO : 아이템 정보 랜덤하게 가져오고 전달하는 과정 필요
             item.Drop(transform.position);
