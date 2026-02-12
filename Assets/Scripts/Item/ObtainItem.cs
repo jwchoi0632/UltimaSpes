@@ -2,18 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickupItem : DropItem
+public class ObtainItem : DropItem
 {
     public override void OnInteraction(GameObject causer, InteractionType type, Vector2 force = default)
     {
-        if (type != InteractionType.Pickup) return;
+        if (type != InteractionType.Obtain) return;
 
         base.OnInteraction(causer, type, force);
     }
 
     protected override void OnPickup()
     {
-        // TODO : 플레이어 인벤토리에 아이템 등록
-        Debug.Log("Pick up item");
+        // TODO : 자동 줍기 되는 재화 증가
+        Debug.Log("Obtain item");
     }
 }

@@ -689,6 +689,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3589035143340591632, guid: af90a6b29768e5840933b9fa803900c5, type: 3}
+      propertyPath: _dropCount
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4470726884823468615, guid: af90a6b29768e5840933b9fa803900c5, type: 3}
       propertyPath: m_Name
       value: ChestObject
@@ -3190,6 +3194,10 @@ PrefabInstance:
     - target: {fileID: 2636408983412980670, guid: 0aca5f97353752a4595918d381dc6344, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 3181596367688947866, guid: 0aca5f97353752a4595918d381dc6344, type: 3}
+      propertyPath: m_UseFullKinematicContacts
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3489703848426006847, guid: 0aca5f97353752a4595918d381dc6344, type: 3}
       propertyPath: JumpHoldTime
