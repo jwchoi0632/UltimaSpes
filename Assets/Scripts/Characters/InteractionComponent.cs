@@ -116,7 +116,7 @@ public class InteractionComponent : MonoBehaviour
         if (target == null) return false;
 
         _currentCarryObj = target;
-        _currentCarryObj.OnInteraction(gameObject, InteractionType.Carry);
+        //_currentCarryObj.OnInteraction(gameObject, InteractionType.Carry);
 
         return true;
     }

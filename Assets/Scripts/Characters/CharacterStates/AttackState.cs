@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class AttackState : CharacterStateBase
+public class AttackState : CharacterStateBase, IAimming
 {
     public AttackState(CharacterBase character) : base(character) { }
 
