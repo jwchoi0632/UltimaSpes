@@ -88,7 +88,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
     {
         if (_stateMachine._activeIFrame) return;
 
-        Debug.Log(gameObject.name + " Take Damage. Causer is " + hitInfo.causer.name);
+        Debug.Log(gameObject.name + " Take Damage. Causer is " + hitInfo.causer?.name);
         DecreaseHp(hitInfo.damage);
         _stateMachine.OnHit(hitInfo);
     }

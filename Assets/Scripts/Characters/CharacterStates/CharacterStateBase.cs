@@ -2,6 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public interface IAimming
+{
+    public void SetAimInput(float input_y);
+}
 
 public abstract class CharacterStateBase
 {
