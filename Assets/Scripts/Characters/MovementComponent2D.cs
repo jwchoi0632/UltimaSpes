@@ -242,14 +242,14 @@ public class MovementComponent2D : MonoBehaviour
         if (_rb == null) return;
 
         float inputValue = isHorizontal ? _moveInput.x : _moveInput.y;
-        float currentValocity = isHorizontal ? _rb.velocity.x : _rb.velocity.y;
+        float currentVelocity = isHorizontal ? _rb.velocity.x : _rb.velocity.y;
         float targetSpeed = maxSpeed * inputValue;
 
         float accelUnit = maxSpeed / Mathf.Max(timeToReach, 0.01f);
         float decelUnit = maxSpeed / Mathf.Max(timeToStop, 0.01f);
 
         float currentRate = (Mathf.Abs(targetSpeed) > 0.01f) ? accelUnit : decelUnit;
-        float newValue = Mathf.MoveTowards(currentValocity, targetSpeed, currentRate * Time.fixedDeltaTime);
+        float newValue = Mathf.MoveTowards(currentVelocity, targetSpeed, currentRate * Time.fixedDeltaTime);
 
         Vector2 newVelocity = _rb.velocity;
 
