@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4680444556249605051}
-  - component: {fileID: 8286971340506293948}
+  - component: {fileID: 837545881987909818}
   m_Layer: 0
   m_Name: SpriteObj
   m_TagString: Untagged
@@ -26,14 +26,14 @@ Transform:
   m_GameObject: {fileID: 2242329934933237987}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.5, z: 1}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 689404706236631105}
   m_Father: {fileID: 7485396553094995974}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &8286971340506293948
+--- !u!212 &837545881987909818
 SpriteRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74,12 +74,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
-  m_Color: {r: 0.57232696, g: 0, b: 0, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: 21300000, guid: 1bce6ca4110e66f4ab27984f94d8b06f, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 2}
+  m_Size: {x: 0.21, y: 0.21}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -195,8 +195,8 @@ Transform:
   m_GameObject: {fileID: 8109459713997998404}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.489, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 1, z: 0.5}
+  m_LocalPosition: {x: 0.09780007, y: 0, z: 0}
+  m_LocalScale: {x: 0.05, y: 0.05, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4680444556249605051}
@@ -452,7 +452,7 @@ MonoBehaviour:
         maxHp: 100
         strength: 10
         moveType: 0
-        moveMaxSpeed: 5
+        moveMaxSpeed: 4
         acceleration_sec: 0.3
         deceleration_sec: 0.2
         moveMaxSpeed_air: 2.5
@@ -476,10 +476,11 @@ MonoBehaviour:
         grapJumpHorizontal: 0.5
         fallingHitImpact: 20
         fallingHitMultiplier: 1.5
+        noticeTime: 1
         attackSelectType: 0
         patrolRange: 2
         patrolType: 0
-        targetLostTime: 10
+        targetLostTime: 2.5
         detectionInterval: 0.2
         useEnvironmentAwareness: 1
         canJump: 1
@@ -506,6 +507,8 @@ MonoBehaviour:
         rangeMultiplier: 2
         defaultRange: 3
         thickness: 0.5
+        isVertical: 0
+        isUpper: 1
     - rid: 6238626942331650054
       type: {class: PerceptionSectorSensor, ns: , asm: Assembly-CSharp}
       data:
