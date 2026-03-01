@@ -67,7 +67,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 0
 --- !u!70 &8026407656056561304
 CapsuleCollider2D:
@@ -266,6 +266,7 @@ MonoBehaviour:
         rangeMultiplier: 1
         defaultRange: 1
         thickness: 0.5
+        padding: 0.3
         isVertical: 0
         isUpper: 0
     - rid: 6238627042135900163
@@ -277,10 +278,11 @@ MonoBehaviour:
     - rid: 6238627042135900164
       type: {class: PerceptionLineSensor, ns: , asm: Assembly-CSharp}
       data:
-        range: 1
+        range: 0.5
         rangeMultiplier: 1
-        defaultRange: 1
+        defaultRange: 0.5
         thickness: 0.5
+        padding: 0.2
         isVertical: 0
         isUpper: 1
     - rid: 6238627042135900165
@@ -290,6 +292,7 @@ MonoBehaviour:
         rangeMultiplier: 1
         defaultRange: 1
         thickness: 0.5
+        padding: 0.3
         isVertical: 0
         isUpper: 1
     - rid: 6238627042135900166
@@ -299,6 +302,7 @@ MonoBehaviour:
         rangeMultiplier: 1
         defaultRange: 1
         thickness: 0.5
+        padding: 0.3
         isVertical: 0
         isUpper: 1
 --- !u!114 &1930643133523768437

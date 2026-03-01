@@ -18,6 +18,7 @@ public class ShotTrap : TrapBase
 
         ProjectileBase projectile = SceneManagerBase.Instance._poolManager.Get<ProjectileBase>(_projectilePrefab);
         //projectile?.Init(gameObject, _hitInfo, _targetLayer);
+        _attackData.attackInfo = _hitInfo;
         _attackData.attackInfo.causer = gameObject;
         projectile?.Init(_attackData, _targetLayer);
 

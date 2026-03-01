@@ -84,7 +84,7 @@ MonoBehaviour:
   _obstacleLayer:
     serializedVersion: 2
     m_Bits: 320
-  _firePoint: {fileID: 0}
+  _firePoint: {fileID: 467565949941926454}
   _aimMaxDist: 10
 --- !u!50 &4139415178762904097
 Rigidbody2D:

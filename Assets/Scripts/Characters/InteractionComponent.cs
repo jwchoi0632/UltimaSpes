@@ -48,6 +48,8 @@ public class InteractionComponent : MonoBehaviour
     private bool _isEnable = true;
     private IInteractable _currentCarryObj = null;
 
+    public float GetPushSensorRange() => _pushSensor.range;
+
     public void SetInteractionEnable(bool enable)
     {
         _isEnable = enable;
@@ -147,6 +149,22 @@ public class InteractionComponent : MonoBehaviour
         return true;
     }
 
+    public IInteractable GetPushTarget(float inputX)
+    {
+        if (!_isEnable) return null;
+
+        IInteractable target = FindBestTarget(_pushSensor, InteractionType.Push);
+
+        if (target != null)
+        {
+            float relativePosX = target.gameObject.transform.position.x - transform.position.x;
+
+            if (relativePosX * inputX < 0) return null;
+        }
+
+        return target;
+    }
+
     public bool OnOpenInteraction()
     {
         if (!_isEnable) return false;
@@ -214,5 +232,14 @@ public class InteractionComponent : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Vector2 facingDir = Application.isPlaying && _movement != null
+            ? (_movement._isFacingRight ? Vector2.right : Vector2.left)
+            : Vector2.right;
+
+        _pushSensor.DrawDebugGizmos(transform, facingDir);
     }
 }

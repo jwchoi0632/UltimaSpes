@@ -155,6 +155,8 @@ public abstract class CharacterBase : MonoBehaviour
         _stateMachine.ChangeState(_dieState);
     }
 
+    public abstract void ResetState();
+
     protected void SetCurrentHp(float hp)
     {
         _currentHp = Mathf.Clamp(hp, 0, _stats.maxHp);
