@@ -6,6 +6,7 @@ using UnityEngine;
 public class PerceptionLineSensor : PerceptionSensor
 {
     public float thickness = 0.5f;
+    public float padding = 0.3f;
     public bool isVertical = false;
     public bool isUpper = true;
 
@@ -15,12 +16,13 @@ public class PerceptionLineSensor : PerceptionSensor
 
         if (isVertical) dir = isUpper ? Vector2.up : Vector2.down;
 
-        RaycastHit2D[] hits = Physics2D.BoxCastAll(owner.position, new Vector2(thickness, thickness), 0, dir, range, targetLayer);
+        Vector2 origin = (Vector2)owner.position - (dir * padding);
+        float totalRange = range + padding;
 
-        Collider2D[] results = new Collider2D[hits.Length];
-        for (int i = 0; i < hits.Length; i++) results[i] = hits[i].collider;
+        Vector2 center = origin + (dir * (totalRange * 0.5f));
+        Vector2 size = isVertical ? new Vector2(thickness, totalRange) : new Vector2(totalRange, thickness);
 
-        return results;
+        return Physics2D.OverlapBoxAll(center, size, 0, targetLayer);
     }
 
     public override void DrawDebugGizmos(Transform owner, Vector2 facingDir)
@@ -28,15 +30,14 @@ public class PerceptionLineSensor : PerceptionSensor
         Gizmos.color = Color.red;
 
         Vector2 dir = facingDir;
-
         if (isVertical) dir = isUpper ? Vector2.up : Vector2.down;
 
-        Vector3 center = (Vector3)owner.position + (Vector3)dir * (range * 0.5f);
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        Vector2 origin = (Vector2)owner.position - (dir * padding);
+        float totalRange = range + padding;
 
-        Matrix4x4 oldMatrix = Gizmos.matrix;
-        Gizmos.matrix = Matrix4x4.TRS(center, Quaternion.Euler(0, 0, angle), Vector3.one);
-        Gizmos.DrawWireCube(Vector3.zero, new Vector3(range, thickness, 0.1f));
-        Gizmos.matrix = oldMatrix;
+        Vector2 center = origin + (dir * (totalRange * 0.5f));
+        Vector3 size = isVertical ? new Vector3(thickness, totalRange, 0.1f) : new Vector3(totalRange, thickness, 0.1f);
+
+        Gizmos.DrawWireCube(center, size);
     }
 }

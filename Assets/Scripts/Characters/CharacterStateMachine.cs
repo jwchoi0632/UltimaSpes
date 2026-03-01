@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Profiling;
 using UnityEngine;
 using UnityEngine.Windows;
+using static UnityEngine.GraphicsBuffer;
 
 public class CharacterStateMachine : MonoBehaviour
 {
@@ -34,6 +36,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     private bool _isInteractionPressed = false;
     private bool _isSwapPressed = false;
+    private bool _isMovePressed = false;
 
     private IAimming _aimming;
 
@@ -223,6 +226,8 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnMoveInput(Vector2 input)
     {
+        _isMovePressed = true;
+
         if (_currentState.IsMoveable)
         {
             _movement.SetMoveInput(input);
@@ -232,14 +237,17 @@ public class CharacterStateMachine : MonoBehaviour
         {
             _aimming.SetAimInput(input.y);
         }
-        //if (_currentState is AttackState attackState)
-        //{
-        //    attackState.SetAimInput(input.y);
-        //}
     }
 
     public void OnEndMoveInput()
     {
+        _isMovePressed = false;
+
+        if (_currentState is PushState)
+        {
+            _pushable._pushState.OnCancled();
+        }
+
         if (_currentState.IsMoveable)
         {
             _movement.SetMoveInput(Vector2.zero);
@@ -249,10 +257,6 @@ public class CharacterStateMachine : MonoBehaviour
         {
             _aimming.SetAimInput(0);
         }
-        //if (_currentState is AttackState attackState)
-        //{
-        //    attackState.SetAimInput(0);
-        //}
     }
 
     public void OnJumpInput()
@@ -306,6 +310,37 @@ public class CharacterStateMachine : MonoBehaviour
         }
     }
 
+    private void ApplyPushInteraction(float inputx)
+    {
+        if (_pushable == null) return;
+        if (inputx < 0.1f && inputx > -0.1f)
+        {
+            _pushable._pushState.OnCancled();
+            return;
+        }
+
+        float dir = _movement._isFacingRight ? 1 : -1;
+
+        if (dir * inputx < 0)
+        {
+            _pushable._pushState.OnCancled();
+            return;
+        }
+
+        IInteractable target = _interaction.GetPushTarget(inputx);
+        float pushRange = _interaction.GetPushSensorRange();
+
+        _pushable._pushState.SetPushTarget(target, pushRange);
+
+        if (target != null)
+        {
+            if (!(_currentState is PushState))
+            {
+                ChangeState(_pushable._pushState);
+            }
+        }
+    }
+
     private bool CheckInteraction(Vector2 input)
     {
         if (_interaction == null) return false;
@@ -344,6 +379,8 @@ public class CharacterStateMachine : MonoBehaviour
     private void FixedUpdate()
     {
         _currentState?.OnFiexedUpdate();
+
+        if (_isMovePressed) ApplyPushInteraction(_movement._moveInput.x);
     }
 
     void Update()

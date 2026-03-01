@@ -81,7 +81,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
 
     public void PostAttack()
     {
-        _stateMachine.ChangeState(_normalState);
+        ResetState();
     }
 
     public void TakeDamage(HitInfo hitInfo)
@@ -108,6 +108,11 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
     }
 
     public void PostHit()
+    {
+        ResetState();
+    }
+
+    public override void ResetState()
     {
         _stateMachine.ChangeState(_normalState);
     }
