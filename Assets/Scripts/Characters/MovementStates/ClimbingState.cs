@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClimbingState : MovementStateBase, IMoveable, IGravityEffect, IJumpable
+public class ClimbingState : MovementStateBase, IMoveable, IJumpable
 {
     public ClimbingState(MovementComponent2D context) : base(context) { }
 
@@ -13,21 +13,26 @@ public class ClimbingState : MovementStateBase, IMoveable, IGravityEffect, IJump
         _rb.gravityScale = 0;
         _rb.velocity = Vector2.zero;
         _context.ResetJumpCount();
+
+        _context.SetClimbingLayer(true);
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
 
-        if (_context.CheckGround())
-        {
-            _context.ChangeMoveState(_context._groundedState);
-        }
+        //if (_context.CheckGround())
+        //{
+        //    _context.ChangeMoveState(_context._groundedState);
+        //}
     }
 
     public override void OnExit()
     {
         base.OnExit();
+
+        _context.SetClimbingLayer(false);
+        _rb.gravityScale = _context._defaultGravityScale;
     }
 
     public void Move(Vector2 input)
@@ -42,10 +47,5 @@ public class ClimbingState : MovementStateBase, IMoveable, IGravityEffect, IJump
     {
         _rb.velocity = new Vector2(_rb.velocity.x, _stats.jumpForce_climbing);
         _context.ChangeMoveState(_context._jumpingState);
-    }
-
-    public void ApplyGravity()
-    {
-        
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
+public class DroppingState : MovementStateBase, IMoveable
 {
     private float dropTime = 0.4f;
     private float currentTime;
@@ -15,6 +15,8 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
 
         currentTime = dropTime;
         _ignoreCollider = _context._groundHit.collider;
+
+        _rb.gravityScale = _context._defaultGravityScale * _stats.dropdownMultiplier;
 
         if (_ignoreCollider != null)
         {
@@ -46,15 +48,5 @@ public class DroppingState : MovementStateBase, IMoveable, IGravityEffect
         _context.ApplyMovement(maxSpeed: _context._currentMaxSpeed_air,
                                timeToReach: _stats.dropdownMultiplier,
                                timeToStop: _stats.dropdownMultiplier);
-    }
-
-    //public void Jump()
-    //{
-
-    //}
-
-    public void ApplyGravity()
-    {
-        _rb.gravityScale = _context._defaultGravityScale * _stats.dropdownMultiplier;
     }
 }

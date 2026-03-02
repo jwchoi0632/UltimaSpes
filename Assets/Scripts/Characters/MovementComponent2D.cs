@@ -20,6 +20,7 @@ public class MovementComponent2D : MonoBehaviour
     [SerializeField] private LayerMask stickingWallLayer;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float wallCheckDistance;
+    [SerializeField] private int climbingLayer;
     [SerializeField] private bool isDefaultFacingRight;
 
     [Header("Jump Settings")]
@@ -36,6 +37,8 @@ public class MovementComponent2D : MonoBehaviour
     public bool _isJumpPressed { get; private set; }
     public bool _canFlip { get; private set; }
     public bool _isFacingRight { get; private set; }
+
+    public int _originalLayer { get; private set; }
 
 
     public Vector2 _moveInput { get; private set; }
@@ -174,6 +177,28 @@ public class MovementComponent2D : MonoBehaviour
 
         SetMovementPhysics(false);
         ChangeMoveState(_fallingState);
+    }
+
+    public void OnEndClimb()
+    {
+        if (_currentState is not JumppingState)
+        {
+            if (CheckGround()) ChangeMoveState(_groundedState);
+            else ChangeMoveState(_fallingState);
+        }
+    }
+
+    public void SetClimbingLayer(bool isClimbing)
+    {
+        if (isClimbing)
+        {
+            _originalLayer = gameObject.layer;
+            gameObject.layer = climbingLayer;
+        }
+        else
+        {
+            gameObject.layer = _originalLayer;
+        }
     }
 
     public void SetMovementPhysics(bool isFlying)

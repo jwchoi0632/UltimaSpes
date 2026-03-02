@@ -66,8 +66,8 @@ Rigidbody2D:
     serializedVersion: 2
     m_Bits: 0
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 0
   m_Constraints: 0
 --- !u!70 &8026407656056561304
 CapsuleCollider2D:
@@ -183,6 +183,7 @@ MonoBehaviour:
     m_Bits: 64
   groundCheckDistance: 0.2
   wallCheckDistance: 0.05
+  climbingLayer: 15
   isDefaultFacingRight: 1
   jumpMaxCount: 1
   jumpHoldTime: 0.1
@@ -246,13 +247,22 @@ MonoBehaviour:
     rid: 6238627042135900165
   _carrySensor:
     rid: 6238627042135900166
+  _ladderSensor:
+    rid: 3399474490456670208
   _interactionLayer:
     serializedVersion: 2
-    m_Bits: 13312
+    m_Bits: 78848
   _obtainSensor: {fileID: 5380300882869451300}
   references:
     version: 2
     RefIds:
+    - rid: 3399474490456670208
+      type: {class: PerceptionVerticalSensor, ns: , asm: Assembly-CSharp}
+      data:
+        range: 0
+        rangeMultiplier: 2
+        defaultRange: 0.4
+        footDefaultRange: 0.4
     - rid: 6238627042135900160
       type: {class: PerceptionCircleSensor, ns: , asm: Assembly-CSharp}
       data:

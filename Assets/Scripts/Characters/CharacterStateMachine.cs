@@ -27,6 +27,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     private ICarryable _carryable;
     private IPushable _pushable;
+    private ILadderable _ladderable;
 
     public bool _activeIFrame { get; private set; }
 
@@ -60,6 +61,7 @@ public class CharacterStateMachine : MonoBehaviour
 
         _carryable = _character as ICarryable;
         _pushable = _character as IPushable;
+        _ladderable = _character as ILadderable;
     }
 
     public void ChangeState(CharacterStateBase state)
@@ -347,28 +349,62 @@ public class CharacterStateMachine : MonoBehaviour
 
         if (input.y < -0.5f)
         {
-            if (_carryable != null && _isInteractionPressed && _movement.CheckGround())
-            {
-                bool result = _interaction.OnCarryInteraction();
-
-                if (result)
-                {
-                    _carryable._carryState.SetHoldSocket(_carryable.CarryHoldSocket);
-                    _carryable._carryState.SetCarryableObject(_interaction.GetCarryableObject());
-                    ChangeState(_carryable._carryState);
-                }
-                
-                return result;
-            }
-
-            return _interaction.OnDownDirectionInteraction();
+            return CheckDownKeyInteraction();
         }
         else if (input.y > 0.5f)
         {
-            return _interaction.OnUpDirectionInteraction();
+            return CheckUpKeyInteraction();
         }
 
         return false;
+    }
+
+    private bool CheckDownKeyInteraction()
+    {
+        if (_ladderable != null)
+        {
+            IInteractable ladder = _interaction.OnLadderInteraction(true);
+
+            if (ladder != null)
+            {
+                _ladderable._ladderState.SetLadderObj(ladder);
+                ChangeState(_ladderable._ladderState);
+                return true;
+            }
+        }
+
+        if (_carryable != null && _isInteractionPressed && _movement.CheckGround())
+        {
+            bool result = _interaction.OnCarryInteraction();
+
+            if (result)
+            {
+                _carryable._carryState.SetHoldSocket(_carryable.CarryHoldSocket);
+                _carryable._carryState.SetCarryableObject(_interaction.GetCarryableObject());
+                ChangeState(_carryable._carryState);
+            }
+
+            return result;
+        }
+
+        return _interaction.OnPickupInteraction();
+    }
+
+    private bool CheckUpKeyInteraction()
+    {
+        if (_ladderable != null)
+        {
+            IInteractable ladder = _interaction.OnLadderInteraction(false);
+
+            if (ladder != null)
+            {
+                _ladderable._ladderState.SetLadderObj(ladder);
+                ChangeState(_ladderable._ladderState);
+                return true;
+            }
+        }
+
+        return _interaction.OnOpenInteraction();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -380,7 +416,7 @@ public class CharacterStateMachine : MonoBehaviour
     {
         _currentState?.OnFiexedUpdate();
 
-        if (_isMovePressed) ApplyPushInteraction(_movement._moveInput.x);
+        if (_isMovePressed && _currentState.IsInteractable) ApplyPushInteraction(_movement._moveInput.x);
     }
 
     void Update()

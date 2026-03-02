@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponComponent), typeof(InteractionComponent), typeof(PlayerController))]
-public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable, ICarryable, IPushable
+public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable, ICarryable, IPushable, ILadderable
 {
     [SerializeField] protected HitDatabase _hitDatabase;
     [SerializeField] private Transform _carryHoldSocket;
@@ -14,6 +14,8 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
     public HitState _hitState { get; private set; }
     public CarryState _carryState { get; private set; }
     public PushState _pushState { get; private set; }
+    public LadderState _ladderState { get; private set; }
+
 
     public PlayerController _playerControlelr { get; private set; }
     public WeaponComponent _weaponComponent { get; private set; }
@@ -59,6 +61,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
         _hitState = new HitState(this);
         _carryState = new CarryState(this);
         _pushState = new PushState(this);
+        _ladderState = new LadderState(this);
     }
 
     public void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo)

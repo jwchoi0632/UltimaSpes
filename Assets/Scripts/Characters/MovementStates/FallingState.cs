@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
+public class FallingState : MovementStateBase, IMoveable, IJumpable
 {
     private float _grabBlockTime = 0.1f;
     private float _grabHoldTime = 0.0f;
@@ -17,6 +17,8 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
 
         _currentblockTime = _grabBlockTime;
         _currentHoldTime = _grabHoldTime;
+
+        _rb.gravityScale = _context._defaultGravityScale * _stats.fallMultiplier;
     }
     public override void OnUpdate()
     {
@@ -72,10 +74,5 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable, IGravityEff
         {
             _context.ChangeMoveState(_context._jumpingState);
         }
-    }
-
-    public void ApplyGravity()
-    {
-        _rb.gravityScale = _context._defaultGravityScale * _stats.fallMultiplier;
     }
 }

@@ -60,6 +60,8 @@ public interface ICarryable
 
 public interface IPushable { public PushState _pushState { get; } }
 
+public interface ILadderable { public LadderState _ladderState { get; } }
+
 [RequireComponent(typeof(Rigidbody2D), typeof(CapsuleCollider2D))]
 [RequireComponent(typeof(MovementComponent2D), typeof(CharacterStateMachine))]
 public abstract class CharacterBase : MonoBehaviour

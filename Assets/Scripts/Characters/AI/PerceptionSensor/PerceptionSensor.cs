@@ -9,10 +9,17 @@ public abstract class PerceptionSensor
     public float rangeMultiplier = 2.0f;
     public float defaultRange;
 
+    public PerceptionSensor()
+    {
+        range = defaultRange;
+    }
+
     public void IsChaseModeSensor(bool isChaseMode)
     {
         range = isChaseMode ? defaultRange * rangeMultiplier : defaultRange;
     }
+
+    public virtual void ApplyRangeMultiplier(bool isMultipled) { }
 
     public abstract Collider2D[] GetInviewColliders(Transform owner, Vector2 facingDir, LayerMask targetLayer);
 
