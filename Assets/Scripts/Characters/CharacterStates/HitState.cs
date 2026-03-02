@@ -22,6 +22,7 @@ public class HitState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "ÇÇ°Ý";
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);

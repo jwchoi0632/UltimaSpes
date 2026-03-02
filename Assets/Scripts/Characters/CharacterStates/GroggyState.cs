@@ -10,6 +10,7 @@ public class GroggyState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "±×·Î±â";
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);

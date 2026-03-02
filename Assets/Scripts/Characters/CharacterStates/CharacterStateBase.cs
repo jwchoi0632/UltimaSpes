@@ -20,6 +20,8 @@ public abstract class CharacterStateBase
     protected bool _attackable = false;
     protected bool _interactable = false;
 
+    protected string _stateName;
+
     public bool IsDamageable => _damageable;
     public bool IsMoveable => _moveable;
     public bool IsAttackable => _attackable;
@@ -38,6 +40,8 @@ public abstract class CharacterStateBase
         _stateStartTime = Time.time;
 
         _movement.EndJumppressed();
+
+        _stateMachine.SetStateText(_stateName);
     }
 
     public virtual void OnUpdate() { }

@@ -26,6 +26,7 @@ public class AttackState : CharacterStateBase, IAimming
 
     public override void OnStart()
     {
+        _stateName = "АјАн";
         base.OnStart();
 
         if (_currentData == null)

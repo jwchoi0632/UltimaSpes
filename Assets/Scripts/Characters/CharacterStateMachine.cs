@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEditor.Profiling;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Windows;
 using static UnityEngine.GraphicsBuffer;
 
 public class CharacterStateMachine : MonoBehaviour
 {
+    [SerializeField] private Text _stateText; // Debug
+
     public CharacterBase _character { get; private set; }
     public MovementComponent2D _movement { get; private set; }
     public CharacterStatsBase _stats { get; private set; }
@@ -76,6 +79,11 @@ public class CharacterStateMachine : MonoBehaviour
         _interaction?.SetInteractionEnable(_currentState.IsInteractable);
 
         _aimming = _currentState as IAimming;
+    }
+
+    public void SetStateText(string text) // Debug
+    {
+        _stateText.text = text;
     }
 
     public void SetIFrame(float duration)

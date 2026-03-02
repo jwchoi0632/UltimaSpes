@@ -12,6 +12,12 @@ public class WaitState : CharacterStateBase
     public void SetWaitTime(float time) => _currentTime = time;
     public void SetNextState(CharacterStateBase nextState) => _nextState = nextState;
 
+    public override void OnStart()
+    {
+        _stateName = "상태 전이 기다림";
+        base.OnStart();
+    }
+
     public override void OnUpdate()
     {
         base.OnUpdate();

@@ -39,6 +39,7 @@ public class PushState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "¹Ð±â";
         base.OnStart();
 
         //float dir = _owner._movement._isFacingRight ? 1 : -1;

@@ -12,6 +12,7 @@ public class NormalState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "±âº»";
         base.OnStart();
     }
 }

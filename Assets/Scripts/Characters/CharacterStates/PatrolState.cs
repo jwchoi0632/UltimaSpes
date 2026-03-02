@@ -21,6 +21,7 @@ public class PatrolState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "Б¤Вы";
         base.OnStart();
 
         SetNewPatrolTarget();
