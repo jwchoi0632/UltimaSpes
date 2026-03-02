@@ -8,6 +8,7 @@ public class DieState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "»ç¸Á";
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);

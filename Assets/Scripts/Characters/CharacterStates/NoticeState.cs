@@ -25,6 +25,7 @@ public class NoticeState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "Ã¹ ÀÎ½Ä";
         base.OnStart();
 
         if (_isNoticeable )

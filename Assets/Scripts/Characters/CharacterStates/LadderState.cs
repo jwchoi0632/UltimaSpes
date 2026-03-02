@@ -15,8 +15,9 @@ public class LadderState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "사다리 타기";
         base.OnStart();
-        Debug.Log("OnLadderState");
+
         if (_stateMachine._interaction == null || _ladder == null)
         {
             _owner.ResetState();

@@ -31,6 +31,7 @@ public class CarryState : CharacterStateBase, IAimming
 
     public override void OnStart()
     {
+        _stateName = "¿î¹Ý";
         base.OnStart();
 
         if (_target == null) _stateMachine.ChangeState(_owner._normalState);

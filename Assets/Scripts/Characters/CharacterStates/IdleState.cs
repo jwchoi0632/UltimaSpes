@@ -8,6 +8,7 @@ public class IdleState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "´ë±â";
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);

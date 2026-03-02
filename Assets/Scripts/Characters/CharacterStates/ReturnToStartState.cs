@@ -19,6 +19,7 @@ public class ReturnToStartState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "º¹±Í";
         base.OnStart();
 
         _hasResetPoint = false;

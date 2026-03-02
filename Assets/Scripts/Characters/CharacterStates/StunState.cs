@@ -12,6 +12,7 @@ public class StunState : CharacterStateBase
 
     public override void OnStart()
     {
+        _stateName = "±âÀý";
         base.OnStart();
 
         _movement.SetMoveInput(Vector2.zero);
