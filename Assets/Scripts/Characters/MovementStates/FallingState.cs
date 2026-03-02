@@ -29,39 +29,19 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
 
         if (_context.CheckGround())
         {
-            if (_context._character is IHitable hitCharacter)
+            HandleFallingHit();
+
+            if (_context.HasJumpBuffer())
             {
-                float impactDistance = Mathf.Abs(_startPosY - _context.gameObject.transform.position.y);
-
-                if (impactDistance > _stats.fallingHitDistance)
-                {
-                    float fallDamage = (impactDistance - _stats.fallingHitDistance / 2) * _stats.fallingHitMultiplier;
-
-                    HitInfo hitInfo = new HitInfo();
-
-                    hitInfo.damage = fallDamage;
-                    hitInfo.hitType = HitType.FallingHit;
-                    hitInfo.causer = _context._groundHit.collider.gameObject;
-
-                    hitCharacter.TakeDamage(hitInfo);
-                }
+                _context.ClearJumpBuffer();
+                _context.ChangeMoveState(_context._jumpingState);
+                return;
             }
 
-            _context.ChangeMoveState(_context._groundedState);
             return;
         }
 
-        if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
-        else if (_context.IsWallGrabable())
-        {
-            if (_currentHoldTime > 0) _currentHoldTime -= Time.deltaTime;
-            else
-            {
-                if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
-                else _context.ChangeMoveState(_context._wallGrabState);
-            }
-        }
-        else _currentHoldTime = _grabHoldTime;
+        HandleGrabInteraction();
     }
 
     public void Move(Vector2 input)
@@ -73,9 +53,48 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
 
     public void Jump()
     {
-        if (_context._currentJumpCount < _context.JumpMaxCount)
+        if (_context.CanCoyoteJump() &&
+            _context._currentJumpCount < _context.JumpMaxCount)
         {
             _context.ChangeMoveState(_context._jumpingState);
         }
+    }
+
+    private void HandleFallingHit()
+    {
+        if (_context._character is IHitable hitCharacter)
+        {
+            float impactDistance = Mathf.Abs(_startPosY - _context.gameObject.transform.position.y);
+
+            if (impactDistance > _stats.fallingHitDistance)
+            {
+                float fallDamage = (impactDistance - _stats.fallingHitDistance / 2) * _stats.fallingHitMultiplier;
+
+                HitInfo hitInfo = new HitInfo();
+
+                hitInfo.damage = fallDamage;
+                hitInfo.hitType = HitType.FallingHit;
+                hitInfo.causer = _context._groundHit.collider.gameObject;
+
+                hitCharacter.TakeDamage(hitInfo);
+            }
+        }
+
+        _context.ChangeMoveState(_context._groundedState);
+    }
+
+    private void HandleGrabInteraction()
+    {
+        if (_currentblockTime > 0) _currentblockTime -= Time.deltaTime;
+        else if (_context.IsWallGrabable())
+        {
+            if (_currentHoldTime > 0) _currentHoldTime -= Time.deltaTime;
+            else
+            {
+                if (_context.IsStickingWall()) _context.ChangeMoveState(_context._wallStickingState);
+                else _context.ChangeMoveState(_context._wallGrabState);
+            }
+        }
+        else _currentHoldTime = _grabHoldTime;
     }
 }
