@@ -26,6 +26,8 @@ public class MovementComponent2D : MonoBehaviour
     [Header("Jump Settings")]
     [SerializeField] private int jumpMaxCount;
     [SerializeField] private float jumpHoldTime;
+    [SerializeField] private float _coyoteTimeThreshold = 0.15f;
+    [SerializeField] private float _jumpBufferTime = 0.2f;
 
     public float _maxSpeed_ground { get; private set; }
     public float _maxSpeed_air { get; private set; }
@@ -49,7 +51,6 @@ public class MovementComponent2D : MonoBehaviour
     public float _defaultGravityScale { get; private set; }
     public int JumpMaxCount => jumpMaxCount;
     public float JumpHoldTime => jumpHoldTime;
-    
 
     public GroundedState _groundedState { get; private set; }
     public JumppingState _jumpingState { get; private set; }
@@ -68,6 +69,8 @@ public class MovementComponent2D : MonoBehaviour
     private IGravityEffect _gravityEffect;
 
     private bool _ignoreHoverHeight = false;
+    private float _lastGroundedTime = 0.0f;
+    private float _lastJumpInputTime = 0.0f;
 
     private void Awake()
     {
@@ -108,7 +111,6 @@ public class MovementComponent2D : MonoBehaviour
 
     public void ResetJumpCount() => _currentJumpCount = 0;
     public void IncreaseJumpCount() => ++_currentJumpCount;
-    public void SetJumpInput(bool pressed) => _isJumpPressed = pressed;
     public void SetCanFlip(bool canFlip) => _canFlip = canFlip;
     public void SetCurrentMaxSpeedOnGround(float speed) => _currentMaxSpeed = speed;
     public void SetCurrentMaxSpeedInAir(float speed) => _currentMaxSpeed_air = speed;
@@ -117,6 +119,9 @@ public class MovementComponent2D : MonoBehaviour
     public void SetMaxSpeedInAir(float speed) => _maxSpeed_air = speed;
     public void SetMaxSpeedOnFlying(float speed) => _maxSpeed_flying = speed;
     public void IsIgnoreHoverHeight(bool ignore) => _ignoreHoverHeight = ignore;
+    public void ClearJumpBuffer() => _lastJumpInputTime = -10;
+    public bool CanCoyoteJump() => Time.time - _lastGroundedTime <= _coyoteTimeThreshold;
+    public bool HasJumpBuffer() => Time.time - _lastJumpInputTime <= _jumpBufferTime;
 
     public void ChangeMoveState(MovementStateBase newState)
     {
@@ -141,6 +146,12 @@ public class MovementComponent2D : MonoBehaviour
 
         if ((moveInput.x < 0 && _isFacingRight) ||
             (moveInput.x > 0 && !_isFacingRight)) Flip(); 
+    }
+
+    public void SetJumpInput(bool pressed)
+    {
+        _isJumpPressed = pressed;
+        _lastJumpInputTime = pressed ? Time.time : -10;
     }
 
     public float GetMaxJumpHeight()
@@ -301,6 +312,8 @@ public class MovementComponent2D : MonoBehaviour
            groundLayer);
 
         if (_groundHit.collider == null) return false;
+
+        _lastGroundedTime = Time.time;
 
         return true;
     }
