@@ -32,7 +32,7 @@ public class PushableObject : MonoBehaviour, IInteractable
             _isBeingPushed = false;
             _causerRb = null;
             _rb.velocity = new Vector2(0, _rb.velocity.y);
-            _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+            _rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
         }
     }
 
@@ -44,7 +44,7 @@ public class PushableObject : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        _rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        _rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void FixedUpdate()

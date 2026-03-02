@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GroundedState : MovementStateBase, IMoveable, IJumpable, IGravityEffect
+public class GroundedState : MovementStateBase, IMoveable, IJumpable
 {
     public GroundedState(MovementComponent2D context) : base(context) { }
 
@@ -11,6 +11,7 @@ public class GroundedState : MovementStateBase, IMoveable, IJumpable, IGravityEf
         base.OnStart();
 
         _context.ResetJumpCount();
+        _rb.gravityScale = _context._defaultGravityScale;
     }
 
     public override void OnUpdate()
@@ -41,10 +42,5 @@ public class GroundedState : MovementStateBase, IMoveable, IJumpable, IGravityEf
         {
             _context.ChangeMoveState(_context._jumpingState);
         }
-    }
-
-    public void ApplyGravity()
-    {
-        _rb.gravityScale = _context._defaultGravityScale;
     }
 }

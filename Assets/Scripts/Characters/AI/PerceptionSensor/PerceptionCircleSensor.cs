@@ -5,6 +5,8 @@ using UnityEngine;
 [System.Serializable]
 public class PerceptionCircleSensor : PerceptionSensor
 {
+    public PerceptionCircleSensor() : base() { }
+
     public override Collider2D[] GetInviewColliders(Transform owner, Vector2 facingDir, LayerMask targetLayer)
     {
         return Physics2D.OverlapCircleAll(owner.position, range, targetLayer);

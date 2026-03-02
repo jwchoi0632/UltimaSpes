@@ -7,6 +7,8 @@ public class PerceptionSectorSensor : PerceptionSensor
 {
     [Range(0, 360)] public float viewAngle = 90;
 
+    public PerceptionSectorSensor() : base() { }
+
     public override Collider2D[] GetInviewColliders(Transform owner, Vector2 facingDir, LayerMask targetLayer)
     {
         Collider2D[] targets = Physics2D.OverlapCircleAll(owner.position, range, targetLayer);

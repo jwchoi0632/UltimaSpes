@@ -15,7 +15,8 @@ public enum InteractionType
     Open = 1 << 5,
     Throw = 1 << 6,
     Activate = 1 << 7,
-    Breakable = 1 << 8
+    Breakable = 1 << 8,
+    Ladder = 1 << 9
 }
 
 public interface IInteractable
@@ -36,6 +37,7 @@ public class InteractionComponent : MonoBehaviour
     [SerializeReference, SubclassSelector] private PerceptionSensor _activateSensor;
     [SerializeReference, SubclassSelector] private PerceptionSensor _pushSensor;
     [SerializeReference, SubclassSelector] private PerceptionSensor _carrySensor;
+    [SerializeReference, SubclassSelector] private PerceptionSensor _ladderSensor;
 
     [Header("Interaction Settings")]
     [SerializeField] private LayerMask _interactionLayer;
@@ -121,6 +123,22 @@ public class InteractionComponent : MonoBehaviour
         //_currentCarryObj.OnInteraction(gameObject, InteractionType.Carry);
 
         return true;
+    }
+
+    public IInteractable OnLadderInteraction(bool isDescending)
+    {
+        if (!_isEnable) return null;
+
+        return IsOnLadder(isDescending);
+    }
+
+    public IInteractable IsOnLadder(bool isDescending)
+    {
+        _ladderSensor.ApplyRangeMultiplier(isDescending);
+
+        IInteractable target = FindBestTarget(_ladderSensor, InteractionType.Ladder);
+
+        return target;
     }
 
     public bool OnPickupInteraction()
@@ -236,10 +254,10 @@ public class InteractionComponent : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        Vector2 facingDir = Application.isPlaying && _movement != null
-            ? (_movement._isFacingRight ? Vector2.right : Vector2.left)
-            : Vector2.right;
+        //Vector2 facingDir = Application.isPlaying && _movement != null
+        //    ? (_movement._isFacingRight ? Vector2.right : Vector2.left)
+        //    : Vector2.right;
 
-        _pushSensor.DrawDebugGizmos(transform, facingDir);
+        //_pushSensor.DrawDebugGizmos(transform, facingDir);
     }
 }

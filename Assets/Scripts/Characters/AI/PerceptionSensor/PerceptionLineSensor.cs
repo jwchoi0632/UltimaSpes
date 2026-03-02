@@ -10,6 +10,8 @@ public class PerceptionLineSensor : PerceptionSensor
     public bool isVertical = false;
     public bool isUpper = true;
 
+    public PerceptionLineSensor() : base() { }
+
     public override Collider2D[] GetInviewColliders(Transform owner, Vector2 facingDir, LayerMask targetLayer)
     {
         Vector2 dir = facingDir;
