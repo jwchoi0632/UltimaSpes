@@ -9,12 +9,15 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
     private float _currentblockTime;
     private float _currentHoldTime;
 
+    private float _startPosY;
+
     public FallingState(MovementComponent2D context) : base(context) { }
 
     public override void OnStart()
     {
         base.OnStart();
 
+        _startPosY = _context.gameObject.transform.position.y;
         _currentblockTime = _grabBlockTime;
         _currentHoldTime = _grabHoldTime;
 
@@ -28,11 +31,11 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
         {
             if (_context._character is IHitable hitCharacter)
             {
-                float impactVelocity = Mathf.Abs(_rb.velocity.y);
+                float impactDistance = Mathf.Abs(_startPosY - _context.gameObject.transform.position.y);
 
-                if (impactVelocity > _stats.fallingHitImpact)
+                if (impactDistance > _stats.fallingHitDistance)
                 {
-                    float fallDamage = (impactVelocity - _stats.fallingHitImpact) * _stats.fallingHitMultiplier;
+                    float fallDamage = (impactDistance - _stats.fallingHitDistance / 2) * _stats.fallingHitMultiplier;
 
                     HitInfo hitInfo = new HitInfo();
 
