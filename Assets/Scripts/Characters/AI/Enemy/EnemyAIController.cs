@@ -143,7 +143,7 @@ public class EnemyAIController : AIControllerBase
     protected virtual void OnTargetFound(Transform target)
     {
         _target = target;
-        Debug.Log("Found Target");
+        
         if (_targetLost != null)
         {
             StopCoroutine(_targetLost);

@@ -54,6 +54,6 @@ public class CharacterStatsBase
     public float grapJumpHorizontal = 0.5f;
 
     [Header("Hit Stats")]
-    public float fallingHitImpact = 20.0f;
+    public float fallingHitDistance = 5.0f;
     public float fallingHitMultiplier = 1.5f;
 }
