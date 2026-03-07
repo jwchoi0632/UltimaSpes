@@ -35,9 +35,18 @@ public class EnemyCharacterBase : AICharacterBase, IPoolable<EnemyCharacterBase>
         return result;
     }
 
-    public void PostAttack()
+    public void PostAttack(float recovery)
     {
-        _stateMachine.OnChase();
+        if (recovery > 0.05f)
+        {
+            if (this is IChaseable chasesable)
+            {
+                _stateMachine.OnWait(recovery, chasesable._chaseState);
+                return;
+            }
+        }
+        
+        ResetState();
     }
 
     protected override void Die()

@@ -110,11 +110,11 @@ public class CharacterStateMachine : MonoBehaviour
         }
     }
 
-    public void OnAttackEnd()
+    public void OnAttackEnd(float recovery)
     {
         if (_attackable != null)
         {
-            _attackable.PostAttack();
+            _attackable.PostAttack(recovery);
         }
     }
 
@@ -176,7 +176,8 @@ public class CharacterStateMachine : MonoBehaviour
         {
             if (nextState != null) ChangeState(nextState);
             else OnIdle();
-                return;
+            
+            return;
         }
 
         _waitable._waitState.SetWaitTime(time);
@@ -261,10 +262,7 @@ public class CharacterStateMachine : MonoBehaviour
             _pushable._pushState.OnCancled();
         }
 
-        if (_currentState.IsMoveable)
-        {
-            _movement.SetMoveInput(Vector2.zero);
-        }
+        _movement.SetMoveInput(Vector2.zero);
 
         if (_aimming != null)
         {
@@ -279,7 +277,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnEndJumpInput()
     {
-        if (_currentState.IsMoveable) _movement.EndJumppressed();
+        _movement.EndJumppressed();
     }
 
     public void OnInteractionInput()
@@ -431,6 +429,7 @@ public class CharacterStateMachine : MonoBehaviour
     void Update()
     {
         _currentState?.OnUpdate();
+
     }
 
     private void OnDisable()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(WeaponComponent), typeof(InteractionComponent), typeof(PlayerController))]
-public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable, ICarryable, IPushable, ILadderable
+public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyable, IHitable, ICarryable, IPushable, ILadderable, IWaitable
 {
     [SerializeField] protected HitDatabase _hitDatabase;
     [SerializeField] private Transform _carryHoldSocket;
@@ -15,6 +15,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
     public CarryState _carryState { get; private set; }
     public PushState _pushState { get; private set; }
     public LadderState _ladderState { get; private set; }
+    public WaitState _waitState { get; private set; }
 
 
     public PlayerController _playerControlelr { get; private set; }
@@ -23,6 +24,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
 
     public HitDatabase HitData => _hitDatabase;
     public Transform CarryHoldSocket => _carryHoldSocket;
+
 
     protected override void OnAwake()
     {
@@ -62,6 +64,7 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
         _carryState = new CarryState(this);
         _pushState = new PushState(this);
         _ladderState = new LadderState(this);
+        _waitState = new WaitState(this);
     }
 
     public void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo)
@@ -82,8 +85,14 @@ public class PlayerCharacter : CharacterBase, IAttackable, IStunable, IGroggyabl
         return result;
     }
 
-    public void PostAttack()
+    public void PostAttack(float recovery)
     {
+        if (recovery > 0.05f)
+        {
+            _stateMachine.OnWait(recovery, _normalState);
+            return;
+        }
+
         ResetState();
     }
 
