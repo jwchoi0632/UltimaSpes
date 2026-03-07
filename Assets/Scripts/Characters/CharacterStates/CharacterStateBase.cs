@@ -39,7 +39,7 @@ public abstract class CharacterStateBase
     {
         _stateStartTime = Time.time;
 
-        _movement.EndJumppressed();
+        //_movement.EndJumppressed();
 
         _stateMachine.SetStateText(_stateName);
     }

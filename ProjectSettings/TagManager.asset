@@ -21,7 +21,7 @@ TagManager:
   - Breakable
   - Sensor
   - ClimbingCharacter
-  - Ladder
+  - NonBlockInteraction
   - 
   - 
   - 

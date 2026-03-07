@@ -8,6 +8,8 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
     private float _grabHoldTime = 0.0f;
     private float _currentblockTime;
     private float _currentHoldTime;
+    private float _groundCheckDelay = 0.15f;
+    private float _currentDelay;
 
     private float _startPosY;
 
@@ -20,12 +22,20 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
         _startPosY = _context.gameObject.transform.position.y;
         _currentblockTime = _grabBlockTime;
         _currentHoldTime = _grabHoldTime;
+        _currentDelay = _groundCheckDelay;
 
         _rb.gravityScale = _context._defaultGravityScale * _stats.fallMultiplier;
     }
-    public override void OnUpdate()
+
+    public override void OnFixedUpdate()
     {
-        base.OnUpdate();
+        base.OnFixedUpdate();
+
+        if (_currentDelay > 0)
+        {
+            _currentDelay -= Time.deltaTime;
+            return;
+        }
 
         if (_context.CheckGround())
         {
@@ -33,8 +43,7 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
 
             if (_context.HasJumpBuffer())
             {
-                _context.ClearJumpBuffer();
-                _context.ChangeMoveState(_context._jumpingState);
+                HandleCoyoteJump();
                 return;
             }
 
@@ -42,6 +51,13 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
         }
 
         HandleGrabInteraction();
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+        
     }
 
     public void Move(Vector2 input)
@@ -96,5 +112,19 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
             }
         }
         else _currentHoldTime = _grabHoldTime;
+    }
+
+    private void HandleCoyoteJump()
+    {
+        _context.ClearJumpBuffer();
+
+        if (_context.IsOnThinPlatform() && _context._moveInput.y < 0)
+        {
+            _context.ChangeMoveState(_context._droppingState);
+        }
+        else
+        {
+            _context.ChangeMoveState(_context._jumpingState);
+        }
     }
 }
