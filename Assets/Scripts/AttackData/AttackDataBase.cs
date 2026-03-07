@@ -21,6 +21,7 @@ public class AttackDataBase : ScriptableObject
     public AttackPerformerBase performer;
     public float attackMultiplier;
     public float attackDamage;
+    public float recoveryTime;
     public bool breakable;
     public HitInfo attackInfo;
     public LayerMask overrideLayer;

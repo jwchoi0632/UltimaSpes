@@ -120,6 +120,7 @@ public class MovementComponent2D : MonoBehaviour
     public void SetMaxSpeedOnFlying(float speed) => _maxSpeed_flying = speed;
     public void IsIgnoreHoverHeight(bool ignore) => _ignoreHoverHeight = ignore;
     public void ClearJumpBuffer() => _lastJumpInputTime = -10;
+    public void UpdateCoyoteTime() => _lastGroundedTime = Time.time;
     public bool CanCoyoteJump() => Time.time - _lastGroundedTime <= _coyoteTimeThreshold;
     public bool HasJumpBuffer() => Time.time - _lastJumpInputTime <= _jumpBufferTime;
 
@@ -301,19 +302,61 @@ public class MovementComponent2D : MonoBehaviour
         _rb.AddForce(force, ForceMode2D.Impulse);
     }
 
+    //public bool CheckGround()
+    //{
+    //    if (_rb.velocity.y > 0.1f) return false;
+
+    //    float boxHeight = 0.1f;
+    //    Vector2 rayStart = new Vector2(_mainCollider.bounds.center.x, _mainCollider.bounds.min.y + (boxHeight * 0.5f));
+    //    Vector2 boxSize = new Vector2(_mainCollider.bounds.size.x * 0.8f, boxHeight);
+
+    //    RaycastHit2D[] hits = Physics2D.BoxCastAll(
+    //        rayStart,
+    //        boxSize,
+    //        0f,
+    //        Vector2.down,
+    //        groundCheckDistance,
+    //        groundLayer);
+
+    //    foreach (var hit in hits)
+    //    {
+    //        if (hit.collider.isTrigger) continue;
+
+    //        float feetY = _mainCollider.bounds.min.y;
+    //        float groundY = hit.point.y;
+
+    //        if (groundY <= feetY + 0.05f)
+    //        {
+    //            _groundHit = hit;
+    //            return true;
+    //        }
+    //    }
+
+    //    return false;
+    //}
+
     public bool CheckGround()
     {
+        float boxHeight = 0.1f;
+        Vector2 rayStart = new Vector2(_mainCollider.bounds.center.x, _mainCollider.bounds.min.y + (boxHeight * 0.5f));
+        Vector2 boxSize = new Vector2(_mainCollider.bounds.size.x * 0.8f, boxHeight);
+
         _groundHit = Physics2D.BoxCast(
-           _mainCollider.bounds.center,
-           new Vector2(_mainCollider.bounds.size.x * 0.9f, 0.1f),
-           0f,
-           Vector2.down,
-           _mainCollider.bounds.extents.y + groundCheckDistance,
-           groundLayer);
+            rayStart,
+            boxSize,
+            0f,
+            Vector2.down,
+            groundCheckDistance,
+            groundLayer);
+
+        if (_rb.velocity.y > 0.1f) return false;
 
         if (_groundHit.collider == null) return false;
 
-        _lastGroundedTime = Time.time;
+        float feetY = _mainCollider.bounds.min.y;
+        float groundY = _groundHit.point.y;
+
+        if (groundY > feetY + 0.05f) return false;
 
         return true;
     }

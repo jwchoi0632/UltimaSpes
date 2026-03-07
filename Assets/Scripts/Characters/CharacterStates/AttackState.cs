@@ -14,6 +14,7 @@ public class AttackState : CharacterStateBase, IAimming
     private float _currentAimAngle;
     private float _currentAim;
     private float _currentCharge;
+    private float _recoveryTime;
     private bool _attackPressed;
 
     private IAimable _aimable;
@@ -42,6 +43,8 @@ public class AttackState : CharacterStateBase, IAimming
         SetAttackPressed(true);
 
         if (_aimable == null && _chargeable == null) OnAttackTrigger();
+
+        _recoveryTime = 0;
     }
 
     private void CastDataInterface()
@@ -90,11 +93,14 @@ public class AttackState : CharacterStateBase, IAimming
 
         if (_chargeable != null)
         {
+            if (_currentData.chargeAttackData == null) return;
+
             if (_chargeable.MinChargeTime <= _currentCharge)
             {
                 Debug.Log("Charge Success");
                 _attackContext.chargeRatio = _currentCharge / _chargeable.MaxChargeTime;
-                _currentData.chargeAttackData?.performer.Excute(_owner, _currentData.chargeAttackData, _attackContext);
+                _currentData.chargeAttackData.performer.Excute(_owner, _currentData.chargeAttackData, _attackContext);
+                _recoveryTime = _currentData.chargeAttackData.recoveryTime;
             }
             else
             {
@@ -103,7 +109,10 @@ public class AttackState : CharacterStateBase, IAimming
         }
         else
         {
-            _currentData.normalAttackData?.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
+            if (_currentData.normalAttackData == null) return;
+
+            _currentData.normalAttackData.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
+            _recoveryTime = _currentData.normalAttackData.recoveryTime;
         }
 
         PostAttack();
@@ -190,9 +199,7 @@ public class AttackState : CharacterStateBase, IAimming
 
     private void PostAttack()
     {
-
-        // TODO : 공격 후 후딜 처리
         if (weaponComp != null) weaponComp.SetCooldown(_currentData);
-        _stateMachine.OnAttackEnd();
+        _stateMachine.OnAttackEnd(_recoveryTime);
     }
 }

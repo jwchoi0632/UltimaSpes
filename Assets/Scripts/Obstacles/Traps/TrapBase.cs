@@ -52,7 +52,7 @@ public abstract class TrapBase : MonoBehaviour, IAttackable
         return result;
     }
 
-    public void PostAttack() { }
+    public void PostAttack(float recovery) { }
 
     protected abstract void OnActivate(GameObject Target);
 

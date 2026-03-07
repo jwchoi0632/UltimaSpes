@@ -363,7 +363,7 @@ MonoBehaviour:
   stickingWallLayer:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 0.2
+  groundCheckDistance: 0.1
   wallCheckDistance: 0.05
   climbingLayer: 15
   isDefaultFacingRight: 1
@@ -485,8 +485,8 @@ MonoBehaviour:
       data:
         range: 1
         rangeMultiplier: 1
-        defaultRange: 1
-        thickness: 0.5
+        defaultRange: 0.5
+        thickness: 0.2
         padding: 0.3
         isVertical: 0
         isUpper: 1

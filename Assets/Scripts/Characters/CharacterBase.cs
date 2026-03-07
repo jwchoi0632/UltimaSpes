@@ -46,7 +46,7 @@ public interface IAttackable
 
     void ApplyDamage(IHitable target, DamageContext damageContext, HitInfo hitInfo);
     float CalculateDamage(DamageContext damageContext);
-    void PostAttack();
+    void PostAttack(float recovery);
 }
 
 public interface IStunable { public StunState _stunState { get; } }

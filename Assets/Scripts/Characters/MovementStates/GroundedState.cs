@@ -12,17 +12,26 @@ public class GroundedState : MovementStateBase, IMoveable, IJumpable
 
         _context.ResetJumpCount();
         _rb.gravityScale = _context._defaultGravityScale;
+        //_rb.velocity = new Vector2(_rb.velocity.x, -0.1f);
+    }
+
+    public override void OnFixedUpdate()
+    {
+        base.OnFixedUpdate();
+
+        if (!_context.CheckGround())
+        {
+            _context.UpdateCoyoteTime();
+            _context.ChangeMoveState(_context._fallingState);
+            return;
+        }
     }
 
     public override void OnUpdate()
     {
         base.OnUpdate();
 
-        if (!_context.CheckGround())
-        {
-            _context.ChangeMoveState(_context._fallingState);
-            return;
-        }
+        
     }
 
     public void Move(Vector2 input)

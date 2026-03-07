@@ -110,11 +110,11 @@ public class CharacterStateMachine : MonoBehaviour
         }
     }
 
-    public void OnAttackEnd()
+    public void OnAttackEnd(float recovery)
     {
         if (_attackable != null)
         {
-            _attackable.PostAttack();
+            _attackable.PostAttack(recovery);
         }
     }
 
@@ -176,7 +176,8 @@ public class CharacterStateMachine : MonoBehaviour
         {
             if (nextState != null) ChangeState(nextState);
             else OnIdle();
-                return;
+            
+            return;
         }
 
         _waitable._waitState.SetWaitTime(time);
@@ -236,7 +237,10 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnMoveInput(Vector2 input)
     {
-        _isMovePressed = true;
+        if (input.x < -0.1f || input.x > 0.1f)
+        {
+            _isMovePressed = true;
+        }
 
         if (_currentState.IsMoveable)
         {
@@ -258,10 +262,7 @@ public class CharacterStateMachine : MonoBehaviour
             _pushable._pushState.OnCancled();
         }
 
-        if (_currentState.IsMoveable)
-        {
-            _movement.SetMoveInput(Vector2.zero);
-        }
+        _movement.SetMoveInput(Vector2.zero);
 
         if (_aimming != null)
         {
@@ -276,7 +277,7 @@ public class CharacterStateMachine : MonoBehaviour
 
     public void OnEndJumpInput()
     {
-        if (_currentState.IsMoveable) _movement.EndJumppressed();
+        _movement.EndJumppressed();
     }
 
     public void OnInteractionInput()
@@ -323,29 +324,21 @@ public class CharacterStateMachine : MonoBehaviour
     private void ApplyPushInteraction(float inputx)
     {
         if (_pushable == null) return;
-        if (inputx < 0.1f && inputx > -0.1f)
-        {
-            _pushable._pushState.OnCancled();
-            return;
-        }
 
         float dir = _movement._isFacingRight ? 1 : -1;
 
-        if (dir * inputx < 0)
-        {
-            _pushable._pushState.OnCancled();
-            return;
-        }
+        if (dir * inputx < 0) return;
 
         IInteractable target = _interaction.GetPushTarget(inputx);
-        float pushRange = _interaction.GetPushSensorRange();
-
-        _pushable._pushState.SetPushTarget(target, pushRange);
 
         if (target != null)
         {
             if (!(_currentState is PushState))
             {
+                float pushRange = _interaction.GetPushSensorRange();
+
+                _pushable._pushState.SetPushTarget(target, pushRange);
+
                 ChangeState(_pushable._pushState);
             }
         }
@@ -424,12 +417,19 @@ public class CharacterStateMachine : MonoBehaviour
     {
         _currentState?.OnFiexedUpdate();
 
-        if (_isMovePressed && _currentState.IsInteractable) ApplyPushInteraction(_movement._moveInput.x);
+        if (_isMovePressed && _currentState.IsInteractable)
+        {
+            if (Mathf.Abs(_movement._rb.velocity.y) < 0.1f && _movement.CheckGround())
+            {
+                ApplyPushInteraction(_movement._moveInput.x);
+            }
+        }
     }
 
     void Update()
     {
         _currentState?.OnUpdate();
+
     }
 
     private void OnDisable()
