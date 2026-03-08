@@ -20,6 +20,14 @@ public interface IMoveableOnAttack
     public float MaxSpeedInAir { get; }
 }
 
+public interface IInstallable
+{
+    public Vector2 InstallSize { get; }
+    public float Distance { get; }
+    public float VerticalWeight { get; }
+    public LayerMask ObstacleLayer { get; }
+}
+
 [CreateAssetMenu(fileName = "BaseWeapon", menuName = "Combat/WeaponData/BaseWeapon")]
 public class WeaponDataBase : ScriptableObject
 {

@@ -19,7 +19,8 @@ public class AttackState : CharacterStateBase, IAimming
 
     private IAimable _aimable;
     private IChargeable _chargeable;
-    private IMoveableOnAttack _moveableOnAttack; 
+    private IMoveableOnAttack _moveableOnAttack;
+    private IInstallable _installable;
     private AttackContext _attackContext;
 
     public void SetAttackData(WeaponDataBase data) => _currentData = data;
@@ -52,6 +53,7 @@ public class AttackState : CharacterStateBase, IAimming
         _aimable = _currentData as IAimable;
         _chargeable = _currentData as IChargeable;
         _moveableOnAttack = _currentData as IMoveableOnAttack;
+        _installable = _currentData as IInstallable;
     }
 
     private void InitMovementOnState()
@@ -78,6 +80,11 @@ public class AttackState : CharacterStateBase, IAimming
 
         _owner.TryGetComponent<WeaponComponent>(out weaponComp);
 
+        if (weaponComp != null)
+        {
+            _attackContext.spawnPos = weaponComp.GetFirepoint();
+        }
+
         _attackContext.damageContext.baseDamage = _currentData.weaponDamage;
         _attackContext.direction = GetAimDirection();
     }
@@ -85,11 +92,6 @@ public class AttackState : CharacterStateBase, IAimming
     public void OnAttackTrigger()
     {
         if (_currentData == null) return;
-
-        if (weaponComp != null)
-        {
-            _attackContext.spawnPos = weaponComp.GetFirepoint();
-        }
 
         if (_chargeable != null)
         {
@@ -105,6 +107,7 @@ public class AttackState : CharacterStateBase, IAimming
             else
             {
                 Debug.Log("Charge Fail");
+                _currentData.chargeAttackData.performer.Undo();
             }
         }
         else
@@ -139,6 +142,11 @@ public class AttackState : CharacterStateBase, IAimming
                 UpdateAim();
             }
         }
+
+        if (_installable != null)
+        {
+            UpdateInstallGuide();
+        }
     }
 
     public void SetAttackPressed(bool pressed)
@@ -161,6 +169,7 @@ public class AttackState : CharacterStateBase, IAimming
         base.OnExit();
 
         weaponComp.SetAimLinerEnable(false);
+        weaponComp.SetInstallIndicatorEnable(false);
 
         _movement.SetCurrentMaxSpeedOnGround(_movement._maxSpeed_ground);
         _movement.SetCurrentMaxSpeedInAir(_movement._maxSpeed_air);
@@ -172,12 +181,6 @@ public class AttackState : CharacterStateBase, IAimming
 
     private void UpdateAim()
     {
-        if (!weaponComp.IsEnabledAimLiner())
-        {
-            //_currentAimAngle = -90;
-            weaponComp.SetAimLinerEnable(true);
-        }
-
         if (_aimInput != 0)
         {
             float targetAngle = _aimInput * 90f;
@@ -186,6 +189,18 @@ public class AttackState : CharacterStateBase, IAimming
 
         _attackContext.direction = GetAimDirection();
         weaponComp?.UpdateAimLiner(_attackContext.direction);
+    }
+
+    private void UpdateInstallGuide()
+    {
+        float lookDir = _owner._movement._isFacingRight ? 1f : -1f;
+        Vector2 checkPos = (Vector2)_owner.transform.position + new Vector2(lookDir * _installable.Distance, _installable.VerticalWeight);
+
+        _attackContext.isFailed = Physics2D.OverlapBox(checkPos, _installable.InstallSize, 0, _installable.ObstacleLayer);
+
+        weaponComp.ShowInstallIndicator(checkPos, !_attackContext.isFailed);
+
+        _attackContext.spawnPos = checkPos;
     }
 
     public Vector2 GetAimDirection()

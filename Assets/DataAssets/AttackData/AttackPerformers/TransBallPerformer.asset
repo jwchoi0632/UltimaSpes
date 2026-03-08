@@ -10,5 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d8e2e89758a83fc4f9cd1c3362fa390c, type: 3}
-  m_Name: SwapSkillPerformer
+  m_Name: TransBallPerformer
   m_EditorClassIdentifier: 
+  _transballPref: {fileID: 6309945634252586814, guid: 05b6c06cdca58114194ff1179ac18d7e, type: 3}
+  _distance: 3
+  _verticalWeight: 0.3
+  _knockImpulse: 5
+  _obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 0

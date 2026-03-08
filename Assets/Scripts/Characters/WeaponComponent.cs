@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using static UnityEditor.PlayerSettings;
 
 public class WeaponComponent : MonoBehaviour
 {
@@ -19,6 +20,11 @@ public class WeaponComponent : MonoBehaviour
     [SerializeField] private LayerMask _obstacleLayer;
     [SerializeField] private GameObject _firePoint;
     [SerializeField] private float _aimMaxDist = 10.0f;
+
+    [Header("Install Indicator Data")]
+    [SerializeField] private SpriteRenderer _installIndicator;
+    [SerializeField] private Color _canInstallColor = Color.green;
+    [SerializeField] private Color _canNotInstallColor = Color.red;
 
     private Dictionary<AttackType, WeaponDataBase> _weaponDic = new();
     private float[] _cooldownTimes;
@@ -39,6 +45,7 @@ public class WeaponComponent : MonoBehaviour
         _firePoint.TryGetComponent<LineRenderer>(out _lineRenderer);
         
         if (_lineRenderer != null) _lineRenderer.enabled = false;
+        if (_installIndicator != null) _installIndicator.enabled = false;
     }
 
     public WeaponDataBase GetWeaponData(AttackType type)
@@ -85,7 +92,7 @@ public class WeaponComponent : MonoBehaviour
     {
         for (int i = 0; i < slots.Count; ++i)
         {
-            if (data = slots[i].data) return i;
+            if (data == slots[i].data) return i;
         }
 
         return -1;
@@ -94,6 +101,8 @@ public class WeaponComponent : MonoBehaviour
     public void UpdateAimLiner(Vector2 aimDirection)
     {
         if (_lineRenderer == null) return;
+
+        if (!IsEnabledAimLiner()) SetAimLinerEnable(true);
 
         Vector2 startPos = _firePoint.transform.position;
 
@@ -114,12 +123,31 @@ public class WeaponComponent : MonoBehaviour
         _lineRenderer.SetPosition(1, endPos);
     }
 
+    public void ShowInstallIndicator(Vector2 installPos, bool canInstall)
+    {
+        if (_installIndicator == null) return;
+
+        if (!IsEnabledInstallIndicator()) SetInstallIndicatorEnable(true);
+
+        _installIndicator.transform.position = installPos;
+        _installIndicator.color = canInstall ? _canInstallColor : _canNotInstallColor;
+    }
+
     public void SetAimLinerEnable(bool enable)
     {
         if (_lineRenderer == null) return;
 
         _lineRenderer.enabled = enable;
     }
+
+    public void SetInstallIndicatorEnable(bool enable)
+    {
+        if (_installIndicator == null) return;
+
+        _installIndicator.enabled = enable;
+    }
+
+    public bool IsEnabledInstallIndicator() => (_installIndicator != null) ? _installIndicator.enabled : false;
 
     public bool IsEnabledAimLiner() => (_lineRenderer != null) ? _lineRenderer.enabled : false;
 

@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 8010156467235910652}
   - component: {fileID: 3043455471370845322}
   - component: {fileID: 8437902880916964794}
-  m_Layer: 0
+  m_Layer: 17
   m_Name: TrapArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
