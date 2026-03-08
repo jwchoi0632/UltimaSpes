@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D), typeof(CircleCollider2D))]
+[RequireComponent(typeof(Rigidbody2D), typeof(BoxCollider2D))]
 public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 {
     [Header("Projectile Settings")]
     [SerializeField] protected bool _isOverlapEvent = true;
-    [SerializeField] protected float _activeTime = 3.0f;
     [SerializeField] protected float _gravity = 0.0f;
+    [SerializeField] protected bool _isPiercing = false;
 
     protected Rigidbody2D _rb;
-    protected CircleCollider2D _collider;
+    protected BoxCollider2D _collider;
     protected GameObject _owner;
 
     protected Coroutine _deactivateCoroutine;
@@ -21,15 +21,22 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     protected DamageContext _damageContext;
     protected AttackDataBase _attackData;
 
+    protected float _activeTime;
+
     public Action<ProjectileBase> OnReturnToPool { get; set; }
     
     protected virtual void Awake()
     {
         _rb = GetComponent<Rigidbody2D>();
-        _collider = GetComponent<CircleCollider2D>();
+        _collider = GetComponent<BoxCollider2D>();
 
         _rb.gravityScale = _gravity;
         _collider.isTrigger = _isOverlapEvent;
+    }
+
+    public void SetLifeTime(float timeValue)
+    {
+        _activeTime = timeValue;
     }
 
     public virtual void Init(AttackDataBase attackData, LayerMask layer)
@@ -38,6 +45,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
         _owner = _attackData.attackInfo.causer;
         _hitInfo = _attackData.attackInfo;
         _targetLayer = layer;
+        
     }
 
     public virtual void Init(GameObject owner, HitInfo hitInfo, LayerMask layer)
@@ -76,11 +84,16 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     {
         if (target == _owner) return;
 
+        if (((1 << target.layer) & _attackData.obstacleLayer) != 0)
+        {
+            gameObject.SetActive(false);
+        }
+
         if (((1 << target.layer) & _targetLayer) != 0)
         {
             if (((1 << target.layer) & _attackData.breakableLayer) != 0)
             {
-                if (!_attackData.breakable)
+                if (!_attackData.breakable && !_isPiercing)
                 {
                     gameObject.SetActive(false);
                     return;
@@ -95,7 +108,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
                 }
             }
 
-            gameObject.SetActive(false);
+            if (!_isPiercing) gameObject.SetActive(false);
         }
     }
 

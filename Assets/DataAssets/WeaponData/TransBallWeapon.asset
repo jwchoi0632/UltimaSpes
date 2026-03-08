@@ -15,14 +15,14 @@ MonoBehaviour:
   weaponDamage: 0
   coolDown: 2
   normalAttackData: {fileID: 0}
-  chargeAttackData: {fileID: 11400000, guid: 19e944c3180492f4699dba5c6e297016, type: 2}
+  chargeAttackData: {fileID: 11400000, guid: 567b52019a894ef42852a6c303081451, type: 2}
   <InstallSize>k__BackingField: {x: 1, y: 1}
-  <MinChargeTime>k__BackingField: 1
-  <MaxChargeTime>k__BackingField: 3
   <Distance>k__BackingField: 3
   <VerticalWeight>k__BackingField: 0.2
   <ObstacleLayer>k__BackingField:
     serializedVersion: 2
     m_Bits: 9664
+  <MinChargeTime>k__BackingField: 1
+  <MaxChargeTime>k__BackingField: 3
   <MaxSpeedOnGround>k__BackingField: 2
   <MaxSpeedInAir>k__BackingField: 0.5

@@ -103,6 +103,8 @@ public class AttackState : CharacterStateBase, IAimming
                 _attackContext.chargeRatio = _currentCharge / _chargeable.MaxChargeTime;
                 _currentData.chargeAttackData.performer.Excute(_owner, _currentData.chargeAttackData, _attackContext);
                 _recoveryTime = _currentData.chargeAttackData.recoveryTime;
+
+                return;
             }
             else
             {
@@ -110,13 +112,11 @@ public class AttackState : CharacterStateBase, IAimming
                 _currentData.chargeAttackData.performer.Undo();
             }
         }
-        else
-        {
-            if (_currentData.normalAttackData == null) return;
 
-            _currentData.normalAttackData.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
-            _recoveryTime = _currentData.normalAttackData.recoveryTime;
-        }
+        if (_currentData.normalAttackData == null) return;
+
+        _currentData.normalAttackData.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
+        _recoveryTime = _currentData.normalAttackData.recoveryTime;
 
         PostAttack();
     }
