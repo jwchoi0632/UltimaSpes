@@ -104,6 +104,7 @@ public class AttackState : CharacterStateBase, IAimming
                 _currentData.chargeAttackData.performer.Excute(_owner, _currentData.chargeAttackData, _attackContext);
                 _recoveryTime = _currentData.chargeAttackData.recoveryTime;
 
+                PostAttack();
                 return;
             }
             else
@@ -113,10 +114,11 @@ public class AttackState : CharacterStateBase, IAimming
             }
         }
 
-        if (_currentData.normalAttackData == null) return;
-
-        _currentData.normalAttackData.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
-        _recoveryTime = _currentData.normalAttackData.recoveryTime;
+        if (_currentData.normalAttackData != null)
+        {
+            _currentData.normalAttackData.performer.Excute(_owner, _currentData.normalAttackData, _attackContext);
+            _recoveryTime = _currentData.normalAttackData.recoveryTime;
+        }
 
         PostAttack();
     }

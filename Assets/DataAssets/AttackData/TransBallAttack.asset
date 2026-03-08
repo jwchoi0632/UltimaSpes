@@ -15,7 +15,7 @@ MonoBehaviour:
   performer: {fileID: 11400000, guid: 697f0c72e820a5944a06a963781106bf, type: 2}
   attackMultiplier: 0
   attackDamage: 0
-  recoveryTime: 0
+  recoveryTime: 2
   breakable: 0
   attackInfo:
     causer: {fileID: 0}
