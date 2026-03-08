@@ -6,6 +6,7 @@ public interface IProjectileSpawn
 { 
     public ProjectileBase ProjectilePref { get; }
     public float ProjectileSpeed { get; }
+    public float LifeTime { get; }
 }
 
 public interface IColliderSpawn

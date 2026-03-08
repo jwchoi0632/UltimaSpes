@@ -8,4 +8,5 @@ public class RangeAttackData : AttackDataBase, IProjectileSpawn
 {
     [field: SerializeField] public ProjectileBase ProjectilePref { get; private set; }
     [field: SerializeField] public float ProjectileSpeed { get; private set; }
+    [field: SerializeField] public float LifeTime { get; private set; }
 }

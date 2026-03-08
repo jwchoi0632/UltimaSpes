@@ -18,8 +18,8 @@ public class ProjectilePerformer : AttackPerformerBase
             attackData.attackInfo.causer = owner.gameObject;
             attackContext.damageContext = _damageContext;
 
-            //projectile.Init(owner.gameObject, attackData.attackInfo, _finalLayer);
             projectile.Init(attackData, _finalLayer);
+            projectile.SetLifeTime(projectileSpawn.LifeTime);
             projectile.Launch(attackContext, projectileSpawn.ProjectileSpeed);
         }
     }
