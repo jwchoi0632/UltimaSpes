@@ -8,6 +8,7 @@ public struct AttackContext
     public Vector2 direction;
     public float chargeRatio;
     public DamageContext damageContext;
+    public bool isFailed;
 }
 
 public abstract class AttackPerformerBase : ScriptableObject
@@ -22,4 +23,6 @@ public abstract class AttackPerformerBase : ScriptableObject
         _damageContext.attackMultiplier = attackData.attackMultiplier;
         _damageContext.attackDamage = attackData.attackDamage;
     }
+
+    public virtual void Undo() { }
 }

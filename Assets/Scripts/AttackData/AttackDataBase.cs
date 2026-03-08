@@ -26,4 +26,5 @@ public class AttackDataBase : ScriptableObject
     public HitInfo attackInfo;
     public LayerMask overrideLayer;
     public LayerMask breakableLayer;
+    public LayerMask obstacleLayer;
 }
