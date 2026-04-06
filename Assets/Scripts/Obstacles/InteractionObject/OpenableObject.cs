@@ -11,7 +11,11 @@ public class OpenableObject : MonoBehaviour, IInteractable
     [SerializeField] protected ObtainItem _dropObtainPref;
     [SerializeField] protected int _dropCount = 3;
 
+    protected bool _isInteractable = true;
+
     public InteractionType SupportedType => _interactionType;
+
+    public void InitInteractable() => _isInteractable = true;
 
     public bool CanInteraction(GameObject causer, InteractionType type)
     {
@@ -34,6 +38,8 @@ public class OpenableObject : MonoBehaviour, IInteractable
 
     protected virtual void ApplyOpen(GameObject causer)
     {
+        _isInteractable = false;
+
         if (_dropItemPref == null) return;
 
         for (int i = 0; i < _dropCount; ++i)
@@ -52,7 +58,7 @@ public class OpenableObject : MonoBehaviour, IInteractable
 
     protected virtual bool CheckOpenable(GameObject causer)
     {
-        return true;
+        return _isInteractable;
     }
 
     protected IEnumerator PostOpen()
