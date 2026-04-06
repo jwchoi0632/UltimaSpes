@@ -47,6 +47,9 @@ public class TransBallPerformer : AttackPerformerBase
             _enterTransball.SetTransTargetLayer(_finalLayer);
             _enterTransball.SetExitPos(_exitTransball);
             _enterTransball.Activate();
+
+            _exitTransball = null;
+            _enterTransball = null;
         }
 
         float direction = owner._movement._isFacingRight ? 1 : -1;

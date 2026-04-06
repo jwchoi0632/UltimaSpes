@@ -33,7 +33,7 @@ public class TransBall : MonoBehaviour, IPoolable<TransBall>
     {
         _scale = Vector2.one;
         transform.localScale = _scale;
-
+        _exitPos = null;
         isActive = false;
         _collider.enabled = false;
     }
