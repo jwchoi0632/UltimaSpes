@@ -165,7 +165,7 @@ public class CharacterStateMachine : MonoBehaviour
     public void OnChase()
     {
         if (_chaseable == null) return;
-        if (!_currentState.IsMoveable) return;
+        //if (!_currentState.IsMoveable) return;
 
         ChangeState(_chaseable._chaseState);
     }
