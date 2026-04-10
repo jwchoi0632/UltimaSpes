@@ -58,7 +58,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     public void Launch(AttackContext attackContext, float force)
     {
         gameObject.SetActive(true);
-
+        
         if (_rb.IsSleeping())
         {
             _rb.WakeUp();
@@ -86,6 +86,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
 
         if (((1 << target.layer) & _attackData.obstacleLayer) != 0)
         {
+            //Debug.Log("Hit Obstacle " + target.name);
             gameObject.SetActive(false);
         }
 
@@ -115,7 +116,7 @@ public class ProjectileBase : MonoBehaviour, IPoolable<ProjectileBase>
     protected IEnumerator DeactivateTimer()
     {
         yield return new WaitForSeconds(_activeTime);
-
+        
         gameObject.SetActive(false);
     }
 

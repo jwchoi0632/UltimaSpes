@@ -2944,6 +2944,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8531511291096413347, guid: 8701e0c2fac890a44a01d0ae7787534c, type: 3}
+      propertyPath: _activeTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8531511291096413347, guid: 8701e0c2fac890a44a01d0ae7787534c, type: 3}
       propertyPath: poolManager
       value: 
       objectReference: {fileID: 5032061214429184939}

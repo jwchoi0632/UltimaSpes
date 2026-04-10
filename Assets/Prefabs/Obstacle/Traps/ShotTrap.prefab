@@ -180,7 +180,7 @@ GameObject:
   - component: {fileID: 5073841325973349497}
   - component: {fileID: 8531511291096413347}
   - component: {fileID: 3844158723319210044}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ShotTrap
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -229,8 +229,8 @@ MonoBehaviour:
   _coolDown: 0
   _isOneTimeOnly: 1
   _isBlockingTrap: 0
-  poolManager: {fileID: 0}
   _projectilePrefab: {fileID: 8437902880916964794, guid: 7a97185036fbbe24492b9b64f9b4f8f4, type: 3}
+  _activeTime: 1
   _firePoint: {fileID: 2869766926802864035}
   _launchDirection: {x: 1, y: 0}
   _launchForce: 10

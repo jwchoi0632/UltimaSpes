@@ -81,7 +81,7 @@ public class FallingState : MovementStateBase, IMoveable, IJumpable
         if (_context._character is IHitable hitCharacter)
         {
             float impactDistance = Mathf.Abs(_startPosY - _context.gameObject.transform.position.y);
-
+            
             if (impactDistance > _stats.fallingHitDistance)
             {
                 float fallDamage = (impactDistance - _stats.fallingHitDistance / 2) * _stats.fallingHitMultiplier;
