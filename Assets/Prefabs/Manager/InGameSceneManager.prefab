@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4710301736612634155}
   - component: {fileID: 3593200370184743860}
-  - component: {fileID: 2898470953756248816}
   - component: {fileID: 3484924327849301267}
+  - component: {fileID: 4815831508507026810}
   m_Layer: 0
-  m_Name: SceneManager
+  m_Name: InGameSceneManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,18 +46,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0dccca25997f7c1408bc00611c2b9cb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &2898470953756248816
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6118371634113754110}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef1ec6d0f531b674fa030e2b144bc6bc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &3484924327849301267
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,3 +58,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e09b2970de04cf40b2df2abeacb2000, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _camera: {fileID: 0}
+  offset: {x: 0, y: 0, z: -10}
+  smoothTime: 0.3
+--- !u!114 &4815831508507026810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6118371634113754110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fb74cfa237477c43ba3ad938e903fe3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _player: {fileID: 0}

@@ -31,17 +31,21 @@ public class TransBallPerformer : AttackPerformerBase
             return;
         }
 
+        IPoolManageable poolManageable = SceneManagerBase.Instance as IPoolManageable;
+
+        if (poolManageable == null) return;
+
         if (_exitTransball == null)
         {
             Debug.Log("Install Exit Transball");
-            _exitTransball = SceneManagerBase.Instance._poolManager.Get<TransBall>(_transballPref);
+            _exitTransball = poolManageable.PoolManager.Get<TransBall>(_transballPref);
             _exitTransball.transform.position = attackContext.spawnPos;
             _exitTransball.Activate();
         }
         else
         {
             Debug.Log("Install Enter Transball");
-            _enterTransball = SceneManagerBase.Instance._poolManager.Get<TransBall>(_transballPref);
+            _enterTransball = poolManageable.PoolManager.Get<TransBall>(_transballPref);
             _enterTransball.transform.position = attackContext.spawnPos;
 
             _enterTransball.SetTransTargetLayer(_finalLayer);

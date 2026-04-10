@@ -12,6 +12,7 @@ public class OpenableObject : MonoBehaviour, IInteractable
     [SerializeField] protected int _dropCount = 3;
 
     protected bool _isInteractable = true;
+    protected IPoolManageable _poolManageable;
 
     public InteractionType SupportedType => _interactionType;
 
@@ -48,11 +49,11 @@ public class OpenableObject : MonoBehaviour, IInteractable
 
             DropItem item = null;
 
-            if (random == 0) item = SceneManagerBase.Instance._poolManager.Get<PickupItem>(_dropItemPref);
-            else item = SceneManagerBase.Instance._poolManager.Get<ObtainItem>(_dropObtainPref);
+            if (random == 0) item = _poolManageable?.PoolManager.Get<PickupItem>(_dropItemPref);
+            else item = _poolManageable?.PoolManager.Get<ObtainItem>(_dropObtainPref);
 
-            item.InitItem(i); // TODO : 아이템 정보 랜덤하게 가져오고 전달하는 과정 필요
-            item.Drop(transform.position);
+            item?.InitItem(i); // TODO : 아이템 정보 랜덤하게 가져오고 전달하는 과정 필요
+            item?.Drop(transform.position);
         }
     }
 
@@ -66,5 +67,10 @@ public class OpenableObject : MonoBehaviour, IInteractable
         yield return new WaitForSeconds(_toDisableTime);
 
         gameObject.SetActive(false);
+    }
+
+    private void Start()
+    {
+        _poolManageable = SceneManagerBase.Instance as IPoolManageable;
     }
 }

@@ -13,14 +13,19 @@ public class ProjectilePerformer : AttackPerformerBase
 
         if (attackData is IProjectileSpawn projectileSpawn)
         {
-            var projectile = SceneManagerBase.Instance._poolManager.Get<ProjectileBase>(projectileSpawn.ProjectilePref);
+            SceneManagerBase sceneManager = SceneManagerBase.Instance;
 
-            attackData.attackInfo.causer = owner.gameObject;
-            attackContext.damageContext = _damageContext;
+            if (sceneManager is IPoolManageable poolManageable)
+            {
+                var projectile = poolManageable.PoolManager.Get<ProjectileBase>(projectileSpawn.ProjectilePref);
 
-            projectile.Init(attackData, _finalLayer);
-            projectile.SetLifeTime(projectileSpawn.LifeTime);
-            projectile.Launch(attackContext, projectileSpawn.ProjectileSpeed);
+                attackData.attackInfo.causer = owner.gameObject;
+                attackContext.damageContext = _damageContext;
+
+                projectile.Init(attackData, _finalLayer);
+                projectile.SetLifeTime(projectileSpawn.LifeTime);
+                projectile.Launch(attackContext, projectileSpawn.ProjectileSpeed);
+            }
         }
     }
 }
