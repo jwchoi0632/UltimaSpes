@@ -6,6 +6,7 @@ public class ShotTrap : TrapBase
 {
     [Header("Shot Trap Option")]
     [SerializeField] protected ProjectileBase _projectilePrefab;
+    [SerializeField] protected float _activeTime;
     [SerializeField] protected Transform _firePoint;
     [SerializeField] protected Vector2 _launchDirection;
     [SerializeField] protected float _launchForce = 10.0f;
@@ -21,6 +22,7 @@ public class ShotTrap : TrapBase
         _attackData.attackInfo = _hitInfo;
         _attackData.attackInfo.causer = gameObject;
         projectile?.Init(_attackData, _targetLayer);
+        projectile?.SetLifeTime(_activeTime);
 
         AttackContext attackContext = new AttackContext();
         attackContext.spawnPos = _firePoint.position;

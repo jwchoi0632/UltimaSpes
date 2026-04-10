@@ -60,6 +60,7 @@ public class MovementComponent2D : MonoBehaviour
     public ClimbingState _climbingState { get; private set; }
     public WallStickingState _wallStickingState { get; private set; }
     public FlyingState _flyingState { get; private set; }
+    public AirborneState _airborneState { get; private set; }
     public StationaryState _stationaryState {  get; private set; }
 
     private MovementStateBase _currentState;
@@ -129,7 +130,7 @@ public class MovementComponent2D : MonoBehaviour
         _currentState?.OnExit();
 
         if (newState == null) return;
-
+        
         _currentState = newState;
 
         _moveable = _currentState as IMoveable;
@@ -457,6 +458,7 @@ public class MovementComponent2D : MonoBehaviour
         _wallStickingState = new WallStickingState(this);
         _climbingState = new ClimbingState(this);
         _flyingState = new FlyingState(this);
+        _airborneState = new AirborneState(this);
         _stationaryState = new StationaryState(this);
     }
 }

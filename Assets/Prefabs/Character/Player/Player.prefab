@@ -338,7 +338,7 @@ MonoBehaviour:
         lowJumpMultiplier: 2.1
         dropdownMultiplier: 2
         grapJumpHorizontal: 1
-        fallingHitDistance: 5
+        fallingHitDistance: 7
         fallingHitMultiplier: 1.5
 --- !u!114 &3489703848426006847
 MonoBehaviour:

@@ -234,7 +234,7 @@ MonoBehaviour:
     isStun: 0
     stunDuration: 0
     knockForce: 3
-    launchForce: 20
+    launchForce: 10
   _coolDown: 0
   _isOneTimeOnly: 0
   _isBlockingTrap: 0

@@ -7,12 +7,12 @@ public class LaunchHitAction : HitActionBase
 {
     public override void OnStart(CharacterStateMachine stateMachine)
     {
-        stateMachine._movement.IncreaseJumpCount();
+        stateMachine._movement.ChangeMoveState(stateMachine._movement._airborneState);
     }
 
     public override void OnUpdate(CharacterStateMachine stateMachine, HitInfo info)
     {
-        if (!stateMachine._movement.CheckGround() ||
+        if (!stateMachine._movement.CheckGround() &&
             stateMachine._movement._rb.velocity.y > 0.1f) return;
 
         stateMachine.OnHitEnd();
@@ -20,6 +20,6 @@ public class LaunchHitAction : HitActionBase
 
     public override void OnExit(CharacterStateMachine stateMachine)
     {
-
+        stateMachine._movement.ChangeMoveState(stateMachine._movement._fallingState);
     }
 }
