@@ -3718,6 +3718,14 @@ PrefabInstance:
       propertyPath: _player
       value: 
       objectReference: {fileID: 737766363}
+    - target: {fileID: 4815831508507026810, guid: dc981469227f24c45befe2d2783976c7, type: 3}
+      propertyPath: _roomList
+      value: 
+      objectReference: {fileID: 11400000, guid: 37c80449eb19f6949a51d84d2ad33869, type: 2}
+    - target: {fileID: 4815831508507026810, guid: dc981469227f24c45befe2d2783976c7, type: 3}
+      propertyPath: _stageGridList
+      value: 
+      objectReference: {fileID: 11400000, guid: ef702da9f9aa258459116d2e6450f5a0, type: 2}
     - target: {fileID: 6118371634113754110, guid: dc981469227f24c45befe2d2783976c7, type: 3}
       propertyPath: m_Name
       value: InGameSceneManager
@@ -3744,6 +3752,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 1208026332}
   - {fileID: 771005845}
+  - {fileID: 5032061214429184938}
   - {fileID: 1950196694}
   - {fileID: 1791600708}
   - {fileID: 1962723533}
@@ -3759,7 +3768,6 @@ SceneRoots:
   - {fileID: 1945319424}
   - {fileID: 727413350}
   - {fileID: 1944285137}
-  - {fileID: 5032061214429184938}
   - {fileID: 1351485348}
   - {fileID: 60715338}
   - {fileID: 1477104942}

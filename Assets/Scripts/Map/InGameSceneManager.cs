@@ -6,6 +6,8 @@ using UnityEngine;
 public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraManageable, IPlayerManageable
 {
     [SerializeField] private PlayerCharacter _player;
+    [SerializeField] private RoomList _roomList;
+    [SerializeField] private StageGridList _stageGridList;
 
     private ObjectPoolManager _poolManager;
     private CameraManager _cameraManger;
@@ -26,6 +28,42 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
     {
         base.OnStart();
 
+        int tryCount = 0;
+
+        while(!ConstructMap(SelectStageGrid()))
+        {
+            Debug.Log("Map Construct Fail");
+
+            if (tryCount < 100) tryCount++;
+            else return;
+        }
+
+        InitCurrentGame();
+
         _cameraManger.InitCameraComp(_player);
+    }
+
+    private int SelectStageGrid()
+    {
+        return UnityEngine.Random.Range(0, _stageGridList.gridList.Count);
+    }
+
+    private bool ConstructMap(int gridNum)
+    {
+        StageGrid grid = _stageGridList.gridList[gridNum];
+
+        List<Vector2Int> path = grid.GetShortestPath();
+
+        if (path.Count <= 0) return false;
+
+
+        // TODO : Create Map
+
+        return true;
+    }
+
+    private void InitCurrentGame()
+    {
+        // TODO : Init Player Transform
     }
 }
