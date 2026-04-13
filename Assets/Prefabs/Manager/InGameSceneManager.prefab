@@ -74,3 +74,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _player: {fileID: 0}
+  _roomList: {fileID: 0}
+  _stageGridList: {fileID: 0}
+  _roomSize: {x: 10, y: 8}

@@ -19,12 +19,12 @@ MonoBehaviour:
     - columns: 0101010101
     - columns: 0001010100
     - columns: 0000000101
-    startIndex: {x: 0, y: 1}
+    startIndex: {x: 1, y: 0}
     endIndex: {x: 4, y: 4}
     PotentiallyBossIndexes:
-    - {x: 3, y: 2}
+    - {x: 2, y: 3}
     - {x: 3, y: 3}
     PotentiallyEventIndexes:
-    - {x: 2, y: 0}
-    - {x: 2, y: 4}
-    - {x: 3, y: 1}
+    - {x: 0, y: 2}
+    - {x: 4, y: 2}
+    - {x: 1, y: 3}
