@@ -17,19 +17,24 @@ public class ShotTrap : TrapBase
     {
         if (_projectilePrefab == null) return;
 
-        ProjectileBase projectile = SceneManagerBase.Instance._poolManager.Get<ProjectileBase>(_projectilePrefab);
-        //projectile?.Init(gameObject, _hitInfo, _targetLayer);
-        _attackData.attackInfo = _hitInfo;
-        _attackData.attackInfo.causer = gameObject;
-        projectile?.Init(_attackData, _targetLayer);
-        projectile?.SetLifeTime(_activeTime);
+        SceneManagerBase sceneManager = SceneManagerBase.Instance;
 
-        AttackContext attackContext = new AttackContext();
-        attackContext.spawnPos = _firePoint.position;
-        attackContext.direction = _launchDirection;
-        attackContext.damageContext.attackMultiplier = 1.0f;
-        attackContext.damageContext.baseDamage = _hitInfo.damage;
+        if (sceneManager is IPoolManageable poolManageable)
+        {
+            ProjectileBase projectile = poolManageable.PoolManager.Get<ProjectileBase>(_projectilePrefab);
+            //projectile?.Init(gameObject, _hitInfo, _targetLayer);
+            _attackData.attackInfo = _hitInfo;
+            _attackData.attackInfo.causer = gameObject;
+            projectile?.Init(_attackData, _targetLayer);
+            projectile?.SetLifeTime(_activeTime);
 
-        projectile?.Launch(attackContext, _launchForce);
+            AttackContext attackContext = new AttackContext();
+            attackContext.spawnPos = _firePoint.position;
+            attackContext.direction = _launchDirection;
+            attackContext.damageContext.attackMultiplier = 1.0f;
+            attackContext.damageContext.baseDamage = _hitInfo.damage;
+
+            projectile?.Launch(attackContext, _launchForce);
+        }
     }
 }

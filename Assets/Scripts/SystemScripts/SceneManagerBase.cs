@@ -2,25 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(ObjectPoolManager), typeof(CameraManager))]
+public interface IPoolManageable
+{
+    public ObjectPoolManager PoolManager { get; }
+}
+
+public interface ICameraManageable
+{
+    public CameraManager CameraManager { get; }
+}
+
+public interface IPlayerManageable
+{
+    public PlayerCharacter Player { get; }
+}
+
 public class SceneManagerBase : MonoBehaviour
 {
-    private static SceneManagerBase _instance;
+    protected static SceneManagerBase _instance;
     public static SceneManagerBase Instance => _instance;
-    public ObjectPoolManager _poolManager {  get; private set; }
-    public CameraManager _cameraManger { get; private set; }
-
-    [SerializeField] private PlayerCharacter _player;
-
-    public PlayerCharacter Player => _player;
 
     private void Awake()
     {
         if (_instance == null)
         {
             _instance = this;
-            _poolManager = GetComponent<ObjectPoolManager>();
-            _cameraManger = GetComponent<CameraManager>();
+            OnAwake();
         }
         else
         {
@@ -30,12 +37,15 @@ public class SceneManagerBase : MonoBehaviour
 
     void Start()
     {
-        _cameraManger.InitCameraComp(_player);
+        OnStart();
     }
-
 
     void Update()
     {
-        
+        OnUpdate();
     }
+
+    protected virtual void OnAwake() { }
+    protected virtual void OnStart() { }
+    protected virtual void OnUpdate() { }
 }
