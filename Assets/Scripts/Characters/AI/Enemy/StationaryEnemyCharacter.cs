@@ -11,9 +11,9 @@ public class StationaryEnemyCharacter : HitableEnemyCharacter, INoticeable, ICha
 
     public GameObject NoticeSprite => _noticeSprite;
 
-    public override void SetActiveCharacter(Vector2 spawnPos)
+    protected override void PostEnabled(Vector2 spawnPos)
     {
-        base.SetActiveCharacter(spawnPos);
+        base.PostEnabled(spawnPos);
 
         _movement.ChangeMoveState(_movement._stationaryState);
     }

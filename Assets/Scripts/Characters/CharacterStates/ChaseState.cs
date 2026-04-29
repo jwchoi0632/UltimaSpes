@@ -22,6 +22,8 @@ public class ChaseState : CharacterStateBase
         _stateName = "Ãß°Ý";
         base.OnStart();
 
+        if (_target == null) _stateMachine.OnPatrol();
+
         if (_stats.moveType == MoveType.OnlyFlying) _movement.IsIgnoreHoverHeight(false);
     }
 

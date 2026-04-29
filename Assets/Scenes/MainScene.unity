@@ -1209,6 +1209,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8883182025270510928, guid: b4fb6bae7cdad034cbd0538cd9ec7b42, type: 3}
+      propertyPath: _stageModifierList.Array.data[0]
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3726,6 +3730,10 @@ PrefabInstance:
       propertyPath: _stageGridList
       value: 
       objectReference: {fileID: 11400000, guid: ef702da9f9aa258459116d2e6450f5a0, type: 2}
+    - target: {fileID: 4815831508507026810, guid: dc981469227f24c45befe2d2783976c7, type: 3}
+      propertyPath: _stageRewardBudget
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 6118371634113754110, guid: dc981469227f24c45befe2d2783976c7, type: 3}
       propertyPath: m_Name
       value: InGameSceneManager

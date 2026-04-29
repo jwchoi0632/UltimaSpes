@@ -13,22 +13,23 @@ public class InputReader : MonoBehaviour
         public Action OnCanceled;
     }
 
-    public static InputReader Instance { get; private set; }
+    //public static InputReader Instance { get; private set; }
     public PlayerInputAction inputActions { get; private set; }
 
     private Dictionary<InputAction, ActionHandlers> actionCallbacks = new Dictionary<InputAction, ActionHandlers>();
 
     void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            InitInputReader();
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        InitInputReader();
+        //if (Instance == null)
+        //{
+        //    Instance = this;
+        //    InitInputReader();
+        //}
+        //else
+        //{
+        //    Destroy(gameObject);
+        //}
     }
 
     private void InitInputReader()

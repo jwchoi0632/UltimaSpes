@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4479679022161778286}
   - component: {fileID: 446883660880400470}
   - component: {fileID: 6260347985402082429}
+  - component: {fileID: 8883182025270510928}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -57,3 +58,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6af38b19cbe6b36488a125aef608a402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _monsterIdData: {fileID: 11400000, guid: c9ae790d758f7f64bb7b101564ad1640, type: 2}
+--- !u!114 &8883182025270510928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2899382379624699618}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e7426dc60af74a47bf947cf76556e2b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _tierNum: 5
+  _maxOutLevel: 30
+  _stageModifierList:
+  - 1
+  - 1.25
+  - 1.5

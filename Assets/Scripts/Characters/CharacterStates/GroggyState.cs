@@ -15,7 +15,7 @@ public class GroggyState : CharacterStateBase
 
         _movement.SetMoveInput(Vector2.zero);
         _movement.SetCanFlip(false);
-        Debug.Log("On Start Groggy State");
+        //Debug.Log("On Start Groggy State");
     }
 
     public override void OnUpdate()
@@ -32,6 +32,6 @@ public class GroggyState : CharacterStateBase
         base.OnExit();
 
         _movement.SetCanFlip(true);
-        Debug.Log("On End Groggy State");
+        //Debug.Log("On End Groggy State");
     }
 }

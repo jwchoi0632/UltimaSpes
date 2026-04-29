@@ -2,11 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(InputReader))]
+[RequireComponent(typeof(InputReader), typeof(PlayerStateData))]
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private MonsterIdData _monsterIdData;
+
     public static GameManager Instance { get; private set; }
-    private InputReader inputReader;
+
+    private InputReader _inputReader;
+    private PlayerStateData _playerStateData;
+
+    public InputReader InputReader => _inputReader;
+    public PlayerStateData PlayerStateData => _playerStateData;
+    public MonsterIdData MonsterIdData => _monsterIdData;
 
     private void Awake()
     {
@@ -15,7 +23,9 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            inputReader = GetComponent<InputReader>();
+            _inputReader = GetComponent<InputReader>();
+            _playerStateData = GetComponent<PlayerStateData>();
+            _monsterIdData.InitMonsterIdDict();
         }
         else
         {
@@ -25,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
+        
     }
 
     void Update()

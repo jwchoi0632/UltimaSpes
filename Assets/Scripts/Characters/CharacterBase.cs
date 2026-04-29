@@ -130,10 +130,22 @@ public abstract class CharacterBase : MonoBehaviour
         }
     }
 
-    public virtual void SetActiveCharacter(Vector2 spawnPos)
+    public void SetActiveCharacter(Vector2 spawnPos)
     {
         gameObject.SetActive(true);
 
+        StartCoroutine(DelayedInit(spawnPos));
+    }
+
+    private IEnumerator DelayedInit(Vector2 spawnPos)
+    {
+        yield return null;
+
+        PostEnabled(spawnPos);
+    }
+
+    protected virtual void PostEnabled(Vector2 spawnPos)
+    {
         if (_rigidBody.IsSleeping())
         {
             _rigidBody.WakeUp();
@@ -141,6 +153,7 @@ public abstract class CharacterBase : MonoBehaviour
 
         gameObject.transform.position = spawnPos;
         //_stateMachine.ChangeState(_normalState);
+        //ResetState();
     }
 
     public virtual void SetDeactiveCharacter()

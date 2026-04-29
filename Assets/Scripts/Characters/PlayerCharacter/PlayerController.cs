@@ -15,42 +15,42 @@ public class PlayerController : ControllerBase
 
     public void BindInputAction()
     {
-        var actions = InputReader.Instance.inputActions.PlayerActionMap;
+        var actions = GameManager.Instance.InputReader.inputActions.PlayerActionMap;
 
-        InputReader.Instance.BindAction(actions.Move,
+        GameManager.Instance.InputReader.BindAction(actions.Move,
             started: () => HandleVerticalInteractionInput(actions.Move.ReadValue<Vector2>()),
             performed: () => HandleMoveInput(actions.Move.ReadValue<Vector2>(), true),
             canceled: () => HandleMoveInput(Vector2.zero, false));
 
-        InputReader.Instance.BindAction(actions.Jump,
+        GameManager.Instance.InputReader.BindAction(actions.Jump,
             started: () => HandleJumpInput(true),
             canceled: () => HandleJumpInput(false));
 
-        InputReader.Instance.BindAction(actions.Melee,
+        GameManager.Instance.InputReader.BindAction(actions.Melee,
             started: () => HandleAttackInput(AttackType.Melee, true),
             canceled: () => HandleAttackInput(AttackType.Melee, false));
 
-        InputReader.Instance.BindAction(actions.Ranged,
+        GameManager.Instance.InputReader.BindAction(actions.Ranged,
             started: () => HandleAttackInput(AttackType.Range, true),
             canceled: () => HandleAttackInput(AttackType.Range, false));
 
-        InputReader.Instance.BindAction(actions.Skill,
+        GameManager.Instance.InputReader.BindAction(actions.Skill,
             started: () => HandleAttackInput(AttackType.Skill, true),
             canceled: () => HandleAttackInput(AttackType.Skill, false));
 
-        InputReader.Instance.BindAction(actions.Swap,
+        GameManager.Instance.InputReader.BindAction(actions.Swap,
             started: () => HandleSwapInput(true),
             canceled: () => HandleSwapInput(false));
 
-        InputReader.Instance.BindAction(actions.Interaction,
+        GameManager.Instance.InputReader.BindAction(actions.Interaction,
             started: () => HandleInteractionInput(true),
             canceled: () => HandleInteractionInput(false));
 
-        InputReader.Instance.BindAction(actions.Walk,
+        GameManager.Instance.InputReader.BindAction(actions.Walk,
             started: () => HandleWalkModeInput(true),
             canceled: () => HandleWalkModeInput(false));
 
-        InputReader.Instance.BindAction(actions.Menu,
+        GameManager.Instance.InputReader.BindAction(actions.Menu,
             started: () => HandleMenuInput(true),
             canceled: () => HandleMenuInput(false));
     }
