@@ -77,7 +77,7 @@ public class EnemyCharacterBase : AICharacterBase, IPoolable<EnemyCharacterBase>
     {
         base.OnStart();
 
-        SetActiveCharacter(transform.position); // test
+        //SetActiveCharacter(transform.position); // test
     }
 
     public override void ResetState()

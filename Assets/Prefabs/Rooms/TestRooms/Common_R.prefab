@@ -49,12 +49,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6480791770527301513, guid: 63e532a51e8e5fd4aa20572c36831768, type: 3}
+      propertyPath: _roomContentType
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6480791770527301513, guid: 63e532a51e8e5fd4aa20572c36831768, type: 3}
       propertyPath: _roomWayInformation.rightWay
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7074162206131438132, guid: 63e532a51e8e5fd4aa20572c36831768, type: 3}
       propertyPath: m_Name
-      value: Start_R
+      value: Common_R
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

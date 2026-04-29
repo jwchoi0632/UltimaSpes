@@ -77,3 +77,6 @@ MonoBehaviour:
   _roomList: {fileID: 0}
   _stageGridList: {fileID: 0}
   _roomSize: {x: 10, y: 8}
+  _stageScale:
+    combatScale: 20
+    rewardScale: 5

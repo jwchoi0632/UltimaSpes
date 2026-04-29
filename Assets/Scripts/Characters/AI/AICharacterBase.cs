@@ -55,9 +55,9 @@ public abstract class AICharacterBase : CharacterBase, IIdleable, IWaitable
 
     //}
 
-    public override void SetActiveCharacter(Vector2 spawnPos)
+    protected override void PostEnabled(Vector2 spawnPos)
     {
-        base.SetActiveCharacter(spawnPos);
+        base.PostEnabled(spawnPos);
 
         if (this is INoticeable noticeable) noticeable._noticeState.InitNotice(noticeable.NoticeSprite);
         if (this is IReturnable returnable) returnable._returnState.SetReturnPoint(spawnPos);

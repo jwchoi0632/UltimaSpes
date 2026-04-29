@@ -4,6 +4,13 @@ using System.Linq;
 using UnityEngine;
 using static UnityEngine.RuleTile.TilingRuleOutput;
 
+[System.Serializable]
+public struct StageScaleData
+{
+    public int combatScale;
+    public int rewardScale;
+}
+
 [RequireComponent(typeof(ObjectPoolManager), typeof(CameraManager))]
 public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraManageable, IPlayerManageable
 {
@@ -11,13 +18,23 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
     [SerializeField] private RoomList _roomList;
     [SerializeField] private StageGridList _stageGridList;
     [SerializeField] private Vector2 _roomSize;
+    [SerializeField] private StageScaleData _stageScale;
+    [SerializeField] private int _stageRewardBudget;
 
+    private Dictionary<RoomCategoryType, List<RoomManager>> _roomListOfType;
+    private List<RoomPlan> _roomPlanList;
     private ObjectPoolManager _poolManager;
     private CameraManager _cameraManger;
+    private StageScaleController _stageScaleController;
+    private UnityEngine.Transform _playerStart;
+
+    private float _randomModifer;
+    private float _totalRewardBudget;
 
     public PlayerCharacter Player => _player;
     public ObjectPoolManager PoolManager => _poolManager;
     public CameraManager CameraManager => _cameraManger;
+    public StageScaleController StageScaleController => _stageScaleController;
 
     protected override void OnAwake()
     {
@@ -25,6 +42,8 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
 
         _cameraManger = GetComponent<CameraManager>();
         _poolManager = GetComponent<ObjectPoolManager>();
+        _stageScaleController = new StageScaleController(_stageScale);
+        _randomModifer = UnityEngine.Random.Range(0.9f, 1.1f);
     }
 
     protected override void OnStart()
@@ -32,6 +51,8 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
         base.OnStart();
 
         _roomList.InitDictionary();
+        _roomListOfType = new Dictionary<RoomCategoryType, List<RoomManager>>();
+        _roomPlanList = new List<RoomPlan>();
 
         int tryCount = 0;
 
@@ -71,10 +92,34 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
         ConnectRoomPlans(ref zeroGenRooms, roomPlanMap, grid);
         ApplyEventRoomSpecialRules(roomPlanMap);
         DetermineBossRoom(grid, path, roomPlanMap);
-
+        CalculateTotalRewardBudget();
         GenerateMap(roomPlanMap);
 
         return true;
+    }
+
+    private void CalculateTotalRewardBudget()
+    {
+        int roomCount = _roomPlanList.Count;
+
+        _totalRewardBudget = roomCount * _stageRewardBudget * _randomModifer;
+
+        ShuffleList<RoomPlan>(ref _roomPlanList);
+
+        --roomCount;
+        _roomPlanList.RemoveAt(roomCount);
+
+        float normalBudget = _totalRewardBudget * 0.9f;
+        float specialBudget = _totalRewardBudget - normalBudget;
+
+        normalBudget /= (float)roomCount;
+
+        foreach (var roomPlan in _roomPlanList)
+        {
+            roomPlan.rewardBudget = normalBudget;
+        }
+
+        _roomPlanList[0].rewardBudget += specialBudget;
     }
 
     private void GenerateMap(in Dictionary<Vector2Int, RoomPlan> roomPlanMap)
@@ -84,29 +129,51 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
 
         int maxY = roomPlanMap.Keys.Max(p => p.y);
 
+        RoomInitData initData = new RoomInitData();
+        initData.randomModi = _randomModifer;
+
         foreach (var plan in roomPlanMap.Values)
         {
+            initData.categoryType = plan.type;
+            initData.contextModi = plan.contextMod;
+            initData.assignRewardBudget = plan.rewardBudget;
+
             float correctedY = (maxY - plan.pos.y);
             Vector3 spawnPos = new Vector3(plan.pos.x * w, correctedY * h, 0);
 
+            RoomManager instance = null;
+
             if (plan.type == RoomCategoryType.None)
             {
-                RoomManager instance = Instantiate(_roomList.noneTypeRoom, spawnPos, Quaternion.identity, this.transform);
-                instance.InitTestInfo(plan.type);
-                continue;
-            }
-
-            RoomManager prefab = FindSuitablePrefab(plan);
-
-            if (prefab != null)
-            {
-                RoomManager instance = Instantiate(prefab, spawnPos, Quaternion.identity, this.transform);
-                instance.InitTestInfo(plan.type);
+                instance = Instantiate(_roomList.noneTypeRoom, spawnPos, Quaternion.identity, this.transform);
             }
             else
             {
-                Debug.LogError($"{plan.pos} 위치에 {plan.type} 타입의 적절한 문 구성을 가진 방이 없습니다!");
+                RoomManager prefab = FindSuitablePrefab(plan);
+
+                if (prefab != null)
+                {
+                    instance = Instantiate(prefab, spawnPos, Quaternion.identity, this.transform);
+                }
+                else
+                {
+                    Debug.LogError($"{plan.pos} 위치에 {plan.type} 타입의 적절한 문 구성을 가진 방이 없습니다!");
+                }
             }
+
+            initData.combatBudget = _roomList.GetCombatBudget(instance.ContentType);
+            initData.rewardBudget = _roomList.GetRewardBudget(instance.ContentType);
+
+            instance.InitRoomManager(initData);
+
+            if (instance.CategoryType == RoomCategoryType.Start) _playerStart = instance.PlayerStart;
+
+            if (!_roomListOfType.ContainsKey(instance.CategoryType))
+            {
+                _roomListOfType.Add(instance.CategoryType, new List<RoomManager>());
+            }
+
+            _roomListOfType[instance.CategoryType].Add(instance);
         }
     }
 
@@ -141,11 +208,17 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
             for (int x = 0; x < data.grid[y].columns.Count; x++)
             {
                 Vector2Int pos = new Vector2Int(x, y);
-                roomPlanMap.Add(pos, new RoomPlan(pos));
+                RoomPlan newRoomPlan = new RoomPlan(pos);
+
+                roomPlanMap.Add(pos, newRoomPlan);
 
                 if (!data.grid[y].columns[x])
                 {
                     roomPlanMap[pos].type = RoomCategoryType.None;
+                }
+                else
+                {
+                    _roomPlanList.Add(newRoomPlan);
                 }
             }
         }
@@ -203,21 +276,20 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
 
         int connectionCount = Random.Range(1, n + 1);
 
-        if (connectionCount == n)
-        {
-            foreach (var targetPos in candidates)
-            {
-                InternalConnect(myPos, targetPos, roomPlanMap);
-            }
-        }
-        else
-        {
-            ShuffleList(ref candidates);
+        //if (connectionCount == n)
+        //{
+        //    foreach (var targetPos in candidates)
+        //    {
+        //        InternalConnect(myPos, targetPos, roomPlanMap);
+        //    }
+        //}
+        //else
 
-            for (int i = 0; i < connectionCount; i++)
-            {
-                InternalConnect(myPos, candidates[i], roomPlanMap);
-            }
+        ShuffleList(ref candidates);
+
+        for (int i = 0; i < connectionCount; i++)
+        {
+            InternalConnect(myPos, candidates[i], roomPlanMap);
         }
     }
 
@@ -243,6 +315,8 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
                 {
                     TryForceHorizontalConnect(plan, roomPlanMap);
                 }
+
+                _roomPlanList?.Remove(plan);
             }
         }
     }
@@ -288,6 +362,17 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
         {
             roomPlanMap[a].Connect(b);
             roomPlanMap[b].Connect(a);
+
+            if (roomPlanMap[a].type == RoomCategoryType.Start || roomPlanMap[b].type == RoomCategoryType.Start)
+            {
+                roomPlanMap[a].contextMod = 0.5f;
+                roomPlanMap[b].contextMod = 0.5f;
+            }
+            else if (roomPlanMap[a].type == RoomCategoryType.Event || roomPlanMap[b].type == RoomCategoryType.Event)
+            {
+                roomPlanMap[a].contextMod = 1.2f;
+                roomPlanMap[b].contextMod = 1.2f;
+            }
         }
     }
 
@@ -343,6 +428,42 @@ public class InGameSceneManager : SceneManagerBase, IPoolManageable, ICameraMana
 
     private void InitCurrentGame()
     {
-        // TODO : Init Player Transform
+        _player.transform.position = _playerStart.position;
+
+        InitRoomSpawnPoints();
+    }
+
+    private void InitRoomSpawnPoints()
+    {
+        List<RoomManager> tempList = _roomListOfType[RoomCategoryType.Common];
+        ShuffleList<RoomManager>(ref tempList);
+
+        foreach (var room in tempList)
+        {
+            room.InitSpawnPoints();
+        }
+
+        foreach (var room in _roomListOfType[RoomCategoryType.Boss])
+        {
+            room.InitSpawnPoints();
+        }
+
+        tempList = _roomListOfType[RoomCategoryType.Event];
+        ShuffleList<RoomManager>(ref tempList);
+
+        foreach (var room in tempList)
+        {
+            room.InitSpawnPoints();
+        }
+
+        foreach (var room in _roomListOfType[RoomCategoryType.End])
+        {
+            room.InitSpawnPoints();
+        }
+
+        foreach (var room in _roomListOfType[RoomCategoryType.Start])
+        {
+            room.InitSpawnPoints();
+        }
     }
 }

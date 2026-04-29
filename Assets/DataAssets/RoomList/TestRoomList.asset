@@ -99,3 +99,26 @@ MonoBehaviour:
     - {fileID: 2285222163124988089, guid: 1b8d5c4c38619264f9d0cf88d1be7723, type: 3}
     - {fileID: 2285222163124988089, guid: 27b13f84912491c4a95d427cf8637497, type: 3}
   noneTypeRoom: {fileID: 737319547525643058, guid: 3e3e664a53515c84d82f3cfff802b3cb, type: 3}
+  combatBudgetDatas:
+  - content: 0
+    combatBudget: 0
+  - content: 1
+    combatBudget: 0
+  - content: 2
+    combatBudget: 1
+  - content: 3
+    combatBudget: 1
+  - content: 4
+    combatBudget: 1
+  - content: 5
+    combatBudget: 1
+  - content: 6
+    combatBudget: 2
+  - content: 7
+    combatBudget: 1
+  - content: 8
+    combatBudget: 0
+  - content: 9
+    combatBudget: 0
+  - content: 10
+    combatBudget: 0
